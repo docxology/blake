@@ -1,0 +1,99 @@
+claims:
+  - claim_id: blake_death_year
+    kind: number
+    value: 1827
+    source: "William Blake death year used for copyright-duration analysis"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: life_plus_term_years
+    kind: number
+    value: 70
+    source: "U.S., U.K., and E.U. copyright-duration sources cited in legal distribution section"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: usc_pre_1978_unpublished_section
+    kind: number
+    value: 303
+    source: "17 U.S.C. section 303 pre-1978 unpublished-work duration provision"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: us_public_domain_2026_cutoff
+    kind: number
+    value: 1931
+    source: "U.S. Copyright Office Circular 15A public-domain cutoff for works published before 1 January 1931"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: us_pre_1978_threshold
+    kind: number
+    value: 1978
+    source: "17 U.S.C. section 303 applies to works created before 1978 and not previously published or copyrighted"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: us_303_publication_floor_cutoff
+    kind: number
+    value: 2002
+    source: "17 U.S.C. section 303 publication-floor cutoff"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: us_303_publication_floor_expiry
+    kind: number
+    value: 2047
+    source: "17 U.S.C. section 303 minimum expiry for works first published before the end of 2002"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: uk_2039_rule_death_threshold
+    kind: number
+    value: 1969
+    source: "UK IPO duration guidance on the 2039 rule"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: uk_2039_rule_expiry_year
+    kind: number
+    value: 2039
+    source: "UK IPO duration guidance naming the 2039 rule"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: uk_2039_rule_unpublished_threshold
+    kind: number
+    value: 1989
+    source: "UK IPO duration guidance on pre-1989 unpublished works"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: eu_unpublished_publication_term_years
+    kind: number
+    value: 25
+    source: "Directive 2006/116/EC article 4 term for first lawful publication or communication of a previously unpublished work"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: eu_dsm_public_domain_article
+    kind: number
+    value: 14
+    source: "Directive (EU) 2019/790 article 14 rule for non-original reproductions of public-domain visual art"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: usc_fair_use_section
+    kind: number
+    value: 107
+    source: "17 U.S.C. section 107 fair-use factors"
+    source_path: manuscript/references.bib
+    source_tier: legal_primary_source
+    freshness: active
+  - claim_id: wikimedia_cc_by_sa_version
+    kind: number
+    value: 4.0
+    source: "Wikimedia Foundation Terms of Use text-contribution license version"
+    source_path: manuscript/references.bib
+    source_tier: provider_policy
+    freshness: active

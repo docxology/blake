@@ -1,0 +1,31 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow",
+  "identifier": "https://doi.org/10.5281/zenodo.21047574",
+  "description": "Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports, with an auditable target ledger and a fail-closed rights gate separating open-source code and aggregate analytics from provider-supplied source files.",
+  "version": "0.1.0",
+  "license": "https://spdx.org/licenses/MIT",
+  "codeRepository": "https://github.com/docxology/blake",
+  "programmingLanguage": "Python",
+  "keywords": [
+    "William Blake",
+    "digital humanities",
+    "corpus acquisition",
+    "source provenance",
+    "rights-bounded release"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Daniel Ari",
+      "familyName": "Friedman",
+      "@id": "https://orcid.org/0000-0001-6232-9096",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Active Inference Institute"
+      },
+      "email": "daniel@activeinference.institute"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Supplement: Image Mosaics and Work Evidence Profiles {#sec:supp_visual_mosaics}
+
+This visual supplement treats the corpus as a descriptive materials dataset rather than as a finished interpretive edition. [@fig:all_acquired_images_mosaic] shows acquired local image files with valid paths on disk. [@fig:work_area_image_mosaics] groups those files by work area. [@fig:work_evidence_profile_grid] adds a compact tile for every target-ledger work. [@fig:image_depth_by_work] and [@fig:image_depth_by_area] then separate representative image presence from Archive object-depth acquisition, and [@fig:source_authority_tiers] records the authority tier attached to local work evidence. The mosaics are cache-review visualizations; they measure local files and do not relicense provider images, as discussed in [@sec:legal_distribution]. Their layout is also an interpretive display choice: it makes local-file presence visible while withholding claims about iconography, copy state, or provider rights [@drucker2020visualization; @kirschenbaum2008mechanisms].
+
+![Mosaic of acquired local corpus image files with valid local paths. Each tile is one locally stored file labeled by work id; generated cover art, remote-only records, and missing metadata paths are excluded from the denominator, and the visualization does not convert provider images into open-source assets.](../output/figures/all_acquired_images_mosaic.png){#fig:all_acquired_images_mosaic}
+
+![Mosaic of local corpus image files grouped by target-ledger work area. Category headings report valid local-file counts by ledger area; the grouping is a materials inventory view, not a periodization, interpretive classification, or source-rights statement.](../output/figures/work_area_image_mosaics.png){#fig:work_area_image_mosaics}
+
+![Compact target-ledger evidence profiles for every work. Each tile records work-level target status, local text availability (`T`), and local image count (`I`); copy-, plate-, and object-level completeness is shown separately in the image-depth figures.](../output/figures/work_evidence_profile_grid.png){#fig:work_evidence_profile_grid}
+
+![Archive object-image depth by work for the largest local image carriers. The gray bar records resolved Archive object candidates and the green bar records downloaded local image files, so the denominator is discoverable Archive object metadata rather than Blake's whole visual oeuvre.](../output/figures/image_depth_by_work.png){#fig:image_depth_by_work}
+
+![Archive object-image depth by target-ledger work area. Bars aggregate resolved Archive object candidates and downloaded local image files within each ledger category; catalog-only sources and non-Archive museum records are outside this image-depth denominator.](../output/figures/image_depth_by_area.png){#fig:image_depth_by_area}
+
+![Source-authority tiers for local work evidence. Counts distinguish Archive-primary work records from validated fallback text and legacy or corroborating records, making source authority visible before interpreting corpus-level aggregates.](../output/figures/source_authority_tiers.png){#fig:source_authority_tiers}

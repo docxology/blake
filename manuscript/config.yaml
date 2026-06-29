@@ -1,0 +1,59 @@
+# Blake Corpus Manuscript Configuration
+# Consumed by infrastructure/rendering/_pdf_combined_renderer.py (metadata) and
+# projects/working/blake/scripts/z_generate_manuscript_variables.py (none — this
+# project's variables come from analysis_output/, not from this file).
+#
+# CONTRACT: title and subtitle are NOT {{TOKEN}}-substituted (only manuscript/*.md
+# bodies are). They must therefore contain NO numeric counts — a number here would
+# be a hard-coded literal that violates the no-hard-coding invariant and cannot be
+# tokenised away.
+paper:
+  title: "Mapping William Blake’s Works"
+  subtitle: "Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
+  version: "0.1.0"
+  date: "" # auto-generated at render if empty
+  cover:
+    image: "output/cover/cover_blakean.png"
+    usage_note: "Generative Blakean visual interpretation; not corpus evidence."
+
+authors:
+  - name: "Daniel Ari Friedman"
+    orcid: "0000-0001-6232-9096"
+    email: "daniel@activeinference.institute"
+    affiliation: "Active Inference Institute"
+    corresponding: true
+
+publication:
+  github_repository: "docxology/blake"
+  journal: "Digital Humanities Working Papers"
+  year: "2026"
+  doi: "10.5281/zenodo.21047574"
+  doi_status: "published"
+
+keywords:
+  - "William Blake"
+  - "digital humanities"
+  - "corpus construction"
+  - "reproducible research"
+  - "completeness accounting"
+  - "multi-modal analysis"
+  - "text-image linkage"
+
+metadata:
+  license: "MIT"
+  language: "en"
+  geometry: "left=0.48in,right=0.48in,top=0.6in,bottom=0.65in"
+
+render:
+  formats:
+    pdf: true
+    html: true
+    slides: false
+    docx: false
+    epub: false
+
+llm:
+  reviews:
+    enabled: false
+  translations:
+    enabled: false

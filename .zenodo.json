@@ -1,0 +1,29 @@
+{
+  "title": "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow",
+  "upload_type": "software",
+  "description": "Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. It pairs an auditable canonical target ledger with a fail-closed rights gate that separates open-source code and project-authored aggregate analytics from provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts. The MIT license covers project code and project-authored outputs only; provider-supplied source materials and the local evidence cache are excluded from the public release and remain under their source-provider terms.",
+  "creators": [
+    {
+      "name": "Friedman, Daniel Ari",
+      "orcid": "0000-0001-6232-9096",
+      "affiliation": "Active Inference Institute"
+    }
+  ],
+  "keywords": [
+    "William Blake",
+    "digital humanities",
+    "corpus acquisition",
+    "source provenance",
+    "rights-bounded release"
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/docxology/blake",
+      "scheme": "url"
+    }
+  ],
+  "notes": "MIT covers project code and project-authored aggregate outputs only. Provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts are excluded from this deposit and remain under their source-provider terms."
+}
