@@ -31,7 +31,7 @@ regeneration.
 
 | File | Coverage |
 |------|----------|
-| `test_core.py` | `BlakeWorks` class |
+| `test_core.py` | `BlakeCorpus` class |
 | `test_models.py` | Data models |
 | `test_analysis.py` | Analysis module |
 | `test_downloader.py` | Download module |
@@ -49,12 +49,12 @@ See `conftest.py` for shared fixtures:
 
 ```python
 import pytest
-from blake import BlakeWorks
+from blake import BlakeCorpus
 
 class TestFeature:
     @pytest.fixture
     def fixture(self, tmp_path):
-        return BlakeWorks(tmp_path)
+        return BlakeCorpus(tmp_path)
     
     def test_feature(self, fixture):
         result = fixture.some_method()

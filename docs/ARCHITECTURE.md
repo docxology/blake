@@ -101,7 +101,7 @@ Each component is designed as a self-contained module with clear interfaces:
 ```
 blake/
 ├── corpus/                 # Corpus workflow, manifests, source registry
-├── core.py                 # BlakeWorks compatibility shim
+├── core.py                 # BlakeCorpus compatibility shim
 ├── models.py              # Data models
 ├── downloader/            # Download system
 ├── analysis/              # Analysis system
@@ -188,7 +188,7 @@ class BlakeCorpus:
         self.source_registry = SourceRegistry()
 ```
 
-`BlakeWorks` subclasses `BlakeCorpus` for one compatibility release.
+`BlakeCorpus` subclasses `BlakeCorpus` for one compatibility release.
 
 ### Corpus Target Coverage
 

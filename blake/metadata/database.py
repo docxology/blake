@@ -274,7 +274,7 @@ class MetadataDatabase:
             return work
     
     def load_all_works(self) -> List[BlakeWork]:
-        """Load all BlakeWorks from the database."""
+        """Load all works from the database."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             

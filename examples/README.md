@@ -9,9 +9,9 @@ uv run python examples/basic_usage.py
 ```
 
 ```python
-from blake import BlakeWorks
+from blake import BlakeCorpus
 
-blake = BlakeWorks()
+blake = BlakeCorpus()
 works = await blake.download_all()
 ```
 

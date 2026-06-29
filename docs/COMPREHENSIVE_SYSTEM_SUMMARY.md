@@ -124,7 +124,7 @@ blake/
 
 ### **Test Coverage**
 
-✅ **Core Functionality**: BlakeWorks orchestrator
+✅ **Core Functionality**: BlakeCorpus orchestrator
 ✅ **Download System**: All source adapters and managers
 ✅ **Analysis Pipeline**: Text, visual, and cross-modal analysis
 ✅ **Visualization System**: All renderers and dashboards

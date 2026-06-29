@@ -10,20 +10,20 @@ import pytest
 import asyncio
 from pathlib import Path
 
-from blake.core import BlakeWorks
+from blake import BlakeCorpus
 from blake.models import BlakeWork, BlakeMetadata, WorkType, SourceType
 
 
-class TestBlakeWorks:
-    """Test the main BlakeWorks orchestrator."""
-    
+class TestBlakeCorpus:
+    """Test the main BlakeCorpus orchestrator."""
+
     @pytest.fixture
     def blake_works(self, tmp_path):
-        """Create a BlakeWorks instance for testing."""
-        return BlakeWorks(tmp_path)
+        """Create a BlakeCorpus instance for testing."""
+        return BlakeCorpus(tmp_path)
     
     def test_initialization(self, blake_works, tmp_path):
-        """Test BlakeWorks initialization."""
+        """Test BlakeCorpus initialization."""
         assert blake_works.data_dir == tmp_path
         assert blake_works.downloader is not None
         assert blake_works.analyzer is not None
@@ -32,22 +32,22 @@ class TestBlakeWorks:
         assert blake_works.visualization is not None
     
     def test_has_downloader(self, blake_works):
-        """Test that BlakeWorks has a downloader component."""
+        """Test that BlakeCorpus has a downloader component."""
         assert hasattr(blake_works, 'downloader')
         assert blake_works.downloader is not None
     
     def test_has_analyzer(self, blake_works):
-        """Test that BlakeWorks has an analyzer component."""
+        """Test that BlakeCorpus has an analyzer component."""
         assert hasattr(blake_works, 'analyzer')
         assert blake_works.analyzer is not None
     
     def test_has_exporter(self, blake_works):
-        """Test that BlakeWorks has an exporter component."""
+        """Test that BlakeCorpus has an exporter component."""
         assert hasattr(blake_works, 'exporter')
         assert blake_works.exporter is not None
     
     def test_has_visualization(self, blake_works):
-        """Test that BlakeWorks has a visualization component."""
+        """Test that BlakeCorpus has a visualization component."""
         assert hasattr(blake_works, 'visualization')
         assert blake_works.visualization is not None
     

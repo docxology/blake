@@ -389,7 +389,7 @@ def test_public_metadata_avoids_complete_corpus_overclaims():
         root / "blake" / "cli.py",
         root / "blake" / "gui" / "gui.py",
         root / "blake" / "interactive_orchestrator.py",
-        root / "blake" / "downloader" / "universal_downloader.py",
+        root / "blake" / "downloader" / "downloader.py",
         root / "blake_viewer.py",
         root / "scripts" / "download_complete_corpus.py",
         root / "docs" / "COMPREHENSIVE_SYSTEM_SUMMARY.md",

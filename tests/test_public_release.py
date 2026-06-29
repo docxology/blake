@@ -3,6 +3,7 @@ import json
 import zipfile
 from pathlib import Path
 
+from blake import __version__
 from blake.corpus.public_release import (
     PublicReleaseAsset,
     _rights_gate_violations,
@@ -145,7 +146,7 @@ def test_public_release_preflight_reports_ready(tmp_path):
     assert all(
         asset["decision_reason"] for asset in report["manifest"]["included_assets"]
     )
-    assert report["manifest"]["github_release"]["tag_name"] == "v0.1.0"
+    assert report["manifest"]["github_release"]["tag_name"] == f"v{__version__}"
     assert (
         report["manifest"]["zenodo_metadata"]["metadata"]["upload_type"] == "software"
     )

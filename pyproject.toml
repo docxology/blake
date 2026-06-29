@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blake"
-version = "0.1.0"
+version = "0.2.0.dev0"
 description = "Target-aware corpus acquisition, analysis, and completeness accounting for William Blake research"
 readme = "README.md"
 requires-python = ">=3.9"

@@ -2,13 +2,11 @@
 Main downloader class that coordinates all data sources.
 """
 
-import asyncio
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 
 from .sources import BlakeArchiveSource, ProjectGutenbergSource, InternetArchiveSource
-from .comprehensive_manager import ComprehensiveDownloadManager
 from ..models import BlakeWork, SourceType
 from ..exceptions import DownloadError
 
@@ -269,23 +267,3 @@ class BlakeDownloader:
             logger.debug(f"Error checking work existence for {work_id}: {e}")
             return False
     
-    async def download_all_comprehensive(self) -> Dict[str, Any]:
-        """
-        Run the exploratory provider-discovery acquisition helper.
-
-        This compatibility path is useful for debugging legacy source adapters.
-        Manuscript and release validation should use ``BlakeCorpus.run`` so the
-        target ledger, source audit, evidence review, analysis diagnostics, and
-        rights-gate artifacts are regenerated together.
-        
-        Returns:
-            Provider-discovery download report with statistics
-        """
-        logger.info("Starting exploratory provider-discovery acquisition")
-        
-        comprehensive_manager = ComprehensiveDownloadManager(self.data_dir)
-
-        report = await comprehensive_manager.download_all_works()
-        
-        logger.info("Exploratory provider-discovery acquisition complete")
-        return report

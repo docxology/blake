@@ -2,7 +2,7 @@
 
 ## BlakeCorpus Class
 
-The primary orchestrator for reproducible Blake corpus workflows. `BlakeWorks` remains available as a compatibility shim over this class.
+The primary orchestrator for reproducible Blake corpus workflows. `BlakeCorpus` remains available as a compatibility shim over this class.
 
 ## Current Evidence Contract
 
@@ -604,7 +604,7 @@ REST API server.
 
 ```python
 class BlakeAPI:
-    def __init__(self, blake_instance: BlakeWorks)
+    def __init__(self, blake_instance: BlakeCorpus)
     
     def run(self, host: str = "0.0.0.0", port: int = 8000) -> None
 ```

@@ -217,13 +217,11 @@ def setup_blake_logging(log_dir: Optional[Path] = None, level: str = "INFO") -> 
     
     # Core components
     components = [
-        'blake.core',
+        'blake.corpus',
         'blake.downloader',
         'blake.analyzer',
         'blake.visualization',
         'blake.gui',
-        'blake.api_sources',
-        'blake.comprehensive_manager'
     ]
     
     for component in components:

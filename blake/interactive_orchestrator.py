@@ -9,22 +9,16 @@ import asyncio
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
-import json
+from typing import Any, List
 
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
 from rich.prompt import Prompt, Confirm, IntPrompt
-from rich.text import Text
-from rich.layout import Layout
-from rich.live import Live
 from rich import box
 
-from .core import BlakeWorks
-from .models import WorkType, SourceType
+from .corpus import BlakeCorpus
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -46,7 +40,7 @@ class InteractiveOrchestrator:
         """Initialize the Blake system."""
         try:
             with self.console.status("[bold green]Initializing Blake system..."):
-                self.blake = BlakeWorks(self.data_dir)
+                self.blake = BlakeCorpus(self.data_dir)
                 await self.blake.initialize()
             self.console.print("✅ [green]Blake system initialized successfully![/green]")
         except Exception as e:
@@ -352,7 +346,7 @@ class InteractiveOrchestrator:
                 self.console.print(f"✅ [green]Visualization '{selected_viz['type']}' created successfully![/green]")
                 
                 # Show visualization details
-                self.console.print(f"\n[bold cyan]Visualization Details:[/bold cyan]")
+                self.console.print("\n[bold cyan]Visualization Details:[/bold cyan]")
                 self.console.print(f"• Type: {result.get('type', 'Unknown')}")
                 self.console.print(f"• Category: {result.get('metadata', {}).get('renderer', 'Unknown')}")
                 self.console.print(f"• Work Count: {result.get('metadata', {}).get('work_count', 'Unknown')}")

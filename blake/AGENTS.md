@@ -6,7 +6,7 @@ Core Python package for William Blake's works analysis platform.
 
 | Module | Purpose |
 |--------|---------|
-| `core.py` | `BlakeWorks` orchestrator class |
+| `core.py` | `BlakeCorpus` orchestrator class |
 | `models.py` | Pydantic data models |
 | `cli.py` | Click-based CLI commands |
 | `exceptions.py` | Custom exception classes |
@@ -27,9 +27,9 @@ Core Python package for William Blake's works analysis platform.
 ## Quick Start
 
 ```python
-from blake import BlakeWorks
+from blake import BlakeCorpus
 
-blake = BlakeWorks()
+blake = BlakeCorpus()
 works = await blake.download_all()
 analysis = await blake.analyze_all()
 ```
@@ -37,6 +37,6 @@ analysis = await blake.analyze_all()
 ## Entry Points
 
 - `blake.cli:main` - CLI entrypoint
-- `blake.BlakeWorks` - Programmatic API
+- `blake.BlakeCorpus` - Programmatic API
 - `blake corpus run` - Target-aware corpus pipeline orchestrator
 - `run_all.py` - Compatibility wrapper for older local workflows

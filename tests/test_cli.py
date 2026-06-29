@@ -28,21 +28,6 @@ class TestBlakeCLI:
         # May return 0 or show version info
         assert result.exit_code == 0 or "version" in result.output.lower()
 
-    def test_download_help(self, runner):
-        """Download command --help works."""
-        result = runner.invoke(cli, ["download", "--help"])
-        assert result.exit_code == 0
-
-    def test_analyze_help(self, runner):
-        """Analyze command --help works."""
-        result = runner.invoke(cli, ["analyze", "--help"])
-        assert result.exit_code == 0
-
-    def test_export_help(self, runner):
-        """Export command --help works."""
-        result = runner.invoke(cli, ["export", "--help"])
-        assert result.exit_code == 0
-
     def test_public_release_preflight_help(self, runner):
         result = runner.invoke(cli, ["corpus", "public-release-preflight", "--help"])
         assert result.exit_code == 0
@@ -84,18 +69,6 @@ class TestBlakeCLI:
         """Explore command --help works."""
         result = runner.invoke(cli, ["explore", "--help"])
         assert result.exit_code == 0
-
-    def test_stats_help(self, runner):
-        """Stats command --help works."""
-        result = runner.invoke(cli, ["stats", "--help"])
-        assert result.exit_code == 0
-
-    def test_legacy_shortcuts_point_to_corpus_workflow(self, runner):
-        for command in ["download", "analyze", "export"]:
-            result = runner.invoke(cli, [command, "--help"])
-            assert result.exit_code == 0
-            assert "Compatibility" in result.output
-        assert "blake corpus run" in runner.invoke(cli, ["download", "--help"]).output
 
     def test_corpus_run_quick(self, runner, tmp_path):
         result = runner.invoke(

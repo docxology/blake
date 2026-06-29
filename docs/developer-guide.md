@@ -64,7 +64,7 @@ blake/
 ├── blake/                    # Main package
 │   ├── __init__.py          # Package initialization
 │   ├── corpus/              # BlakeCorpus pipeline, manifests, source registry
-│   ├── core.py              # BlakeWorks compatibility shim
+│   ├── core.py              # BlakeCorpus compatibility shim
 │   ├── models.py            # Data models and schemas
 │   ├── exceptions.py        # Custom exceptions
 │   ├── cli.py              # Command-line interface
@@ -100,7 +100,7 @@ blake/
 │   ├── conftest.py         # Test configuration
 │   ├── test_models.py      # Model tests
 │   ├── test_corpus.py      # Corpus workflow tests
-│   ├── test_core.py        # BlakeWorks compatibility tests
+│   ├── test_core.py        # BlakeCorpus compatibility tests
 │   ├── test_downloader.py  # Downloader tests
 │   ├── test_analysis.py    # Analysis tests
 │   └── test_download_manager.py # Download manager tests
@@ -248,7 +248,7 @@ Tests are organized by module:
 
 - `test_models.py` - Data model tests
 - `test_corpus.py` - Corpus pipeline, manifest, source registry, and quick-run tests
-- `test_core.py` - BlakeWorks compatibility tests
+- `test_core.py` - BlakeCorpus compatibility tests
 - `test_downloader.py` - Download system tests
 - `test_analysis.py` - Analysis pipeline tests
 - `test_download_manager.py` - Download orchestration tests
@@ -388,7 +388,7 @@ with patch('aiohttp.ClientSession') as mock_session:
 - Coordinates discovery, acquisition, metadata, analysis, export, and reports
 - Writes reproducible manifests and run summaries
 
-#### BlakeWorks (core.py)
+#### BlakeCorpus (core.py)
 
 - Deprecated compatibility shim over `BlakeCorpus`
 - Keeps old imports working for one release

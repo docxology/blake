@@ -4,7 +4,7 @@ Advanced analysis examples for the Blake package.
 
 import asyncio
 from pathlib import Path
-from blake import BlakeWorks
+from blake import BlakeCorpus
 from blake.models import ExportConfig
 
 
@@ -13,9 +13,9 @@ async def main():
     print("Blake Package - Advanced Analysis Examples")
     print("=" * 45)
     
-    # Initialize BlakeWorks
+    # Initialize BlakeCorpus
     data_dir = Path("./data/blake")
-    blake = BlakeWorks(data_dir)
+    blake = BlakeCorpus(data_dir)
     
     # Example 1: Comprehensive analysis of all works
     print("\n1. Running comprehensive analysis...")

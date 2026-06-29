@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21047574-blue.svg)](https://doi.org/10.5281/zenodo.21047574)
 
-Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The primary API is `BlakeCorpus`; `BlakeWorks` remains as a compatibility shim for older code.
+Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
 ## Primary Workflow
 
@@ -87,8 +87,6 @@ async def main():
 asyncio.run(main())
 ```
 
-Legacy code can still import `BlakeWorks`; it subclasses `BlakeCorpus`.
-
 ## CLI
 
 ```bash
@@ -99,14 +97,12 @@ blake corpus visualize --profile core
 blake corpus run --format json --format csv --format markdown
 blake corpus public-release-preflight --output-dir analysis_output --data-dir blake_data
 blake corpus public-release-package --output-dir analysis_output --data-dir blake_data
-blake download --all
-blake analyze --all --text
-blake export --format parquet
-blake stats
+blake search --query "tyger"
+blake info --work-id <id>
 blake explore
 ```
 
-`download`, `analyze`, `export`, and `stats` are compatibility shortcuts over the corpus services.
+The corpus workflow lives under `blake corpus`; `search`, `info`, and `explore` are convenience commands over local corpus metadata.
 
 ## Current Evidence Contract
 

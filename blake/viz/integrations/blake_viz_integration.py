@@ -1,7 +1,7 @@
 """
 Blake Visualization Integration
 
-Integrates the visualization system with the main BlakeWorks class.
+Integrates the visualization system with the main BlakeCorpus class.
 """
 
 import asyncio
@@ -18,14 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 class BlakeVizIntegration:
-    """Integrates visualization system with BlakeWorks."""
+    """Integrates visualization system with BlakeCorpus."""
     
     def __init__(self, blake_works):
         """
         Initialize visualization integration.
         
         Args:
-            blake_works: BlakeWorks instance to integrate with
+            blake_works: BlakeCorpus instance to integrate with
         """
         self.blake_works = blake_works
         self.data_dir = blake_works.data_dir

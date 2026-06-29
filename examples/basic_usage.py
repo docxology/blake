@@ -4,7 +4,7 @@ Basic usage examples for the Blake package.
 
 import asyncio
 from pathlib import Path
-from blake import BlakeWorks
+from blake import BlakeCorpus
 from blake.models import ExportConfig
 
 
@@ -13,9 +13,9 @@ async def main():
     print("Blake Package - Basic Usage Examples")
     print("=" * 40)
     
-    # Initialize BlakeWorks
+    # Initialize BlakeCorpus
     data_dir = Path("./data/blake")
-    blake = BlakeWorks(data_dir)
+    blake = BlakeCorpus(data_dir)
     
     # Example 1: Download all works
     print("\n1. Downloading all Blake works...")

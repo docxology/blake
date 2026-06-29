@@ -634,17 +634,6 @@ class BlakeCorpus:
             self._works_cache[work.id] = work
         return works
 
-    async def download_all_comprehensive(self) -> Dict[str, Any]:
-        report = await self.downloader.download_all_comprehensive()
-        for work_data in report.get("downloaded_works", []):
-            work_id = work_data.get("id") if isinstance(work_data, dict) else None
-            if work_id:
-                work = await self.get_work(work_id)
-                if work:
-                    await self.metadata_manager.process_work(work)
-        await self.clear_cache()
-        return report
-
     async def download_work(
         self, work_id: str, force: bool = False
     ) -> Optional[BlakeWork]:

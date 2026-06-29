@@ -14,7 +14,7 @@ import sys
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from blake.core import BlakeWorks
+from blake import BlakeCorpus
 from blake.viz.integrations.blake_viz_integration import BlakeVizIntegration
 
 # Set up logging
@@ -26,9 +26,9 @@ async def demo_visualization_system():
     """Demonstrate the complete visualization system."""
     logger.info("Starting Project B Visualization Demo")
     
-    # Initialize BlakeWorks
+    # Initialize BlakeCorpus
     data_dir = Path("./blake_data")
-    blake_works = BlakeWorks(data_dir)
+    blake_works = BlakeCorpus(data_dir)
     
     # Create visualization integration
     viz_system = BlakeVisualizationIntegration(blake_works)
@@ -270,7 +270,7 @@ async def demo_specific_visualizations():
     
     # Initialize system
     data_dir = Path("./blake_data")
-    blake_works = BlakeWorks(data_dir)
+    blake_works = BlakeCorpus(data_dir)
     viz_system = BlakeVisualizationIntegration(blake_works)
     
     print("\n" + "=" * 60)

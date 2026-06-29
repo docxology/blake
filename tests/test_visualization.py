@@ -397,7 +397,7 @@ class TestIntegration:
     
     @pytest.fixture
     def mock_blake_works(self):
-        """Create mock BlakeWorks instance."""
+        """Create mock BlakeCorpus instance."""
         blake_works = Mock()
         blake_works.data_dir = Path("./test_data")
         blake_works.get_all_works = AsyncMock(return_value=[])

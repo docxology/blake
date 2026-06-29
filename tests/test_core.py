@@ -7,12 +7,12 @@ import asyncio
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from blake.core import BlakeWorks
+from blake import BlakeCorpus
 from blake.models import BlakeWork, BlakeMetadata, WorkType, SourceType
 
 
-class TestBlakeWorks:
-    """Test BlakeWorks core class."""
+class TestBlakeCorpus:
+    """Test BlakeCorpus core class."""
     
     @pytest.fixture
     def data_dir(self, tmp_path):
@@ -21,11 +21,11 @@ class TestBlakeWorks:
     
     @pytest.fixture
     def blake_works(self, data_dir):
-        """Create BlakeWorks instance."""
-        return BlakeWorks(data_dir)
+        """Create BlakeCorpus instance."""
+        return BlakeCorpus(data_dir)
     
     def test_initialization(self, blake_works, data_dir):
-        """Test BlakeWorks initialization."""
+        """Test BlakeCorpus initialization."""
         assert blake_works.data_dir == data_dir
         assert data_dir.exists()
         assert blake_works.downloader is not None

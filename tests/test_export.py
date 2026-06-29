@@ -174,8 +174,8 @@ class TestBlakeAPI:
     @pytest.fixture
     def api(self, tmp_path):
         """Create BlakeAPI instance."""
-        from blake import BlakeWorks
-        blake = BlakeWorks(tmp_path)
+        from blake import BlakeCorpus
+        blake = BlakeCorpus(tmp_path)
         return BlakeAPI(blake)
     
     def test_api_initialization(self, api):

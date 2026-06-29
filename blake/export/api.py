@@ -25,7 +25,7 @@ class BlakeAPI:
         Initialize Blake API.
         
         Args:
-            blake_instance: BlakeWorks instance
+            blake_instance: BlakeCorpus instance
         """
         self.blake = blake_instance
         self.data_dir = blake_instance.data_dir

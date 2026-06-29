@@ -17,7 +17,6 @@ from .corpus.public_release import (
 )
 from .corpus.release_preflight import write_private_release_preflight
 from .corpus.source_audit import provider_reason_code
-from .models import ExportConfig, SourceType
 
 # Configure logging
 logging.basicConfig(
@@ -533,9 +532,7 @@ def corpus_public_release_preflight(
     help="Release destination the bundle is being prepared for",
 )
 @click.pass_context
-def corpus_public_release_package(
-    ctx, output_dir, data_dir, release_dir, destination
-):
+def corpus_public_release_package(ctx, output_dir, data_dir, release_dir, destination):
     output_path = Path(output_dir) if output_dir else ctx.obj["output_dir"]
     data_path = Path(data_dir) if data_dir else ctx.obj["data_dir"]
     release_path = Path(release_dir) if release_dir else None
@@ -566,115 +563,6 @@ def corpus_public_release_package(
         raise click.Abort()
 
 
-@main.command(
-    help=(
-        "Compatibility provider-fetch shortcut. Prefer `blake corpus run` for "
-        "source audit, coverage, and release validation."
-    )
-)
-@click.option(
-    "--all",
-    "download_all",
-    is_flag=True,
-    help="Fetch currently discoverable provider records",
-)
-@click.option("--work-id", help="Download specific work by ID")
-@click.option(
-    "--source",
-    type=click.Choice(["blake_archive", "project_gutenberg", "internet_archive"]),
-    help="Download from specific source",
-)
-@click.option("--force", is_flag=True, help="Force re-download even if works exist")
-@click.pass_context
-def download(ctx, download_all, work_id, source, force):
-    """Download Blake works from various sources."""
-    blake = ctx.obj["blake"]
-
-    try:
-        if download_all:
-            click.echo("Fetching currently discoverable provider records...")
-            works = _run_async(blake.download_all(force=force))
-            click.echo(f"Downloaded {len(works)} works")
-
-        elif work_id:
-            click.echo(f"Downloading work: {work_id}")
-            work = _run_async(blake.download_work(work_id, force=force))
-            if work:
-                click.echo(f"Downloaded: {work.metadata.title}")
-            else:
-                click.echo(f"Work {work_id} not found")
-
-        elif source:
-            click.echo(f"Downloading from {source}...")
-            source_type = SourceType(source)
-            works = _run_async(
-                blake.downloader.download_from_source(source_type, force=force)
-            )
-            click.echo(f"Downloaded {len(works)} works from {source}")
-
-        else:
-            click.echo("Please specify --all, --work-id, or --source")
-
-    except Exception as e:
-        click.echo(f"Error downloading works: {e}", err=True)
-        raise click.Abort()
-
-
-@main.command(
-    help=(
-        "Compatibility local-analysis shortcut. Prefer `blake corpus run` so "
-        "analysis summaries and diagnostics are regenerated together."
-    )
-)
-@click.option("--work-id", help="Analyze specific work by ID")
-@click.option("--all", "analyze_all", is_flag=True, help="Analyze all local works")
-@click.option("--text", is_flag=True, help="Perform text analysis")
-@click.option("--visual", is_flag=True, help="Perform visual analysis")
-@click.option("--cross", is_flag=True, help="Perform cross analysis")
-@click.pass_context
-def analyze(ctx, work_id, analyze_all, text, visual, cross):
-    """Analyze Blake works."""
-    blake = ctx.obj["blake"]
-
-    # Determine analysis types
-    analysis_types = []
-    if text:
-        analysis_types.append("text")
-    if visual:
-        analysis_types.append("visual")
-    if cross:
-        analysis_types.append("cross")
-
-    if not analysis_types:
-        analysis_types = None  # All analyses
-
-    try:
-        if work_id:
-            click.echo(f"Analyzing work: {work_id}")
-            results = _run_async(blake.analyze_work(work_id, analysis_types))
-            click.echo("Analysis completed")
-
-            # Display basic results
-            if "text_analysis" in results:
-                basic_stats = results["text_analysis"].get("basic_stats", {})
-                click.echo(f"Word count: {basic_stats.get('word_count', 0)}")
-                click.echo(
-                    f"Sentiment: {results['text_analysis'].get('sentiment', {}).get('sentiment', 'Unknown')}"
-                )
-
-        elif analyze_all:
-            click.echo("Analyzing all local works...")
-            results = _run_async(blake.analyze_all(analysis_types))
-            click.echo(f"Analysis completed for {len(results)} works")
-
-        else:
-            click.echo("Please specify --work-id or --all")
-
-    except Exception as e:
-        click.echo(f"Error analyzing works: {e}", err=True)
-        raise click.Abort()
-
-
 @main.command()
 @click.option("--host", default="localhost", help="Host to run GUI on")
 @click.option("--port", default=8501, help="Port to run GUI on")
@@ -690,62 +578,6 @@ def explore(ctx, host, port):
         blake.explore(host=host, port=port)
     except Exception as e:
         click.echo(f"Error starting GUI: {e}", err=True)
-        raise click.Abort()
-
-
-@main.command(
-    help=(
-        "Compatibility export shortcut. Prefer corpus exports when provenance, "
-        "manifest, and release checks must travel together."
-    )
-)
-@click.option(
-    "--format",
-    "export_format",
-    type=click.Choice(["json", "csv", "pdf", "html", "markdown", "md", "parquet"]),
-    default="json",
-    help="Export format (json, csv, pdf, html, markdown, parquet)",
-)
-@click.option("--output-dir", type=click.Path(), help="Output directory")
-@click.option("--work-ids", help="Comma-separated list of work IDs to export")
-@click.option("--include-images", is_flag=True, help="Include images in export")
-@click.option("--include-analysis", is_flag=True, help="Include analysis results")
-@click.option("--compress", is_flag=True, help="Compress output")
-@click.pass_context
-def export(
-    ctx, export_format, output_dir, work_ids, include_images, include_analysis, compress
-):
-    """Export Blake works data."""
-    blake = ctx.obj["blake"]
-
-    # Set output directory
-    if not output_dir:
-        output_dir = Path("./exports")
-    else:
-        output_dir = Path(output_dir)
-
-    # Parse work IDs
-    filter_works = None
-    if work_ids:
-        filter_works = [id.strip() for id in work_ids.split(",")]
-
-    # Create export config
-    config = ExportConfig(
-        format=export_format,
-        output_dir=output_dir,
-        include_images=include_images,
-        include_analysis=include_analysis,
-        compress=compress,
-        filter_works=filter_works,
-    )
-
-    try:
-        click.echo(f"Exporting works in {export_format} format...")
-        output_path = _run_async(blake.export_works(config))
-        click.echo(f"Export completed: {output_path}")
-
-    except Exception as e:
-        click.echo(f"Error exporting works: {e}", err=True)
         raise click.Abort()
 
 
@@ -795,43 +627,6 @@ def search(ctx, query, work_type, source, has_images, has_text, limit):
 
     except Exception as e:
         click.echo(f"Error searching works: {e}", err=True)
-        raise click.Abort()
-
-
-@main.command(
-    help="Compatibility statistics shortcut over local corpus metadata."
-)
-@click.pass_context
-def stats(ctx):
-    """Show collection statistics."""
-    blake = ctx.obj["blake"]
-
-    try:
-        click.echo("Loading collection statistics...")
-        stats = _run_async(blake.get_statistics())
-
-        click.echo("\n=== Collection Statistics ===")
-        click.echo(f"Total works: {stats['total_works']}")
-        click.echo(f"Total images: {stats['total_images']}")
-        click.echo(f"Processed works: {stats['processed_works']}")
-
-        if stats["work_types"]:
-            click.echo("\nWork types:")
-            for work_type, count in stats["work_types"].items():
-                click.echo(f"  {work_type}: {count}")
-
-        if stats["sources"]:
-            click.echo("\nSources:")
-            for source, count in stats["sources"].items():
-                click.echo(f"  {source}: {count}")
-
-        if stats["date_range"]:
-            click.echo(
-                f"\nDate range: {stats['date_range']['earliest']} - {stats['date_range']['latest']}"
-            )
-
-    except Exception as e:
-        click.echo(f"Error loading statistics: {e}", err=True)
         raise click.Abort()
 
 

@@ -8,7 +8,7 @@ Blake is a platform for downloading, analyzing, and exploring William Blake's wo
 
 - **`run_all.py`** - Complete analysis pipeline (recommended)
 - **`blake` CLI** - Command-line interface
-- **`blake.BlakeWorks`** - Python API
+- **`blake.BlakeCorpus`** - Python API
 
 ## Architecture
 
@@ -25,7 +25,7 @@ blake/                  # Main package
 
 ## Key Patterns
 
-- **Orchestrator**: `BlakeWorks` in `core.py` coordinates all modules
+- **Orchestrator**: `BlakeCorpus` in `core.py` coordinates all modules
 - **Async-first**: Download and analysis operations are async
 - **Pydantic models**: All data structures in `models.py`
 - **Click CLI**: Commands defined in `cli.py`

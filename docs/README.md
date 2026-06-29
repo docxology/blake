@@ -45,7 +45,7 @@ The current reproducibility contract is artifact-first: `corpus_manifest.json` r
 ```
 blake/
 ├── corpus/              # BlakeCorpus workflow, manifests, source registry
-├── core.py              # BlakeWorks compatibility shim
+├── core.py              # BlakeCorpus compatibility shim
 ├── models.py            # Data models and schemas
 ├── exceptions.py        # Custom exception handling
 ├── downloader/          # Download management

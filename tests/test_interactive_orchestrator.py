@@ -24,7 +24,7 @@ class TestInteractiveOrchestrator:
     
     @pytest.mark.asyncio
     async def test_orchestrator_has_blake_works(self, orchestrator):
-        """Orchestrator has BlakeWorks instance after init."""
+        """Orchestrator has BlakeCorpus instance after init."""
         await orchestrator.initialize()
         assert orchestrator.blake is not None
         assert orchestrator.blake._initialized is True

@@ -2,7 +2,7 @@
 """
 Headless Download All Script
 
-A thin orchestrator that downloads all available Blake works using the high-level BlakeWorks API.
+A thin orchestrator that downloads all available Blake works using the high-level BlakeCorpus API.
 """
 
 import asyncio
@@ -14,7 +14,7 @@ import logging
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from blake import BlakeWorks
+from blake import BlakeCorpus
 
 # Configure logging
 logging.basicConfig(
@@ -27,11 +27,11 @@ logger = logging.getLogger(__name__)
 async def main():
     """Main function."""
     try:
-        logger.info("🚀 Initializing BlakeWorks...")
+        logger.info("🚀 Initializing BlakeCorpus...")
         
-        # Initialize BlakeWorks with default settings
-        # You can pass data_dir here if needed, e.g. BlakeWorks(data_dir=Path("./my_data"))
-        blake = BlakeWorks()
+        # Initialize BlakeCorpus with default settings
+        # You can pass data_dir here if needed, e.g. BlakeCorpus(data_dir=Path("./my_data"))
+        blake = BlakeCorpus()
         
         logger.info("📥 Starting global download...")
         works = await blake.download_all()
