@@ -57,7 +57,7 @@ All outputs are saved to `analysis_output/`:
 ### Developer Documentation
 - [Developer Guide](developer-guide.md) - Development setup
 - [System Summary](COMPREHENSIVE_SYSTEM_SUMMARY.md) - Target-aware system overview
-- [Test Results](COMPREHENSIVE_TEST_RESULTS.md) - Test coverage
+- Test coverage: run the suite (`tests/`); no static test-results doc is maintained in `docs/`.
 
 ## Module Reference
 
