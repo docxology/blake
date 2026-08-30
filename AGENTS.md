@@ -15,17 +15,19 @@ Blake is a platform for downloading, analyzing, and exploring William Blake's wo
 ```
 blake/                  # Main package
 ├── analysis/           # NLP and visual analysis
+├── corpus/             # Target-aware corpus pipeline, ledger, sources, release
 ├── downloader/         # Multi-source data acquisition
 ├── export/             # Export formats and API
 ├── gui/                # Streamlit interface
 ├── metadata/           # SQLite metadata management
+├── ontology/           # Blake concepts, themes, symbols + exporters
 ├── utils/              # Logging and error handling
-└── viz/                # Visualization system
+└── viz/                # Visualization system (dashboards/engines/renderers/reports)
 ```
 
 ## Key Patterns
 
-- **Orchestrator**: `BlakeCorpus` in `core.py` coordinates all modules
+- **Orchestrator**: `BlakeCorpus` defined in `blake/corpus/pipeline.py`; `core.py` is a compatibility shim
 - **Async-first**: Download and analysis operations are async
 - **Pydantic models**: All data structures in `models.py`
 - **Click CLI**: Commands defined in `cli.py`
