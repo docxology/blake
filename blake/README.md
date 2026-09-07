@@ -33,7 +33,7 @@ pip install -e .
 # Quick mode (use local data, or fixture data when the cache is empty)
 uv run blake corpus run --quick --output-dir analysis_output
 
-# Local manuscript/regression rerun: reuse local corpus, regenerate analysis
+# Local docs/manuscript/regression rerun: reuse local corpus, regenerate analysis
 uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
 uv run blake corpus status --coverage
 uv run blake corpus visualize --profile core

@@ -3,7 +3,7 @@
 Single source of truth for every quantitative value cited in the manuscript.
 Corpus-run values are **computed from the JSON artifacts under
 ``analysis_output/``** (produced by ``run_all.py --quick``). Legal-duration and
-rights-layer values are loaded from ``manuscript/legal_claim_ledger.yaml``. The
+rights-layer values are loaded from ``docs/manuscript/legal_claim_ledger.yaml``. The
 manuscript markdown cites these values exclusively through ``{{UPPERCASE_TOKEN}}``
 markers, which ``infrastructure.rendering.manuscript_injection`` substitutes at
 render time. Re-running the pipeline and re-rendering therefore updates every

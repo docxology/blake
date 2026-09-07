@@ -1,55 +1,36 @@
+#!/usr/bin/env python3
+"""Thin orchestrator: re-download Project Gutenberg corpus texts.
 
-import os
-import requests
-import time
+The Gutenberg ID list, URL fallback chain, validation heuristic, and
+corrupted-EPUB removal live in ``blake.downloader.gutenberg_redownload``.
+This script only routes paths and delegates. Network-touching: run
+deliberately.
+"""
 
-IDs = [
-    "1934", "21487", "30526", "34596", "35995", 
-    "37407", "45315", "52300", "574", "60448", 
-    "64374", "67639"
-]
+import argparse
+from pathlib import Path
 
-OUTPUT_DIR = "data/blake/texts"
+from bootstrap import project_root
 
-def download_text(work_id):
-    urls = [
-        f"https://www.gutenberg.org/files/{work_id}/{work_id}-0.txt",
-        f"https://www.gutenberg.org/cache/epub/{work_id}/pg{work_id}.txt",
-        f"https://www.gutenberg.org/files/{work_id}/{work_id}.txt"
-    ]
-    
-    for url in urls:
-        try:
-            print(f"Trying {url}...")
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                # Check if it looks like text
-                content = response.text
-                if "Project Gutenberg" in content[:1000] or len(content) > 100:
-                    output_path = os.path.join(OUTPUT_DIR, f"{work_id}.txt")
-                    with open(output_path, "w", encoding="utf-8") as f:
-                        f.write(content)
-                    print(f"Success: Saved {work_id}.txt ({len(content)} chars)")
-                    return True
-        except Exception as e:
-            print(f"Error fetching {url}: {e}")
-        time.sleep(1)
-    
-    print(f"Failed to download text for {work_id}")
-    return False
+PROJECT_ROOT = project_root()
 
-def main():
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-        
-    for work_id in IDs:
-        # Remove corrupted epub if exists
-        epub_path = os.path.join(OUTPUT_DIR, f"{work_id}.epub")
-        if os.path.exists(epub_path):
-            os.remove(epub_path)
-            print(f"Removed corrupted {epub_path}")
-            
-        download_text(work_id)
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Re-download Gutenberg corpus texts, replacing corrupted EPUB-mislabeled files."
+    )
+    parser.add_argument(
+        '--output-dir',
+        default=str(PROJECT_ROOT / 'data' / 'blake' / 'texts'),
+        help='Directory to write the downloaded .txt files (default: <repo>/data/blake/texts)'
+    )
+    args = parser.parse_args()
+
+    from blake.downloader.gutenberg_redownload import redownload_texts
+
+    redownload_texts(Path(args.output_dir))
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

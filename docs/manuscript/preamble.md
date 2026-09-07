@@ -3,7 +3,7 @@
 This file contains LaTeX packages and commands injected into the document compilation
 process. It is parsed by `infrastructure/rendering/_pdf_latex_helpers.py` and combined
 with the configuration by `infrastructure/rendering/pdf_renderer.py` before final
-Pandoc execution. Page geometry is owned by `manuscript/config.yaml` so the rendered
+Pandoc execution. Page geometry is owned by `docs/manuscript/config.yaml` so the rendered
 TeX has one margin declaration.
 
 ```latex

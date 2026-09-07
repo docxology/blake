@@ -1,4 +1,4 @@
-# `manuscript/assets/` — Manuscript Binary Assets
+# `docs/manuscript/assets/` — Manuscript Binary Assets
 
 Static assets referenced by the manuscript build.
 

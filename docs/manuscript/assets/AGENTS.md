@@ -1,4 +1,4 @@
-# `manuscript/assets/` — Agent Notes
+# `docs/manuscript/assets/` — Agent Notes
 
 Binary asset drop for the manuscript; the only file is
 `cover_blakean_source.png`, consumed by `manuscript_tools/cover.py` and

@@ -3,7 +3,7 @@
 
 Reads ``analysis_output/`` artifacts, writes
 ``output/data/manuscript_variables.json``, and substitutes ``{{TOKEN}}`` markers
-in ``manuscript/*.md`` into ``output/manuscript/`` for PDF rendering.
+in ``docs/manuscript/*.md`` into ``output/manuscript/`` for PDF rendering.
 
 All computation lives in ``manuscript_tools.variables``; all injection lives in
 ``infrastructure.rendering.manuscript_injection``. The render pipeline discovers

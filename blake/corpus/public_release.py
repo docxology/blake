@@ -72,7 +72,7 @@ GENERATED_SUFFIXES: set[str] = {
 EXCLUDED_EXACT_PATHS: set[str] = {
     "blake/AGENTS.md",
     "docs/AGENTS.md",
-    "manuscript/AGENTS.md",
+    "docs/manuscript/AGENTS.md",
     "tests/AGENTS.md",
     "blake/analysis/AGENTS.md",
     "blake/downloader/AGENTS.md",
@@ -86,7 +86,7 @@ EXCLUDED_EXACT_PATHS: set[str] = {
     "docs/online-scholarship-gap-review.md",
     "docs/source-leads.json",
     "docs/visualization-publication-brief.md",
-    "manuscript/",
+    "docs/manuscript/",
     "blake_data/",
 }
 
@@ -146,7 +146,7 @@ ALLOWED_IMAGE_DIR_PREFIXES: tuple[str, ...] = (
 # release blocker (the rights gate wired into the go/no-go decision).
 RIGHTS_GATED_PREFIXES: dict[str, str] = {
     "blake_data/": "local evidence cache",
-    "manuscript/": "local manuscript pipeline",
+    "docs/manuscript/": "local manuscript pipeline",
     "analysis_output/exports/": "corpus export payload",
     "analysis_output/data/": "corpus source/provenance payload",
     "analysis_output/releases/": "prior release staging",
@@ -819,7 +819,7 @@ def _blocked_reference_hits(path: Path, excluded_assets: Iterable[str]) -> list[
     blocked: list[str] = []
     for candidate in excluded_assets:
         # Only flag references to concrete excluded FILES (with a suffix); directory
-        # mentions like "manuscript/" are legitimate layout documentation, not leaks.
+        # mentions like "docs/manuscript/" are legitimate layout documentation, not leaks.
         if not candidate or candidate.endswith("/") or not Path(candidate).suffix:
             continue
         if candidate in text:

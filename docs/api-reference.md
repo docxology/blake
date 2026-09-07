@@ -77,7 +77,7 @@ CorpusConfig(
 async def download_all(force: bool = False) -> List[BlakeWork]
 ```
 
-Fetch currently discoverable source-provider records through the compatibility downloader facade. For manuscript/release validation, prefer `blake corpus run` so target coverage, source audit, provider health, and rights-gate artifacts are regenerated together.
+Fetch currently discoverable source-provider records through the compatibility downloader facade. For docs/manuscript/release validation, prefer `blake corpus run` so target coverage, source audit, provider health, and rights-gate artifacts are regenerated together.
 
 **Parameters:**
 

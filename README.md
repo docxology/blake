@@ -18,7 +18,7 @@ uv run blake corpus public-release-package --output-dir analysis_output --data-d
 
 A quick run is offline and uses the local `blake_data/` cache. If that cache is empty, quick mode seeds a tiny bundled fixture corpus so the pipeline proves non-empty processing, visualization, export, and reporting without network access. A full run enables live acquisition through registered source providers.
 
-For manuscript/regression work, the canonical local regeneration command is the second command above: it reuses the existing local corpus with `--skip-download`, then regenerates metadata, analysis, visualizations, exports, and reports. Do not add `--skip-analysis` unless you are explicitly testing a stale-analysis scenario.
+For docs/manuscript/regression work, the canonical local regeneration command is the second command above: it reuses the existing local corpus with `--skip-download`, then regenerates metadata, analysis, visualizations, exports, and reports. Do not add `--skip-analysis` unless you are explicitly testing a stale-analysis scenario.
 
 `archive-all` is an evidence-depth setting for local Archive image acquisition. It is not a redistribution permission. Public-release preflight and package commands stage metadata, checksums, and release-safe files locally; they do not publish, tag, deposit, or clear rights-gated source materials.
 

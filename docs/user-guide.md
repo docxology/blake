@@ -77,7 +77,7 @@ blake corpus visualize --profile core
 
 Quick mode uses the local cache and does not require network access. If the cache is empty, it seeds a small fixture corpus so analysis, visualization, export, and report artifacts are non-empty. Full runs perform live acquisition through registered providers.
 
-The canonical manuscript/regression rerun uses `--skip-download` to reuse `blake_data/` while regenerating metadata, analysis, visualizations, exports, and reports. It reports acquisition as reused local corpus and analysis as generated/completed when the local analyzer runs. `archive-all` records local image-depth evidence; it is not a permission statement for public redistribution.
+The canonical docs/manuscript/regression rerun uses `--skip-download` to reuse `blake_data/` while regenerating metadata, analysis, visualizations, exports, and reports. It reports acquisition as reused local corpus and analysis as generated/completed when the local analyzer runs. `archive-all` records local image-depth evidence; it is not a permission statement for public redistribution.
 
 Public-release preflight and package commands prepare local review artifacts,
 metadata, checksums, and release-safe files. They do not publish, tag, deposit,

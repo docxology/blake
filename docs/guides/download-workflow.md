@@ -1,6 +1,6 @@
 # Source-Governed Acquisition Workflow
 
-Use the corpus workflow for source-governed acquisition and local regeneration. Compatibility download scripts are useful for debugging provider adapters, but manuscript/release validation should be driven through `blake corpus run`, source audit, evidence review, and rights-gate artifacts.
+Use the corpus workflow for source-governed acquisition and local regeneration. Compatibility download scripts are useful for debugging provider adapters, but docs/manuscript/release validation should be driven through `blake corpus run`, source audit, evidence review, and rights-gate artifacts.
 
 ## Usage
 

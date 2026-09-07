@@ -34,7 +34,7 @@ The manuscript cover, cover provenance, and figures are regenerated from the JSO
 uv run python scripts/generate_manuscript_figures.py
 ```
 
-The cover asset is written to `output/cover/cover_blakean.png`, and its prompt/provenance record is written to `analysis_output/data/cover_image_provenance.json`. The cover is configured through `paper.cover.image` in `manuscript/config.yaml`, so the sibling template renderer uses the same release-safe cover path as the PDF title page. A future release package could expose the same corpus, manuscript, preservation, and provenance relationships through a research-object packaging format rather than only through the project tree [@owens2018digitalpreservation; @rocrate2022].
+The cover asset is written to `output/cover/cover_blakean.png`, and its prompt/provenance record is written to `analysis_output/data/cover_image_provenance.json`. The cover is configured through `paper.cover.image` in `docs/manuscript/config.yaml`, so the sibling template renderer uses the same release-safe cover path as the PDF title page. A future release package could expose the same corpus, manuscript, preservation, and provenance relationships through a research-object packaging format rather than only through the project tree [@owens2018digitalpreservation; @rocrate2022].
 
 The manuscript token layer is then hydrated by the rendering pipeline, or directly with the template repository on the import path:
 

@@ -1,12 +1,25 @@
+#!/usr/bin/env python3
+"""Thin orchestrator: repopulate the SQLite metadata DB from downloaded JSON.
+
+All persistence logic lives in ``blake.metadata.manager.MetadataManager``;
+this script only routes paths and delegates. Paths resolve from this script's
+location, not the caller's cwd.
+"""
+
+from pathlib import Path
+
+from bootstrap import project_root
+
+PROJECT_ROOT = project_root()
 
 import asyncio
 import json
-from pathlib import Path
+
 from blake.metadata.manager import MetadataManager
 from blake.models import BlakeWork, BlakeMetadata
 
 async def main():
-    data_dir = Path("./data/blake")
+    data_dir = PROJECT_ROOT / "data" / "blake"
     metadata_dir = data_dir / "metadata"
     manager = MetadataManager(data_dir)
     
