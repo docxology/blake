@@ -55,7 +55,7 @@ uv run flake8 blake tests
 uv run mypy blake
 ```
 
-Default `uv sync` is enough for the offline quick corpus workflow. API and GUI serving dependencies are optional extras; use `--extra api` for FastAPI routes and `--extra gui` for Streamlit/Gradio. Live acquisition and integration tests remain opt-in because endpoint status and source terms can drift.
+Default `uv sync` is enough for the offline quick corpus workflow. API and GUI serving dependencies are optional extras; use `--extra api` for FastAPI routes and `--extra gui` for Streamlit/Gradio. Live acquisition and integration tests remain opt-in because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
 
 ## Project Structure
 

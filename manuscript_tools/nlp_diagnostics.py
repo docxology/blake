@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
@@ -92,20 +93,43 @@ def build_nlp_diagnostics(project_root: Path | str) -> dict[str, Any]:
         for row in text_metrics
         if row.get("work_id")
     }
-    texts = _load_texts(root / "blake_data" / "texts", title_by_id)
+    # The saved run owns membership. Local caches can outlive that run.
+    text_work_ids = {
+        str(row["work_id"])
+        for row in text_metrics
+        if row.get("work_id") and row.get("has_text", True) is True
+    }
+    text_dir = root / "blake_data" / "texts"
+    texts = _load_texts(text_dir, title_by_id, text_work_ids)
+    loaded_ids = {doc["work_id"] for doc in texts}
+    cached_ids = {path.stem for path in text_dir.glob("*.txt")}
     analysis_dir = root / "blake_data" / "analysis"
 
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "generated_at": datetime.now().isoformat(),
         "sources": {
-            "texts": "blake_data/texts/*.txt",
+            "membership": "analysis_output/visualizations/text_metrics.json",
+            "texts": "blake_data/texts/*.txt (saved-run text IDs only)",
             "text_analysis": "blake_data/analysis/*_text_analysis.json",
             "ontology": "blake_data/analysis/*_ontological_analysis.json",
         },
+        "membership": {
+            "text_work_ids": sorted(text_work_ids),
+            "embedded_work_ids": sorted(loaded_ids),
+            "excluded_cached_text_ids": sorted(cached_ids - text_work_ids),
+            "missing_text_file_ids": sorted(text_work_ids - cached_ids),
+            "empty_or_filtered_text_ids": sorted(
+                (text_work_ids & cached_ids) - loaded_ids
+            ),
+            "text_sha256": {
+                doc["work_id"]: hashlib.sha256(doc["text"].encode("utf-8")).hexdigest()
+                for doc in texts
+            },
+        },
         "embedding": _build_tfidf_embedding(texts),
-        "entities": _entity_summary(analysis_dir),
-        "text_analysis": _text_analysis_summary(analysis_dir),
+        "entities": _entity_summary(analysis_dir, text_work_ids),
+        "text_analysis": _text_analysis_summary(analysis_dir, text_work_ids),
     }
 
 
@@ -130,11 +154,15 @@ def _read_json(path: Path, *, default: Any) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _load_texts(text_dir: Path, title_by_id: dict[str, str]) -> list[dict[str, Any]]:
+def _load_texts(
+    text_dir: Path, title_by_id: dict[str, str], work_ids: set[str]
+) -> list[dict[str, Any]]:
     texts: list[dict[str, Any]] = []
     if not text_dir.exists():
         return texts
     for path in sorted(text_dir.glob("*.txt")):
+        if path.stem not in work_ids:
+            continue
         text = path.read_text(encoding="utf-8", errors="replace")
         tokens = _tokenize(text)
         if not tokens:
@@ -212,8 +240,12 @@ def _build_tfidf_embedding(texts: list[dict[str, Any]]) -> dict[str, Any]:
         norm = math.sqrt(sum(value * value for value in vector)) or 1.0
         vectors.append([value / norm for value in vector])
 
-    means = [sum(row[index] for row in vectors) / len(vectors) for index in range(len(terms))]
-    centered = [[value - means[index] for index, value in enumerate(row)] for row in vectors]
+    means = [
+        sum(row[index] for row in vectors) / len(vectors) for index in range(len(terms))
+    ]
+    centered = [
+        [value - means[index] for index, value in enumerate(row)] for row in vectors
+    ]
     trace = _covariance_trace(centered)
     pc1 = _power_component(centered, [])
     lambda1 = _eigenvalue(centered, pc1)
@@ -298,7 +330,9 @@ def _eigenvalue(centered: list[list[float]], vector: list[float]) -> float:
     return max(sum(value * weight for value, weight in zip(vector, transformed)), 0.0)
 
 
-def _top_terms(terms: list[str], component: list[float], *, limit: int = 8) -> list[str]:
+def _top_terms(
+    terms: list[str], component: list[float], *, limit: int = 8
+) -> list[str]:
     ranked = sorted(
         zip(terms, component),
         key=lambda item: abs(item[1]),
@@ -307,16 +341,20 @@ def _top_terms(terms: list[str], component: list[float], *, limit: int = 8) -> l
     return [term for term, _weight in ranked[:limit]]
 
 
-def _entity_summary(analysis_dir: Path) -> dict[str, Any]:
-    artifacts = sorted(analysis_dir.glob("*_ontological_analysis.json"))
+def _entity_summary(analysis_dir: Path, work_ids: set[str]) -> dict[str, Any]:
+    artifacts = sorted(
+        path
+        for path in analysis_dir.glob("*_ontological_analysis.json")
+        if path.name.removesuffix("_ontological_analysis.json") in work_ids
+    )
     entity_mentions: Counter[str] = Counter()
     label_counts: Counter[str] = Counter()
     works_with_entities = 0
     for path in artifacts:
         payload = _read_json(path, default={})
-        ontology = (payload.get("results") or {}).get("ontological_analysis") or payload.get(
+        ontology = (payload.get("results") or {}).get(
             "ontological_analysis"
-        )
+        ) or payload.get("ontological_analysis")
         if not isinstance(ontology, dict):
             ontology = payload
         entities = ontology.get("entities") or []
@@ -355,8 +393,12 @@ def _normalise_entity(value: object) -> str:
     return text
 
 
-def _text_analysis_summary(analysis_dir: Path) -> dict[str, Any]:
-    artifacts = sorted(analysis_dir.glob("*_text_analysis.json"))
+def _text_analysis_summary(analysis_dir: Path, work_ids: set[str]) -> dict[str, Any]:
+    artifacts = sorted(
+        path
+        for path in analysis_dir.glob("*_text_analysis.json")
+        if path.name.removesuffix("_text_analysis.json") in work_ids
+    )
     sentiment_counts: Counter[str] = Counter()
     flesch_scores: list[float] = []
     topic_count = 0

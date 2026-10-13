@@ -6,6 +6,9 @@ The Blake package is a reproducible corpus workflow for William Blake's works. I
 
 The current reproducibility contract is artifact-first: `corpus_manifest.json` records target coverage; `source_audit.json` and `source_discovery_health.json` record provider/source health; `evidence_acquisition_review.json` records unresolved evidence review; `analysis_summary.json` and `analysis_diagnostics.json` record the current analysis run; and private preflight/rights-gate reports record local-only release constraints.
 
+See the [publication consistency review](publication-consistency-review.md) for
+the saved-run membership boundary of text coverage and NLP diagnostics.
+
 ## Core Functionality
 
 ### Data Acquisition

@@ -34,7 +34,7 @@ def generate_cover(project_root: Path | str) -> dict[str, Path]:
 
     cover_path = cover_dir / "cover_blakean.png"
     provenance_path = audit_dir / "cover_image_provenance.json"
-    source_image = root / "manuscript" / "assets" / "cover_blakean_source.png"
+    source_image = root / "docs" / "manuscript" / "assets" / "cover_blakean_source.png"
     if source_image.exists():
         image = _cover_from_source(source_image)
         source_mode = "image_gen_source_with_local_provenance_footer"
