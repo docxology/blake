@@ -1452,7 +1452,7 @@ def test_private_release_preflight_excludes_raw_cache_and_mosaics(tmp_path):
 
 
 def test_manuscript_config_uses_paper_cover_image_contract():
-    config = Path("manuscript/config.yaml").read_text(encoding="utf-8")
+    config = Path("docs/manuscript/config.yaml").read_text(encoding="utf-8")
 
     assert "paper:" in config
     assert "cover:" in config

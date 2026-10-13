@@ -1,6 +1,10 @@
+import asyncio
 import json
 import re
+import shutil
 from pathlib import Path
+
+import pytest
 
 from manuscript_tools.figures import (
     BRIEF_FIELDS,
@@ -10,9 +14,47 @@ from manuscript_tools.figures import (
     _pipeline_strip_label,
     compute_figure_statistics,
 )
-from manuscript_tools.variables import generate_variables
+from manuscript_tools.variables import AnalysisOutputsMissing, generate_variables
 from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics
 from scripts.acquire_missing_texts import TARGETS, clean_raw_wikitext
+
+
+@pytest.fixture(scope="module")
+def manuscript_fixture_root(tmp_path_factory):
+    """Offline synthetic corpus for projection tests, never publication evidence."""
+    from blake.corpus import BlakeCorpus, CorpusConfig, SourceRegistry
+
+    root = tmp_path_factory.mktemp("manuscript-fixture")
+    data_dir = root / "blake_data"
+    output_dir = root / "analysis_output"
+    corpus = BlakeCorpus(
+        data_dir, output_dir=output_dir, source_registry=SourceRegistry()
+    )
+    config = CorpusConfig(
+        data_dir=data_dir, output_dir=output_dir, quick=True, fixture_mode="always"
+    )
+    summary = asyncio.run(corpus.run(config))
+    assert summary.status == "completed"
+    manifest = json.loads((output_dir / "corpus_manifest.json").read_text())
+    assert manifest["fixture_mode"] is True
+    audit_path = output_dir / "data" / "source_audit.json"
+    audit = json.loads(audit_path.read_text())
+    # Synthetic observations exercise token projection without contacting endpoints.
+    audit["test_fixture"] = True
+    audit["live"]["archive_api_sample"] = [{"ok": True}, {"ok": False}]
+    assert audit["live"]["enabled"] is False
+    audit_path.write_text(json.dumps(audit))
+    # Legal claims are source-owned; they are independent of corpus measurements.
+    legal_dir = root / "docs" / "manuscript"
+    legal_dir.mkdir(parents=True)
+    shutil.copyfile(
+        Path(__file__).resolve().parents[1]
+        / "docs"
+        / "manuscript"
+        / "legal_claim_ledger.yaml",
+        legal_dir / "legal_claim_ledger.yaml",
+    )
+    return root
 
 
 def test_nlp_diagnostics_builds_embedding_and_entity_summary(tmp_path):
@@ -98,12 +140,14 @@ def test_nlp_diagnostics_builds_embedding_and_entity_summary(tmp_path):
 
 def test_long_evidence_tables_live_in_supplements():
     root = Path(__file__).resolve().parents[1]
-    main = (root / "manuscript" / "04_results_coverage.md").read_text(encoding="utf-8")
+    main = (root / "docs" / "manuscript" / "04_results_coverage.md").read_text(
+        encoding="utf-8"
+    )
     evidence_supplement = (
-        root / "manuscript" / "10_supplement_evidence_gaps.md"
+        root / "docs" / "manuscript" / "10_supplement_evidence_gaps.md"
     ).read_text(encoding="utf-8")
     missing_supplement = (
-        root / "manuscript" / "11_supplement_missing_evidence.md"
+        root / "docs" / "manuscript" / "11_supplement_missing_evidence.md"
     ).read_text(encoding="utf-8")
 
     assert "{{EVIDENCE_GAP_TABLE_ROWS}}" not in main
@@ -112,13 +156,15 @@ def test_long_evidence_tables_live_in_supplements():
     assert "{{MISSING_EVIDENCE_TABLE_ROWS}}" in missing_supplement
 
 
-def test_reproducibility_uses_generated_archive_sample_limit():
+def test_reproducibility_uses_generated_archive_sample_limit(manuscript_fixture_root):
     root = Path(__file__).resolve().parents[1]
-    reproducibility = (root / "manuscript" / "08_reproducibility.md").read_text(
-        encoding="utf-8"
-    )
-    variables = generate_variables(root)
+    reproducibility = (
+        root / "docs" / "manuscript" / "08_reproducibility.md"
+    ).read_text(encoding="utf-8")
+    variables = generate_variables(manuscript_fixture_root)
 
+    assert variables["ARCHIVE_API_SAMPLE_LIMIT"] == "2"
+    assert variables["ARCHIVE_API_SAMPLE_OK"] == "1"
     assert "--limit 8" not in reproducibility
     assert "--limit {{ARCHIVE_API_SAMPLE_LIMIT}}" in reproducibility
     assert (
@@ -151,9 +197,9 @@ def test_reproducibility_uses_generated_archive_sample_limit():
 
 def test_reproducibility_uses_existing_template_validation_command():
     root = Path(__file__).resolve().parents[1]
-    reproducibility = (root / "manuscript" / "08_reproducibility.md").read_text(
-        encoding="utf-8"
-    )
+    reproducibility = (
+        root / "docs" / "manuscript" / "08_reproducibility.md"
+    ).read_text(encoding="utf-8")
 
     # The reproducibility doc must reference the real sibling-template validation
     # command. Assert on the documented command path rather than a machine-specific
@@ -166,8 +212,12 @@ def test_reproducibility_uses_existing_template_validation_command():
 
 def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
     root = Path(__file__).resolve().parents[1]
-    abstract = (root / "manuscript" / "00_abstract.md").read_text(encoding="utf-8")
-    preamble = (root / "manuscript" / "preamble.md").read_text(encoding="utf-8")
+    abstract = (root / "docs" / "manuscript" / "00_abstract.md").read_text(
+        encoding="utf-8"
+    )
+    preamble = (root / "docs" / "manuscript" / "preamble.md").read_text(
+        encoding="utf-8"
+    )
 
     assert abstract.startswith("# Abstract {#sec:abstract .unnumbered}")
     assert "\t" not in abstract
@@ -183,8 +233,10 @@ def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
 
 def test_render_typography_uses_compact_pdf_layout():
     root = Path(__file__).resolve().parents[1]
-    config = (root / "manuscript" / "config.yaml").read_text(encoding="utf-8")
-    preamble = (root / "manuscript" / "preamble.md").read_text(encoding="utf-8")
+    config = (root / "docs" / "manuscript" / "config.yaml").read_text(encoding="utf-8")
+    preamble = (root / "docs" / "manuscript" / "preamble.md").read_text(
+        encoding="utf-8"
+    )
 
     assert 'geometry: "left=0.48in,right=0.48in,top=0.6in,bottom=0.65in"' in config
     assert r"\changefontsize[10.6pt]{8.7pt}" in preamble
@@ -192,10 +244,10 @@ def test_render_typography_uses_compact_pdf_layout():
 
 def test_manuscript_title_and_section_titles_are_evidence_bounded():
     root = Path(__file__).resolve().parents[1]
-    config = (root / "manuscript" / "config.yaml").read_text(encoding="utf-8")
+    config = (root / "docs" / "manuscript" / "config.yaml").read_text(encoding="utf-8")
     headings = "\n".join(
         line
-        for path in sorted((root / "manuscript").glob("*.md"))
+        for path in sorted((root / "docs" / "manuscript").glob("*.md"))
         for line in path.read_text(encoding="utf-8").splitlines()
         if line.startswith("#")
     )
@@ -223,7 +275,7 @@ def test_manuscript_overclaims_are_negated_or_scoped():
     root = Path(__file__).resolve().parents[1]
     manuscript_text = "\n".join(
         path.read_text(encoding="utf-8")
-        for path in sorted((root / "manuscript").glob("*.md"))
+        for path in sorted((root / "docs" / "manuscript").glob("*.md"))
         if path.name != "AGENTS.md"
     )
 
@@ -251,9 +303,9 @@ def test_manuscript_overclaims_are_negated_or_scoped():
 
 def test_reproducibility_runs_fallback_text_acquisition_before_local_refresh():
     root = Path(__file__).resolve().parents[1]
-    reproducibility = (root / "manuscript" / "08_reproducibility.md").read_text(
-        encoding="utf-8"
-    )
+    reproducibility = (
+        root / "docs" / "manuscript" / "08_reproducibility.md"
+    ).read_text(encoding="utf-8")
 
     acquire_index = reproducibility.index("blake corpus acquire-evidence")
     refresh_index = reproducibility.index("blake corpus run --skip-download")
@@ -279,8 +331,8 @@ def test_public_docs_use_canonical_local_regeneration_command():
         root / "docs" / "api-reference.md",
         root / "docs" / "developer-guide.md",
         root / "docs" / "guides" / "download-workflow.md",
-        root / "manuscript" / "08_reproducibility.md",
-        root / "manuscript" / "AGENTS.md",
+        root / "docs" / "manuscript" / "08_reproducibility.md",
+        root / "docs" / "manuscript" / "AGENTS.md",
     ]
     canonical = "blake corpus run --skip-download --output-dir analysis_output"
 
@@ -433,8 +485,12 @@ def test_spec_preserves_source_governed_rights_bounded_scope():
 
 def test_discussion_conclusion_avoid_then_now_framing():
     root = Path(__file__).resolve().parents[1]
-    discussion = (root / "manuscript" / "06_discussion.md").read_text(encoding="utf-8")
-    conclusion = (root / "manuscript" / "09_conclusion.md").read_text(encoding="utf-8")
+    discussion = (root / "docs" / "manuscript" / "06_discussion.md").read_text(
+        encoding="utf-8"
+    )
+    conclusion = (root / "docs" / "manuscript" / "09_conclusion.md").read_text(
+        encoding="utf-8"
+    )
     combined = f"{discussion}\n{conclusion}".lower()
 
     assert "current run acquired" not in combined
@@ -448,7 +504,9 @@ def test_discussion_conclusion_avoid_then_now_framing():
 def test_language_visualization_figures_are_registered_and_cited():
     root = Path(__file__).resolve().parents[1]
     figure_names = {name for name, _builder in FIGURES}
-    results = (root / "manuscript" / "05_results_text.md").read_text(encoding="utf-8")
+    results = (root / "docs" / "manuscript" / "05_results_text.md").read_text(
+        encoding="utf-8"
+    )
 
     assert "lexical_signature" in figure_names
     assert "text_image_density" in figure_names
@@ -460,9 +518,9 @@ def test_language_visualization_figures_are_registered_and_cited():
 def test_supplemental_visual_mosaics_are_registered_and_cited():
     root = Path(__file__).resolve().parents[1]
     figure_names = {name for name, _builder in FIGURES}
-    supplement = (root / "manuscript" / "12_supplement_visual_mosaics.md").read_text(
-        encoding="utf-8"
-    )
+    supplement = (
+        root / "docs" / "manuscript" / "12_supplement_visual_mosaics.md"
+    ).read_text(encoding="utf-8")
 
     expected = {
         "all_acquired_images_mosaic",
@@ -503,9 +561,8 @@ def test_figure_registry_briefs_cover_every_manuscript_figure():
             assert figure["statistics"], figure["filename"]
 
 
-def test_figure_statistics_are_json_ready_and_non_empty():
-    root = Path(__file__).resolve().parents[1]
-    analysis_output = root / "analysis_output"
+def test_figure_statistics_are_json_ready_and_non_empty(manuscript_fixture_root):
+    analysis_output = manuscript_fixture_root / "analysis_output"
 
     def walk(payload):
         if isinstance(payload, dict):
@@ -537,13 +594,15 @@ def test_figure_statistics_are_json_ready_and_non_empty():
     assert pipeline_stats["phase_records"]
 
 
-def test_pipeline_dag_explains_reused_phase_states():
+def test_pipeline_dag_explains_reused_phase_states(manuscript_fixture_root):
     root = Path(__file__).resolve().parents[1]
-    methods = (root / "manuscript" / "02_methods_pipeline.md").read_text(
+    methods = (root / "docs" / "manuscript" / "02_methods_pipeline.md").read_text(
         encoding="utf-8"
     )
     brief = FIGURE_BRIEFS["pipeline_dag"]
-    stats = compute_figure_statistics(root / "analysis_output", "pipeline_dag")
+    stats = compute_figure_statistics(
+        manuscript_fixture_root / "analysis_output", "pipeline_dag"
+    )
     records = {record["name"]: record for record in stats["phase_records"]}
 
     assert "skipped acquisition stays visible" not in brief["claim"].lower()
@@ -599,7 +658,7 @@ def test_registered_figures_are_cited_in_manuscript_sources():
     root = Path(__file__).resolve().parents[1]
     manuscript_text = "\n".join(
         path.read_text(encoding="utf-8")
-        for path in sorted((root / "manuscript").glob("*.md"))
+        for path in sorted((root / "docs" / "manuscript").glob("*.md"))
     )
 
     for name, _builder in FIGURES:
@@ -614,20 +673,24 @@ def test_forward_todo_has_no_resolved_missing_target_task():
     assert "fallback-text corroboration" in todo
 
 
-def test_legal_distribution_section_separates_code_from_source_materials():
+def test_legal_distribution_section_separates_code_from_source_materials(
+    manuscript_fixture_root,
+):
     root = Path(__file__).resolve().parents[1]
-    legal = (root / "manuscript" / "06a_legal_distribution.md").read_text(
+    legal = (root / "docs" / "manuscript" / "06a_legal_distribution.md").read_text(
         encoding="utf-8"
     )
-    rights_matrix = (root / "manuscript" / "13_supplement_rights_matrix.md").read_text(
+    rights_matrix = (
+        root / "docs" / "manuscript" / "13_supplement_rights_matrix.md"
+    ).read_text(encoding="utf-8")
+    claim_ledger = (root / "docs" / "manuscript" / "legal_claim_ledger.yaml").read_text(
         encoding="utf-8"
     )
-    claim_ledger = (root / "manuscript" / "legal_claim_ledger.yaml").read_text(
+    references = (root / "docs" / "manuscript" / "references.bib").read_text(
         encoding="utf-8"
     )
-    references = (root / "manuscript" / "references.bib").read_text(encoding="utf-8")
     readme = (root / "README.md").read_text(encoding="utf-8")
-    variables = generate_variables(root)
+    variables = generate_variables(manuscript_fixture_root)
 
     assert "not legal advice" in legal
     assert "William Blake died in {{BLAKE_DEATH_YEAR}}" in legal
@@ -673,3 +736,35 @@ def test_generated_manuscript_has_no_unresolved_body_tokens():
             continue
         text = path.read_text(encoding="utf-8")
         assert not token_pattern.search(text), f"unresolved token in {path}"
+
+
+def test_pipeline_variables_reject_missing_analysis_outputs(tmp_path):
+    with pytest.raises(AnalysisOutputsMissing, match="statistics.json"):
+        generate_variables(tmp_path)
+
+
+def test_cover_reads_canonical_manuscript_source(tmp_path, monkeypatch):
+    from PIL import Image
+    from manuscript_tools import cover
+
+    source_path = (
+        tmp_path / "docs" / "manuscript" / "assets" / "cover_blakean_source.png"
+    )
+    source_path.parent.mkdir(parents=True)
+    Image.new("RGB", (2, 2)).save(source_path)
+    observed = []
+
+    def source_image(path):
+        observed.append(path)
+        return Image.new("RGB", (2, 2))
+
+    def unexpected_fallback():
+        pytest.fail("Canonical source exists; fallback must not replace it")
+
+    monkeypatch.setattr(cover, "_cover_from_source", source_image)
+    monkeypatch.setattr(cover, "_draw_cover", unexpected_fallback)
+    result = cover.generate_cover(tmp_path)
+    assert observed == [source_path]
+    provenance = json.loads(result["provenance"].read_text())
+    assert provenance["model_tool_provenance"]["source_image_path"] == str(source_path)
+    assert result["cover"].exists()

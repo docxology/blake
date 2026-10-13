@@ -216,7 +216,7 @@ def generate_variables(
     nlp_diagnostics = build_nlp_diagnostics(root)
 
     v: dict[str, str] = {}
-    v.update(_read_legal_claim_tokens(root / "manuscript" / "legal_claim_ledger.yaml"))
+    v.update(_read_legal_claim_tokens(root / "docs" / "manuscript" / "legal_claim_ledger.yaml"))
 
     # ---- Corpus inventory (statistics.json) ----
     total_works = int(statistics.get("total_works", 0))
