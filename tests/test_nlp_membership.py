@@ -56,3 +56,28 @@ def test_nlp_diagnostics_without_saved_membership_does_not_scan_cache(tmp_path):
     result = build_nlp_diagnostics(tmp_path)
     assert result["embedding"]["work_count"] == 0
     assert result["membership"]["excluded_cached_text_ids"] == ["stale"]
+
+
+def test_nlp_membership_requires_boolean_modality_and_preserves_legacy_rows(tmp_path):
+    text_dir = tmp_path / "blake_data/texts"
+    viz_dir = tmp_path / "analysis_output/visualizations"
+    text_dir.mkdir(parents=True)
+    viz_dir.mkdir(parents=True)
+    rows = [
+        {"work_id": "current", "has_text": True},
+        {"work_id": "legacy"},
+        {"work_id": "string_false", "has_text": "false"},
+        {"work_id": "integer_one", "has_text": 1},
+        {"work_id": "null_flag", "has_text": None},
+    ]
+    (viz_dir / "text_metrics.json").write_text(json.dumps(rows))
+    for row in rows:
+        (text_dir / f"{row['work_id']}.txt").write_text("vision fire morning")
+    result = build_nlp_diagnostics(tmp_path)
+    assert result["membership"]["text_work_ids"] == ["current", "legacy"]
+    assert result["membership"]["excluded_cached_text_ids"] == [
+        "integer_one",
+        "null_flag",
+        "string_false",
+    ]
+    assert result["embedding"]["work_count"] == 2

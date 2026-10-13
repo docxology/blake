@@ -20,7 +20,7 @@ run’s text-bearing work IDs. `nlp_diagnostics.json` records the allowed IDs,
 embedded IDs, excluded cache IDs, missing transcriptions, token-empty members,
 and digests of the decoded embedded text. Missing saved membership admits no
 cached inputs. Legacy metric rows without `has_text` retain their recorded ID
-membership; current pipeline rows explicitly include that modality flag.
+membership; current pipeline rows explicitly include a boolean modality flag. A present non-boolean flag is not text-bearing evidence.
 
 The embedding denominator can still be smaller than coverage when a saved
 text-bearing work lacks a local file or yields no retained tokens. Such a

@@ -97,7 +97,7 @@ def build_nlp_diagnostics(project_root: Path | str) -> dict[str, Any]:
     text_work_ids = {
         str(row["work_id"])
         for row in text_metrics
-        if row.get("work_id") and row.get("has_text", True)
+        if row.get("work_id") and row.get("has_text", True) is True
     }
     text_dir = root / "blake_data" / "texts"
     texts = _load_texts(text_dir, title_by_id, text_work_ids)
