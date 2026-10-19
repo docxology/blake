@@ -30,6 +30,15 @@ The lexical-signature artifact uses `{{LEXICAL_SIGNATURE_METHOD}}` over {{LEXICA
 
 ## Embedding Results: PCA/LSA Structure and Entity Extraction
 
+The saved-run denominator contains {{NLP_SAVED_TEXT_WORKS}} eligible text work IDs.
+Of these, {{NLP_EMBEDDING_WORKS}} enter the embedding, {{NLP_MISSING_TEXT_WORKS}}
+lack a local transcription, and {{NLP_FILTERED_TEXT_WORKS}} yield no retained tokens.
+Those disjoint groups reconcile exactly. A further {{NLP_EXCLUDED_CACHE_WORKS}}
+cached IDs are outside the saved text membership and cannot enlarge its denominator.
+The membership file is bound by SHA-256 `{{NLP_MEMBERSHIP_SHA256}}`. Coverage and
+embedding counts therefore name their own selection rules; a difference is not
+silently treated as an acquisition or historical counting correction.
+
 The text layer supports a more explicitly natural-language analysis than word counts alone. The manuscript pipeline builds a {{NLP_EMBEDDING_METHOD}} from {{NLP_EMBEDDING_WORKS}} local transcriptions and a {{NLP_EMBEDDING_FEATURES}}-term vocabulary. [@fig:nlp_embedding_pca] projects that space onto the leading axes: PC1 accounts for {{NLP_PCA_PC1_PCT}}% of the TF-IDF variance, PC2 accounts for {{NLP_PCA_PC2_PCT}}%, and the plotted plane accounts for {{NLP_PCA_TOTAL_PCT}}%. This is a bounded corpus diagnostic, not a semantic map of every Blake work, because texts absent from local storage cannot enter the vector space [@biber1993representativeness; @bode2018world]. Its value is procedural: it makes the acquired text set explorable and contestable, the way algorithmic criticism and computer-assisted interpretation treat computation as a partner in reading rather than an oracle [@ramsay2011readingmachines; @rockwellsinclair2016hermeneutica].
 
 ![Latent text embedding from local transcriptions. The map projects {{NLP_EMBEDDING_WORKS}} text-bearing corpus records from a {{NLP_EMBEDDING_FEATURES}}-term TF-IDF matrix onto deterministic PCA/LSA axes; missing and image-only works do not enter this textual geometry.](../output/figures/nlp_embedding_pca.png){#fig:nlp_embedding_pca}

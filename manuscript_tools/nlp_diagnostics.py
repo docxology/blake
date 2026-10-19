@@ -84,10 +84,13 @@ _STOPWORDS = {
 
 def build_nlp_diagnostics(project_root: Path | str) -> dict[str, Any]:
     root = Path(project_root)
-    text_metrics = _read_json(
-        root / "analysis_output" / "visualizations" / "text_metrics.json",
-        default=[],
-    )
+    membership_path = root / "analysis_output/visualizations/text_metrics.json"
+    raw = membership_path.read_bytes() if membership_path.exists() else None
+    text_metrics = json.loads(raw) if raw is not None else []
+    if not isinstance(text_metrics, list) or any(not isinstance(row, dict) or not isinstance(row.get("work_id"), str) or not row["work_id"] for row in text_metrics):
+        raise ValueError("Saved text metrics require identified work rows")
+    if len({row["work_id"] for row in text_metrics}) != len(text_metrics):
+        raise ValueError("Duplicate saved text work identity")
     title_by_id = {
         str(row.get("work_id")): str(row.get("title") or row.get("work_id"))
         for row in text_metrics
@@ -106,7 +109,7 @@ def build_nlp_diagnostics(project_root: Path | str) -> dict[str, Any]:
     analysis_dir = root / "blake_data" / "analysis"
 
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "generated_at": datetime.now().isoformat(),
         "sources": {
             "membership": "analysis_output/visualizations/text_metrics.json",
@@ -115,6 +118,9 @@ def build_nlp_diagnostics(project_root: Path | str) -> dict[str, Any]:
             "ontology": "blake_data/analysis/*_ontological_analysis.json",
         },
         "membership": {
+            "source_sha256": hashlib.sha256(raw).hexdigest() if raw is not None else None,
+            "legacy_modality_ids": sorted(row["work_id"] for row in text_metrics if "has_text" not in row),
+            "invalid_modality_ids": sorted(row["work_id"] for row in text_metrics if "has_text" in row and type(row["has_text"]) is not bool),
             "text_work_ids": sorted(text_work_ids),
             "embedded_work_ids": sorted(loaded_ids),
             "excluded_cached_text_ids": sorted(cached_ids - text_work_ids),
@@ -421,3 +427,25 @@ def _text_analysis_summary(analysis_dir: Path, work_ids: set[str]) -> dict[str, 
         ),
         "topic_model_count": topic_count,
     }
+
+
+def validate_membership(diagnostics: dict[str, Any], *, publication: bool = False, coverage_count: int | None = None) -> dict[str, int]:
+    """Reconcile eligible, loaded, missing and filtered work sets explicitly."""
+    membership = diagnostics["membership"]
+    names = ("text_work_ids", "embedded_work_ids", "missing_text_file_ids", "empty_or_filtered_text_ids", "excluded_cached_text_ids")
+    groups = {}
+    for name in names:
+        values = membership[name]
+        if not isinstance(values, list) or any(not isinstance(v, str) or not v for v in values) or len(values) != len(set(values)):
+            raise ValueError("Invalid or duplicate diagnostic work identity")
+        groups[name] = set(values)
+    allowed, loaded, missing, filtered, excluded = (groups[name] for name in names)
+    if loaded & missing or loaded & filtered or missing & filtered or allowed != loaded | missing | filtered or excluded & allowed:
+        raise ValueError("NLP denominator sets do not reconcile")
+    if coverage_count is not None and coverage_count != len(allowed):
+        raise ValueError("Coverage count differs from saved text membership")
+    if diagnostics["embedding"]["work_count"] != len(loaded):
+        raise ValueError("Embedding count differs from its identified work set")
+    if publication and (not membership.get("source_sha256") or membership.get("legacy_modality_ids") or membership.get("invalid_modality_ids")):
+        raise ValueError("Publication requires hash-bound saved membership with explicit boolean modality")
+    return {"saved": len(allowed), "embedded": len(loaded), "missing": len(missing), "filtered": len(filtered), "excluded": len(excluded)}

@@ -81,3 +81,63 @@ def test_nlp_membership_requires_boolean_modality_and_preserves_legacy_rows(tmp_
         "string_false",
     ]
     assert result["embedding"]["work_count"] == 2
+
+
+def test_denominator_partition_and_source_binding(tmp_path):
+    from manuscript_tools.nlp_diagnostics import validate_membership
+    import hashlib
+    root = tmp_path
+    metrics = root / "analysis_output/visualizations/text_metrics.json"
+    metrics.parent.mkdir(parents=True)
+    text = root / "blake_data/texts"
+    text.mkdir(parents=True)
+    raw = json.dumps([{"work_id": "loaded", "has_text": True}, {"work_id": "missing", "has_text": True}, {"work_id": "filtered", "has_text": True}]).encode()
+    metrics.write_bytes(raw)
+    (text / "loaded.txt").write_text("vision morning shadows")
+    (text / "filtered.txt").write_text("the and with")
+    (text / "stale.txt").write_text("flame shadows")
+    result = build_nlp_diagnostics(root)
+    assert result["membership"]["source_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert validate_membership(result, publication=True) == {"saved": 3, "embedded": 1, "missing": 1, "filtered": 1, "excluded": 1}
+    result["embedding"]["work_count"] = 2
+    import pytest
+    with pytest.raises(ValueError, match="Embedding count"):
+        validate_membership(result, publication=True)
+
+
+def test_duplicate_membership_and_implicit_publication_modality_fail(tmp_path):
+    from manuscript_tools.nlp_diagnostics import validate_membership
+    import pytest
+    path = tmp_path / "analysis_output/visualizations/text_metrics.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps([{"work_id": "legacy"}]))
+    result = build_nlp_diagnostics(tmp_path)
+    assert validate_membership(result)["saved"] == 1
+    with pytest.raises(ValueError, match="explicit boolean"):
+        validate_membership(result, publication=True)
+    path.write_text(json.dumps([{"work_id": "same", "has_text": True}] * 2))
+    with pytest.raises(ValueError, match="Duplicate"):
+        build_nlp_diagnostics(tmp_path)
+
+
+def test_publication_rejects_cross_run_coverage_denominator(tmp_path):
+    from manuscript_tools.nlp_diagnostics import validate_membership
+    import pytest
+    path = tmp_path / "analysis_output/visualizations/text_metrics.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps([{"work_id": "current", "has_text": True}]))
+    result = build_nlp_diagnostics(tmp_path)
+    with pytest.raises(ValueError, match="Coverage count"):
+        validate_membership(result, publication=True, coverage_count=2)
+
+
+def test_generated_manuscript_tokens_name_the_partition(tmp_path):
+    from manuscript_tools.variables import generate_variables
+    path = tmp_path / "analysis_output/visualizations/text_metrics.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps([{"work_id": "missing", "has_text": True}]))
+    variables = generate_variables(tmp_path, require_analysis_outputs=False)
+    assert variables["NLP_SAVED_TEXT_WORKS"] == "1"
+    assert variables["NLP_EMBEDDING_WORKS"] == "0"
+    assert variables["NLP_MISSING_TEXT_WORKS"] == "1"
+    assert len(variables["NLP_MEMBERSHIP_SHA256"]) == 64

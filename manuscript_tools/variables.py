@@ -26,7 +26,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics
+from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics, validate_membership
 
 # Human-readable labels for the registered source providers. Used only to
 # render provider *names*; the *count* is always derived from the JSON.
@@ -214,6 +214,7 @@ def generate_variables(
         _read_json(ao / "data" / "source_discovery.json", required=False) or []
     )
     nlp_diagnostics = build_nlp_diagnostics(root)
+    nlp_membership = validate_membership(nlp_diagnostics, publication=require_analysis_outputs, coverage_count=int(completeness.get("with_text", 0)) if require_analysis_outputs else None)
 
     v: dict[str, str] = {}
     v.update(_read_legal_claim_tokens(root / "docs" / "manuscript" / "legal_claim_ledger.yaml"))
@@ -508,6 +509,11 @@ def generate_variables(
     sentiment_counts = text_diag.get("sentiment_counts") or {}
     label_counts = entity_diag.get("label_counts") or {}
     top_entities = entity_diag.get("top_entities") or []
+    v["NLP_SAVED_TEXT_WORKS"] = str(nlp_membership["saved"])
+    v["NLP_MISSING_TEXT_WORKS"] = str(nlp_membership["missing"])
+    v["NLP_FILTERED_TEXT_WORKS"] = str(nlp_membership["filtered"])
+    v["NLP_EXCLUDED_CACHE_WORKS"] = str(nlp_membership["excluded"])
+    v["NLP_MEMBERSHIP_SHA256"] = nlp_diagnostics["membership"].get("source_sha256") or "unavailable"
     v["NLP_EMBEDDING_METHOD"] = (
         "TF-IDF latent semantic embedding with deterministic PCA/SVD projection"
     )

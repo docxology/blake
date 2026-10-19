@@ -36,3 +36,18 @@ with coverage and inspect every missing or filtered member. Preserve the old
 publication and its source epoch; publish revised counts only with the new run’s
 artifacts. No text or image acquisition, provider-rights change, or private
 corpus upload is part of this correction.
+
+
+## Reconciled current manuscript contract (2026-10-19)
+
+Diagnostics now bind the exact saved-membership bytes, reject duplicate work
+identities, and partition eligible IDs into embedded, missing, and token-filtered
+sets. The partition must reconcile exactly; excluded cache IDs must be disjoint,
+and the embedding count must match its identified work set. Publication-mode coverage must also match the saved eligible text membership. Publication-mode
+variable generation refuses missing, legacy-implicit, or invalid modality
+evidence. Draft-mode diagnostics retain explicit legacy/invalid lists.
+
+The current manuscript reports each generated denominator and the membership
+digest. No historical replacement count is asserted. A revised numerical result
+still requires the authorized corpus/run artifacts, which are absent from this
+clean checkout; fixture tests establish the contract, not a Blake corpus result.
