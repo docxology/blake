@@ -791,22 +791,9 @@ class BlakeArchiveScraper:
             Extracted text or None
         """
         try:
-            # Remove namespace for easier parsing
-            xml_content = re.sub(r'\sxmlns[^"]*"[^"]*"', "", xml_content)
-            root = ET.fromstring(xml_content)
+            from ..transcription import extract_primary_text
 
-            # Find text body
-            text_parts = []
-
-            # Look for various text containers
-            for tag in ["body", "text", "div", "p", "l", "ab"]:
-                for elem in root.iter(tag):
-                    text = "".join(elem.itertext()).strip()
-                    if text:
-                        text_parts.append(text)
-
-            if text_parts:
-                return "\n\n".join(text_parts)
+            return extract_primary_text(xml_content)
 
         except ET.ParseError as e:
             logger.debug(f"TEI parse error: {e}")
@@ -1420,7 +1407,8 @@ class BlakeArchiveScraper:
             source_url=f"{self.ARCHIVE_BASE_URL}/work/{archive_id}",
             source_id=archive_id,
             api_source="blake_archive_api_github",
-            license_type=LicenseType.PUBLIC_DOMAIN,
+            license_type=LicenseType.UNKNOWN,
+            usage_terms="Archive provider files require source-specific rights review; public-domain underlying Blake works do not grant redistribution of this edition or its images.",
             creation_date=self._parse_date(archive_work.composition_date),
             medium=archive_work.medium,
             description=archive_work.description,

@@ -1,0 +1,37 @@
+{
+  "states-and-identity": {
+    "terms": ["state", "states", "individual", "individuals", "identity", "identities"],
+    "rationale": "Compare distinctions between states and individuals in Milton, plate 32[35]. A political meaning of state must be tested in each context; this expansion does not equate mental states with polities.",
+    "primary_links": ["https://blakearchive.org/copy/milton.c?descId=milton.c.illbk.35", "https://raw.githubusercontent.com/blakearchive/data/master/works/milton.c.xml"]
+  },
+  "nation-and-generation": {
+    "terms": ["nation", "nations", "generation", "generations", "Albion"],
+    "rationale": "Locate nation and generation vocabulary separately before testing a relationship. Marriage's printing-house episode uses generation to generation; national passages need contextual comparison.",
+    "primary_links": ["https://www.gutenberg.org/ebooks/45315", "https://blakearchive.org/work/jerusalem"]
+  },
+  "eternity-and-time": {
+    "terms": ["eternity", "eternal", "time", "generation", "generations", "emanation", "emanations"],
+    "rationale": "Juxtapose temporal vocabulary and the Proverbs of Hell rather than treating eternity, generation and emanation as synonyms.",
+    "primary_links": ["https://blakearchive.org/copy/mhh.d?descId=mhh.d.illbk.07", "https://www.gutenberg.org/ebooks/45315"]
+  },
+  "contraries-and-negation": {
+    "terms": ["contrary", "contraries", "negation", "negations"],
+    "rationale": "Compare the progression passage in Marriage with later negation passages. Their difference is a question for close reading, not an identity asserted by the index.",
+    "primary_links": ["https://www.gutenberg.org/ebooks/45315", "https://blakearchive.org/copy/milton.b?descId=milton.b.illbk.42"]
+  },
+  "vision-and-fourfold": {
+    "terms": ["vision", "visions", "fourfold", "four-fold", "four fold", "single vision", "twofold", "threefold"],
+    "rationale": "Use the letter to Thomas Butts of 22 November 1802 as a checking lead. No automatic one-to-four political model follows from these tokens. That letter is absent from the demonstration excerpts.",
+    "primary_links": ["https://blakearchive.org/work/letters", "https://blakearchive.org/copy/milton.b?descId=milton.b.illbk.35"]
+  },
+  "albion-and-jerusalem": {
+    "terms": ["Albion", "Jerusalem", "emanation", "emanations"],
+    "rationale": "Find name occurrences without conflating Jerusalem the work, city, personification or hymn. Work identity comes only from work_id, never from a title mention.",
+    "primary_links": ["https://blakearchive.org/work/jerusalem", "https://www.gutenberg.org/ebooks/45315"]
+  },
+  "federation-hypothesis": {
+    "terms": ["federation", "federal", "federalism", "states", "nations", "individual", "contraries"],
+    "rationale": "Modern research hypothesis only. Expanded states/nations hits are textual testing leads, never occurrences of federation or evidence of an established Blakean federal doctrine. Run word searches for federal and federation separately.",
+    "primary_links": ["https://blakearchive.org/work/milton", "https://blakearchive.org/work/jerusalem", "https://www.gutenberg.org/ebooks/45315"]
+  }
+}

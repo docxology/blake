@@ -127,6 +127,20 @@ The corpus workflow lives under `blake corpus`; `search`, `info`, and `explore` 
 
 Default source adapters cover Blake Archive, Project Gutenberg, and Internet Archive. Additional museum and discovery adapters exist for British Museum, Tate, Wikimedia, HathiTrust, and related sources. Live-source integration is optional; the default test and quick-run surfaces do not require network access. A run is only reported as complete when the canonical target ledger is fully covered; otherwise reports explain the remaining gaps.
 
+## Search primary words, phrases and concepts
+
+Use [`blake-text`](docs/text-search.md) for deterministic passage search with
+original spellings, edition/source locators, occurrence counts and explicit
+concept expansions. The included demonstration contains seven excerpts from one
+1906 edition of *The Marriage of Heaven and Hell*; it is not the full corpus.
+Restored restricted source caches and indexes remain private and untracked.
+
+```sh
+python -m blake.text_search --index blake_data/search/demo.sqlite build examples/primary-passages.jsonl
+python -m blake.text_search --index blake_data/search/demo.sqlite query 'Eternity is in love with the productions of time' --mode phrase
+python -m blake.text_search --index blake_data/search/demo.sqlite suite
+```
+
 ## Development
 
 ```bash

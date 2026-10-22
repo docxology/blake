@@ -133,7 +133,7 @@ class BlakeArchiveScraperProvider:
                         title=work.title,
                         work_type=work_type,
                         source_url=f"{scraper.ARCHIVE_BASE_URL}/work/{archive_id}",
-                        license_type=LicenseType.PUBLIC_DOMAIN,
+                        license_type=LicenseType.UNKNOWN,
                         creation_date=creation_date,
                         metadata={
                             "target_id": work.work_id,

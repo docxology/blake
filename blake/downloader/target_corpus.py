@@ -143,31 +143,14 @@ async def download_blake_archive(session: aiohttp.ClientSession, data_dir: Path)
 
 def extract_text_from_tei(xml_content: str, title: str, date: str) -> str:
     """Extract readable text from Blake Archive TEI XML."""
-    import xml.etree.ElementTree as ET
-
     try:
-        # Remove namespaces
-        xml_content = re.sub(r'\sxmlns[^"]*"[^"]*"', '', xml_content)
-        root = ET.fromstring(xml_content)
+        from ..transcription import extract_primary_text
 
-        text_parts = []
-
-        # Add header
-        text_parts.append(f"{title.upper()}")
-        text_parts.append(f"({date})")
-        text_parts.append("=" * 50)
-        text_parts.append("")
-
-        # Extract text from various elements
-        for tag in ['l', 'p', 'ab', 'head']:
-            for elem in root.iter(tag):
-                text = ''.join(elem.itertext()).strip()
-                if text and len(text) > 3:
-                    # Clean up
-                    text = re.sub(r'\s+', ' ', text)
-                    text_parts.append(text)
-
-        return '\n'.join(text_parts)
+        text = extract_primary_text(xml_content)
+        if not text:
+            return ""
+        lines = [" ".join(line.split()) for line in text.splitlines()]
+        return f"{title.upper()}\n({date})\n{'=' * 50}\n\n" + "\n".join(lines)
 
     except Exception as e:
         return ""

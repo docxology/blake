@@ -94,6 +94,7 @@ Issues = "https://github.com/docxology/blake/issues"
 
 [project.scripts]
 blake = "blake.cli:main"
+blake-text = "blake.text_search.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["blake"]

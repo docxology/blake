@@ -153,3 +153,7 @@ Thumbs.db
 # Local metadata/data caches (parallel to blake_data; never public)
 data/
 test_data/
+
+# Passage indexes duplicate source expression and always remain local.
+*.sqlite
+*.sqlite-*
