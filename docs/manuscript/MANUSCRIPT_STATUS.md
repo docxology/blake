@@ -1,7 +1,7 @@
 # Manuscript status
 
 Canonical source: `docs/manuscript/`. Publication version: `0.2.0`.
-Version DOI: [10.5281/zenodo.23601681](https://doi.org/10.5281/zenodo.23601681).
+Versioned working paper: [Mapping William Blake’s Works](https://doi.org/10.5281/zenodo.23601681).
 
 The revised manuscript distinguishes work-level targets, source/copy records,
 image associations and distinct files. It preserves primary versus unverified

@@ -3,7 +3,7 @@
 # projects/working/blake/scripts/z_generate_manuscript_variables.py (none — this
 # project's variables come from analysis_output/, not from this file).
 #
-# CONTRACT: title and subtitle are NOT {{TOKEN}}-substituted (only docs/manuscript/*.md
+# CONTRACT: title and subtitle do not substitute placeholders (only docs/manuscript/*.md
 # bodies are). They must therefore contain NO numeric counts — a number here would
 # be a hard-coded literal that violates the no-hard-coding invariant and cannot be
 # tokenised away.
