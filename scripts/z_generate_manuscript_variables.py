@@ -70,11 +70,14 @@ def main() -> int:
 
     from infrastructure.rendering.manuscript_injection import write_resolved_manuscript_tree
     from manuscript_tools.variables import generate_variables, save_variables
+    from manuscript_tools.publication import validate_manuscript_tokens
 
     variables = generate_variables(
         _PROJECT_ROOT,
         require_analysis_outputs=not args.allow_draft,
     )
+    if not args.allow_draft:
+        validate_manuscript_tokens(_PROJECT_ROOT / "docs/manuscript", variables)
     out_path = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     save_variables(variables, out_path)
     write_resolved_manuscript_tree(_PROJECT_ROOT, variables)

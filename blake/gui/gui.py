@@ -50,8 +50,23 @@ class BlakeGUI:
         Args:
             data_dir: Directory containing Blake data
         """
-        self.data_dir = data_dir
-        self.output_dir = output_dir or Path("analysis_output")
+        self.data_dir = Path(data_dir)
+        self.output_dir = (
+            Path(output_dir) if output_dir is not None
+            else self.data_dir.parent / "analysis_output"
+        )
+        self.analysis_context = None
+        self.analysis_error = None
+        from blake.corpus.saved_epoch import load_saved_analysis_epoch
+        try:
+            self.analysis_context = load_saved_analysis_epoch(
+                self.data_dir, self.output_dir
+            )
+        except Exception as exc:
+            self.analysis_error = str(exc)
+        self.collection_dir = (
+            self.analysis_context["store"] if self.analysis_context else self.data_dir
+        )
         self.works_cache = {}
     
     def run(self, host: str = "localhost", port: int = 8501) -> None:
@@ -113,6 +128,28 @@ class BlakeGUI:
     def _render_sidebar(self) -> None:
         """Render the sidebar."""
         st.header("Navigation")
+        if self.analysis_error:
+            st.warning(
+                "Saved analysis unavailable: " + self.analysis_error
+                + ". Browsing captured records."
+            )
+        elif self.analysis_context:
+            context = self.analysis_context
+            st.info(
+                f"Saved analysis {context['run_id']} · "
+                f"producer {context['analysis_software_version']}"
+            )
+            if "nested_error_count" in context:
+                st.caption(
+                    f"{context['nested_error_count']} unavailable sub-analysis results; "
+                    "record completion is separate."
+                )
+        else:
+            st.info("No verified saved analysis epoch. Browsing captured records.")
+        st.caption(
+            "Counts describe source/copy records and image associations, "
+            "not distinct Blake works or unique images."
+        )
         
         # Quick stats
         if st.button("Refresh Data"):
@@ -122,9 +159,9 @@ class BlakeGUI:
         # Load basic stats
         try:
             stats = self._get_collection_stats()
-            st.metric("Total Works", stats.get('total_works', 0))
-            st.metric("Total Images", stats.get('total_images', 0))
-            st.metric("Processed Works", stats.get('processed_works', 0))
+            st.metric("Local records", stats.get('total_works', 0))
+            st.metric("Image associations", stats.get('total_images', 0))
+            st.metric("Processed records", stats.get('processed_works', 0))
         except Exception as e:
             st.error(f"Error loading stats: {e}")
     
@@ -549,7 +586,7 @@ class BlakeGUI:
             try:
                 from blake.metadata.database import MetadataDatabase
 
-                path = self.data_dir / "metadata/metadata.db"
+                path = self.collection_dir / "metadata/metadata.db"
                 if not path.is_file():
                     return []
                 works = MetadataDatabase(path).load_all_works()

@@ -23,9 +23,7 @@ def test_gui_import_and_run_are_single_and_load_real_records(tmp_path: Path) -> 
     app = AppTest.from_string(app_source(data, output), default_timeout=20).run()
     assert_no_exceptions(app)
     assert len(app.title) == 1
-    assert all(
-        metric.value == "2" for metric in app.metric if metric.label == "Total Works"
-    )
+    assert by_label(app.metric, "Local records").value == "2"
     assert any(rich.metadata.title in expander.label for expander in app.expander)
     assert any(empty.metadata.title in expander.label for expander in app.expander)
 

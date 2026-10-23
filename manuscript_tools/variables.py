@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any
 
 from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics, validate_membership
+from manuscript_tools.publication import publication_tokens
 
 # Human-readable labels for the registered source providers. Used only to
 # render provider *names*; the *count* is always derived from the JSON.
@@ -214,10 +215,27 @@ def generate_variables(
         _read_json(ao / "data" / "source_discovery.json", required=False) or []
     )
     nlp_diagnostics = build_nlp_diagnostics(root)
-    nlp_membership = validate_membership(nlp_diagnostics, publication=require_analysis_outputs, coverage_count=int(completeness.get("with_text", 0)) if require_analysis_outputs else None)
+    nlp_membership = validate_membership(
+        nlp_diagnostics,
+        publication=require_analysis_outputs,
+        coverage_count=(
+            int(completeness.get("with_text", 0)) if require_analysis_outputs else None
+        ),
+    )
 
     v: dict[str, str] = {}
-    v.update(_read_legal_claim_tokens(root / "docs" / "manuscript" / "legal_claim_ledger.yaml"))
+    v.update(
+        publication_tokens(
+            root,
+            required=require_analysis_outputs
+            and (root / "docs/manuscript/14_supplement_recoverability.md").exists(),
+        )
+    )
+    v.update(
+        _read_legal_claim_tokens(
+            root / "docs" / "manuscript" / "legal_claim_ledger.yaml"
+        )
+    )
 
     # ---- Corpus inventory (statistics.json) ----
     total_works = int(statistics.get("total_works", 0))
@@ -510,12 +528,18 @@ def generate_variables(
     label_counts = entity_diag.get("label_counts") or {}
     top_entities = entity_diag.get("top_entities") or []
     v["NLP_SAVED_TEXT_WORKS"] = str(nlp_membership["saved"])
+    v["NLP_DIAGNOSTIC_PRODUCER_VERSION"] = nlp_diagnostics["producer"][
+        "software_version"
+    ]
+    v["NLP_DIAGNOSTIC_SOURCE_SHA256"] = nlp_diagnostics["producer"]["source_sha256"]
     v["NLP_MISSING_TEXT_WORKS"] = str(nlp_membership["missing"])
     v["NLP_FILTERED_TEXT_WORKS"] = str(nlp_membership["filtered"])
     v["NLP_EXCLUDED_CACHE_WORKS"] = str(nlp_membership["excluded"])
-    v["NLP_MEMBERSHIP_SHA256"] = nlp_diagnostics["membership"].get("source_sha256") or "unavailable"
+    v["NLP_MEMBERSHIP_SHA256"] = (
+        nlp_diagnostics["membership"].get("source_sha256") or "unavailable"
+    )
     v["NLP_EMBEDDING_METHOD"] = (
-        "TF-IDF latent semantic embedding with deterministic PCA/SVD projection"
+        "row-normalized, centered TF-IDF covariance principal-component projection"
     )
     v["NLP_EMBEDDING_WORKS"] = str(int(embedding.get("work_count") or 0))
     v["NLP_EMBEDDING_FEATURES"] = str(int(embedding.get("feature_count") or 0))
@@ -561,6 +585,7 @@ def generate_variables(
     v["NETWORK_NODES"] = str(len(nodes))
     v["NETWORK_EDGES"] = str(len(edges))
     v["THEME_COUNT"] = str(len(theme_nodes))
+    v["NETWORK_ENTITY_COUNT"] = str(sum(node.get("type") == "entity" for node in nodes))
     v["WORK_NODE_COUNT"] = str(len(work_nodes))
     v["THEMES_CSV"] = _english_join([n.get("label", "") for n in theme_nodes])
 
@@ -670,22 +695,30 @@ def generate_variables(
         int(
             summary_errors
             if summary_errors is not None
-            else diagnostic_errors
-            if diagnostic_errors is not None
-            else len(analysis_errors)
+            else (
+                diagnostic_errors
+                if diagnostic_errors is not None
+                else len(analysis_errors)
+            )
         )
     )
-    v["ANALYSIS_ERROR_CATEGORIES"] = _english_join(
-        [
-            str(key).replace("_", " ")
-            for key, value in sorted(
-                (analysis_diag_summary.get("error_categories") or {}).items()
-            )
-            if int(value or 0) > 0
-        ]
-    ) or "none"
+    v["ANALYSIS_ERROR_CATEGORIES"] = (
+        _english_join(
+            [
+                str(key).replace("_", " ")
+                for key, value in sorted(
+                    (analysis_diag_summary.get("error_categories") or {}).items()
+                )
+                if int(value or 0) > 0
+            ]
+        )
+        or "none"
+    )
     v["ANALYSIS_TYPES_CSV"] = _english_join(
-        [str(value).replace("_", " ") for value in analysis_summary.get("analysis_types") or []]
+        [
+            str(value).replace("_", " ")
+            for value in analysis_summary.get("analysis_types") or []
+        ]
     )
     v["ANALYSIS_DIAGNOSTIC_SECTIONS"] = _english_join(
         [str(value).replace("_", " ") for value in sorted(diagnostic_sections)]
