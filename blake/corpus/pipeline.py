@@ -35,6 +35,7 @@ from .source_audit import (
 from .sources import SourceRegistry, build_default_source_registry
 from .targets import build_fixture_works, build_target_coverage, load_corpus_target
 from .visualizations import CorpusVisualizationBuilder
+from .network import build_theme_entity_network
 
 logger = logging.getLogger(__name__)
 
@@ -651,9 +652,16 @@ class BlakeCorpus:
             raise BlakeError(f"Work {work_id} not found")
 
         results = await self.analyzer.analyze_work(work, analysis_types)
-        work.text_analysis.update(results.get("text_analysis", {}))
-        work.visual_analysis.update(results.get("visual_analysis", {}))
-        work.cross_analysis.update(results.get("cross_analysis", {}))
+        for alias, field in (
+            ("text", "text_analysis"),
+            ("visual", "visual_analysis"),
+            ("cross", "cross_analysis"),
+            ("ontology", "ontological_analysis"),
+        ):
+            if field in results:
+                payload = results[field]
+                await self.metadata_manager.save_analysis_result(work.id, alias, payload)
+                getattr(work, field).update(payload)
         work.fully_processed = True
         work.metadata.processed = True
         await self.metadata_manager.save_work(work)
@@ -1554,46 +1562,7 @@ class BlakeCorpus:
         return sorted(rows, key=lambda row: row["date"] or "9999")
 
     def _build_theme_entity_network(self, works: List[BlakeWork]) -> Dict[str, Any]:
-        nodes: Dict[str, Dict[str, Any]] = {}
-        edges: List[Dict[str, Any]] = []
-        for work in works:
-            work_node = f"work:{work.id}"
-            nodes[work_node] = {
-                "id": work_node,
-                "label": work.metadata.title,
-                "type": "work",
-            }
-            for theme in work.metadata.themes:
-                theme_node = f"theme:{theme}"
-                nodes.setdefault(
-                    theme_node, {"id": theme_node, "label": theme, "type": "theme"}
-                )
-                edges.append(
-                    {
-                        "source": work_node,
-                        "target": theme_node,
-                        "relationship": "has_theme",
-                    }
-                )
-            entities = (
-                work.text_analysis.get("entities", [])
-                if isinstance(work.text_analysis, dict)
-                else []
-            )
-            for entity in entities:
-                label = entity.get("text") if isinstance(entity, dict) else str(entity)
-                entity_node = f"entity:{label}"
-                nodes.setdefault(
-                    entity_node, {"id": entity_node, "label": label, "type": "entity"}
-                )
-                edges.append(
-                    {
-                        "source": work_node,
-                        "target": entity_node,
-                        "relationship": "mentions",
-                    }
-                )
-        return {"nodes": list(nodes.values()), "edges": edges}
+        return build_theme_entity_network(works)
 
     def _build_text_image_linkage(self, works: List[BlakeWork]) -> List[Dict[str, Any]]:
         return [

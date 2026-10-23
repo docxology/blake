@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional
 from ..models import BlakeWork
 from ..version import version_info
 from .models import CorpusManifest
+from .network import build_theme_entity_network
+from .result_errors import component_errors
 
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z'\\-]*")
 _STOPWORDS = {
@@ -306,11 +308,9 @@ class CorpusVisualizationBuilder:
             str(row.get("status") or "unknown") for row in coverage_rows
         )
         unresolved_statuses = {"partial", "missing", "unverified", "duplicate"}
-        unresolved = sum(
-            coverage_counts.get(status, 0) for status in unresolved_statuses
-        )
-        represented = coverage_counts.get("present", 0) + coverage_counts.get(
-            "partial", 0
+        unresolved = sum(coverage_counts.get(status, 0) for status in unresolved_statuses)
+        represented = sum(
+            coverage_counts.get(state, 0) for state in ("present", "partial", "duplicate")
         )
         category_unresolved: Counter[str] = Counter()
         for row in coverage_rows:
@@ -320,9 +320,7 @@ class CorpusVisualizationBuilder:
                 ] += 1
 
         word_counts = [int(row.get("word_count") or 0) for row in text_bearing]
-        lexical_density = [
-            float(row.get("lexical_density") or 0.0) for row in text_bearing
-        ]
+        lexical_density = [float(row.get("lexical_density") or 0.0) for row in text_bearing]
         signature = datasets.get("lexical_signature") or {}
         image_counts = [int(row.get("image_count") or 0) for row in linkage_rows]
 
@@ -338,12 +336,9 @@ class CorpusVisualizationBuilder:
             for row in image_depth_rows
         ]
         depth_status_counts = Counter(
-            str(row.get("image_depth_status") or "unrecorded")
-            for row in image_depth_rows
+            str(row.get("image_depth_status") or "unrecorded") for row in image_depth_rows
         )
-        failure_total = sum(
-            int(row.get("failure_count") or 0) for row in image_depth_rows
-        )
+        failure_total = sum(int(row.get("failure_count") or 0) for row in image_depth_rows)
         authority_counts = Counter(
             {
                 str(row.get("authority_tier") or "unrecorded"): int(
@@ -370,9 +365,7 @@ class CorpusVisualizationBuilder:
                 "status_counts": _counter_rows(
                     coverage_counts, total=manifest.target_total
                 ),
-                "category_unresolved": _counter_rows(
-                    category_unresolved, total=unresolved
-                ),
+                "category_unresolved": _counter_rows(category_unresolved, total=unresolved),
             },
             "text": {
                 "local_work_total": len(text_rows),
@@ -447,6 +440,16 @@ class CorpusVisualizationBuilder:
         live = audit.get("live") or {}
         review_path = self.output_dir / "data" / "evidence_acquisition_review.json"
         analysis_path = self.output_dir / "analysis" / "analysis_summary.json"
+        analysis_summary = self._read_optional_json(analysis_path, {})
+        results = self._read_optional_json(
+            self.output_dir / "analysis/analysis_results.json", None
+        )
+        nested_count = (
+            len(component_errors(results))
+            if isinstance(results, list)
+            and analysis_summary.get("analysis_results_current") is True
+            else None
+        )
         return {
             "provider_discovery": audit.get("provider_discovery") or {},
             "archive_metadata_enrichment": (
@@ -457,7 +460,8 @@ class CorpusVisualizationBuilder:
             "checked_urls": live.get("checked_urls") or [],
             "missing_evidence_summary": audit.get("missing_evidence_summary") or {},
             "acquisition_review": self._read_optional_json(review_path, {}),
-            "analysis_summary": self._read_optional_json(analysis_path, {}),
+            "analysis_summary": analysis_summary,
+            "nested_component_error_count": nested_count,
         }
 
     def _source_health_statistics(self, source_health: Dict[str, Any]) -> Dict[str, Any]:
@@ -483,10 +487,14 @@ class CorpusVisualizationBuilder:
             or str(candidate.get("action_taken") or "").startswith("manual_review:")
             or str(candidate.get("status") or "") == "manual_review"
         ]
-        analysis_errors = analysis_summary.get("errors") or []
+        analysis_errors = (
+            analysis_summary.get("error_ledger") or analysis_summary.get("errors") or []
+        )
         ok_urls = sum(1 for row in checked_urls if row.get("ok"))
         return {
-            "provider_count": int(provider_discovery.get("provider_count") or len(providers)),
+            "provider_count": int(
+                provider_discovery.get("provider_count") or len(providers)
+            ),
             "provider_failure_count": int(
                 provider_discovery.get("failure_count") or len(provider_failures)
             ),
@@ -503,13 +511,9 @@ class CorpusVisualizationBuilder:
                 archive_report.get("skipped_after_budget") or 0
             ),
             "archive_metadata_disabled_reason": archive_report.get("disabled_reason"),
-            "archive_metadata_fallback_source": archive_report.get(
-                "fallback_source_used"
-            ),
+            "archive_metadata_fallback_source": archive_report.get("fallback_source_used"),
             "missing_evidence_targets": int(missing_summary.get("target_count") or 0),
-            "missing_evidence_candidates": int(
-                missing_summary.get("candidate_count") or 0
-            ),
+            "missing_evidence_candidates": int(missing_summary.get("candidate_count") or 0),
             "acquisition_review_schema_version": str(
                 acquisition_review.get("schema_version") or "unavailable"
             ),
@@ -526,7 +530,12 @@ class CorpusVisualizationBuilder:
             ),
             "analysis_works_analyzed": int(analysis_summary.get("works_analyzed") or 0),
             "analysis_works_total": int(analysis_summary.get("works_total") or 0),
-            "analysis_error_count": len(analysis_errors),
+            "analysis_error_count": int(
+                analysis_summary.get("error_count", len(analysis_errors))
+            ),
+            "analysis_nested_error_count": source_health.get(
+                "nested_component_error_count"
+            ),
         }
 
     def _read_optional_json(self, path: Path, default: Any) -> Any:
@@ -765,7 +774,8 @@ class CorpusVisualizationBuilder:
   <header>
     <h1>Blake Corpus Workbench</h1>
     <p>Software: {esc(software['package_version'])}. Methods: {esc(software['methods_profile'])}. Dashboard schema: {esc(software['dashboard_schema_version'])}.</p>
-    <p>Profile: {esc(profile)}. Target: {esc(manifest.target_profile)}. Coverage: {esc(manifest.coverage_status)}.</p>
+    <p>Profile: {esc(profile)}. Target: {esc(manifest.target_profile)}. Coverage: {esc(manifest.coverage_status)}. Run: {esc(manifest.run_id)}.</p>
+    <p>Records are source/copy records. Image associations can reuse physical files. Represented targets include present, partial and duplicate matches; unresolved states include every non-present target. Saved discovery observations do not refresh provider health during offline reuse.</p>
   </header>
   <main>
     <aside>
@@ -774,13 +784,14 @@ class CorpusVisualizationBuilder:
       <div class="statgrid">
         {stat_card("Target entries", coverage_stats.get("target_total", manifest.target_total), f"{coverage_stats.get('represented_pct', 0):.1f}% represented")}
         {stat_card("Unresolved targets", coverage_stats.get("unresolved", 0), f"{coverage_stats.get('unresolved_pct', 0):.1f}% of target ledger")}
-        {stat_card("Text works", text_stats.get("text_work_count", 0), f"{text_stats.get('text_work_pct', 0):.1f}% of local works")}
-        {stat_card("Total words", text_stats.get("total_words", 0), "local text-bearing works")}
-        {stat_card("Linked images", image_stats.get("linked_image_total", 0), f"{image_stats.get('works_with_images', 0)} image-bearing works")}
+        {stat_card("Text records", text_stats.get("text_work_count", 0), f"{text_stats.get('text_work_pct', 0):.1f}% of local records")}
+        {stat_card("Total words", text_stats.get("total_words", 0), "local text-bearing records")}
+        {stat_card("Image associations", image_stats.get("linked_image_total", 0), f"{image_stats.get('works_with_images', 0)} image-bearing records")}
         {stat_card("Image depth", depth_stats.get("downloaded_image_total", 0), f"{depth_stats.get('downloaded_vs_resolved_pct', 0):.1f}% downloaded/resolved")}
-        {stat_card("Analysis current", "yes" if source_stats.get("analysis_results_current") else "no", f"{source_stats.get('analysis_works_analyzed', 0):,}/{source_stats.get('analysis_works_total', 0):,} works; {source_stats.get('analysis_error_count', 0)} errors")}
+        {stat_card("Analysis current", "yes" if source_stats.get("analysis_results_current") else "no", f"{source_stats.get('analysis_works_analyzed', 0):,}/{source_stats.get('analysis_works_total', 0):,} records; {source_stats.get('analysis_error_count', 0)} top-level errors")}
+        {stat_card("Nested component errors", source_stats.get("analysis_nested_error_count") if source_stats.get("analysis_nested_error_count") is not None else "unavailable", "Explicit nested result fields; separate from top-level completion")}
         {stat_card("Review candidates", source_stats.get("acquisition_review_candidate_count", 0), f"{source_stats.get('manual_review_candidate_count', 0)} manual-review leads")}
-        {stat_card("Provider warnings", source_stats.get("provider_failure_count", 0), f"{source_stats.get('provider_count', 0)} providers checked")}
+        {stat_card("Non-completed discovery observations", source_stats.get("provider_failure_count", 0), f"{source_stats.get('provider_count', 0)} saved provider observations")}
         {stat_card("Archive metadata", f"{source_stats.get('archive_metadata_succeeded', 0)}/{source_stats.get('archive_metadata_attempted', 0)}", source_stats.get("archive_metadata_status", "unknown"))}
       </div>
       <h3>Unresolved By Category</h3>
@@ -790,7 +801,7 @@ class CorpusVisualizationBuilder:
       </table></div>
       <h3>Authority Tiers</h3>
       <div class="tablewrap"><table>
-        <thead><tr><th>Tier</th><th>Work share</th></tr></thead>
+        <thead><tr><th>Tier</th><th>Record share</th></tr></thead>
         <tbody>{authority_rows}</tbody>
       </table></div>
       <h3>Source Discovery Health</h3>
@@ -818,21 +829,21 @@ class CorpusVisualizationBuilder:
         <h2>Image Depth</h2>
         <p class="note">Downloaded/resolved ratios are local Archive object-depth diagnostics. Rights review remains separate from acquisition success.</p>
         <div class="tablewrap"><table>
-          <thead><tr><th>Work</th><th>Category</th><th>Status</th><th>Downloaded / resolved</th><th>Failures</th></tr></thead>
+          <thead><tr><th>Source/copy record</th><th>Category</th><th>Status</th><th>Downloaded / resolved</th><th>Failures</th></tr></thead>
           <tbody>{depth_rows}</tbody>
         </table></div>
       </section>
       <section>
         <h2>Target Coverage Matrix</h2>
         <div class="tablewrap"><table>
-          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Status</th><th>Local works</th><th>Notes</th></tr></thead>
+          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Status</th><th>Local record IDs</th><th>Notes</th></tr></thead>
           <tbody>{coverage_rows}</tbody>
         </table></div>
       </section>
       <section>
-        <h2>Local Work Gallery</h2>
+        <h2>Local Record Gallery</h2>
         <div class="tablewrap"><table>
-          <thead><tr><th>ID</th><th>Title</th><th>Type</th><th>Date</th><th>Authority</th><th>Image depth</th><th>Images</th></tr></thead>
+          <thead><tr><th>ID</th><th>Title</th><th>Type</th><th>Date</th><th>Authority</th><th>Image depth</th><th>Image associations</th></tr></thead>
           <tbody>{work_rows}</tbody>
         </table></div>
       </section>
@@ -1025,46 +1036,7 @@ class CorpusVisualizationBuilder:
         return rows
 
     def _theme_entity_network(self, works: List[BlakeWork]) -> Dict[str, Any]:
-        nodes: Dict[str, Dict[str, Any]] = {}
-        edges: List[Dict[str, Any]] = []
-        for work in works:
-            work_node = f"work:{work.id}"
-            nodes[work_node] = {
-                "id": work_node,
-                "label": work.metadata.title,
-                "type": "work",
-            }
-            for theme in work.metadata.themes:
-                theme_node = f"theme:{theme}"
-                nodes.setdefault(
-                    theme_node, {"id": theme_node, "label": theme, "type": "theme"}
-                )
-                edges.append(
-                    {
-                        "source": work_node,
-                        "target": theme_node,
-                        "relationship": "has_theme",
-                    }
-                )
-            entities = (
-                work.text_analysis.get("entities", [])
-                if isinstance(work.text_analysis, dict)
-                else []
-            )
-            for entity in entities:
-                label = entity.get("text") if isinstance(entity, dict) else str(entity)
-                entity_node = f"entity:{label}"
-                nodes.setdefault(
-                    entity_node, {"id": entity_node, "label": label, "type": "entity"}
-                )
-                edges.append(
-                    {
-                        "source": work_node,
-                        "target": entity_node,
-                        "relationship": "mentions",
-                    }
-                )
-        return {"nodes": list(nodes.values()), "edges": edges}
+        return build_theme_entity_network(works)
 
     def _text_image_linkage(self, works: List[BlakeWork]) -> List[Dict[str, Any]]:
         return [
