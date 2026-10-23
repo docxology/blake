@@ -22,6 +22,7 @@ from rich import box
 from .corpus import BlakeCorpus
 from .models import ExportConfig
 from .provenance import enum_value
+from .version import __version__
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -58,10 +59,10 @@ class InteractiveOrchestrator:
     
     def display_welcome(self):
         """Display welcome screen."""
-        welcome_text = """
+        welcome_text = f"""
 [bold blue]╔══════════════════════════════════════════════════════════════╗[/bold blue]
 [bold blue]║                                                              ║[/bold blue]
-[bold blue]║  🎨 Blake Interactive Orchestrator v1.0                     ║[/bold blue]
+[bold blue]║  🎨 Blake Interactive Orchestrator v{__version__:<24}║[/bold blue]
 [bold blue]║                                                              ║[/bold blue]
 [bold blue]║  Target-aware analysis and exploration platform for         ║[/bold blue]
 [bold blue]║  locally available William Blake corpus evidence            ║[/bold blue]
@@ -499,7 +500,9 @@ class InteractiveOrchestrator:
                     )
                 
                 self.console.print(f"✅ [green]Data exported as {format_name} successfully![/green]")
-                self.console.print(f"• Path: {result}")
+                self.console.print(
+                    f"• Path: {result}", markup=False, highlight=False, soft_wrap=True
+                )
                 return result
             except Exception as e:
                 self.console.print(f"❌ [red]Export failed: {e}[/red]")

@@ -9,6 +9,7 @@ from rich.console import Console
 import pytest
 
 from blake.interactive_orchestrator import InteractiveOrchestrator
+from blake.version import __version__
 from tests import interactive_fixtures
 
 terminal_case = interactive_fixtures.terminal_case
@@ -125,6 +126,20 @@ async def test_analysis_summary_uses_saved_score_and_topic_records(
 
 
 @pytest.mark.asyncio
+async def test_export_path_is_literal_and_copyable_in_a_narrow_terminal(
+    terminal_case, tmp_path: Path
+) -> None:
+    orchestrator, capture, _ = await terminal_case("1\n")
+    orchestrator.console.width = 40
+    orchestrator.blake.output_dir = tmp_path / "long output directory [red] literal"
+    result = await orchestrator.export_data()
+    assert result.is_dir()
+    assert len(str(result)) > orchestrator.console.width
+    assert "[red]" in str(result)
+    assert str(result) in capture.getvalue().splitlines()[-1]
+
+
+@pytest.mark.asyncio
 async def test_view_dashboards_can_decline_creation(terminal_case) -> None:
     orchestrator, capture, stream = await terminal_case("n\n")
     await orchestrator.view_dashboards()
@@ -177,6 +192,7 @@ async def test_menu_settings_and_exit_use_owned_prompt_stream(terminal_case) -> 
     await orchestrator.run()
     text = capture.getvalue()
     assert "Main Menu" in text and "Current Settings:" in text and "Goodbye!" in text
+    assert f"v{__version__}" in text
     assert "An error occurred" not in text
     assert stream.tell() == len("14\n\n15\ny\n")
 
