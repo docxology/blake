@@ -62,12 +62,12 @@ The cover is a labeled project-authored generated asset with provenance, outside
 
 ## Render and Validate
 
-The shared template renderer uses a separate compatible environment. Bind its local ignored `projects/blake` leaf link to this checkout without changing other project bindings. After strict hydration succeeds, run from that template checkout:
+The shared template renderer uses a separate compatible environment. The release records its exact source commit. Bind its local ignored `projects/active/blake` lifecycle leaf link to this checkout without changing other project bindings. After strict hydration succeeds, run from that template checkout:
 
 ```bash
 uv run python scripts/pipeline/stage_03_render.py \
-  --project blake --skip-manuscript-hydration
-uv run python scripts/pipeline/stage_04_validate.py --project blake
+  --project active/blake --skip-manuscript-hydration
+uv run python scripts/pipeline/stage_04_validate.py --project active/blake
 ```
 
 The explicit hydration step preserves Blake's analysis environment while using the template's native rendering infrastructure. The skip flag reuses already validated hydrated sources; it does not authorize unresolved tokens or stale results. Rendered-page inspection, citation and cross-reference checks, privacy checks, source tests, installed-package checks, and release-asset checksums qualify the final artifact set. The deposited PDF and software assets must match the independently verified download bytes. Publication and an identifier do not themselves establish peer review, scientific validation, or whole-oeuvre completeness [@smith2016software; @rocrate2022].

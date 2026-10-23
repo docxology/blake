@@ -22,6 +22,7 @@ All values are returned as strings (the injector substitutes text verbatim).
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -884,6 +885,20 @@ def _missing_evidence_table_rows(
     *,
     limit: int | None = None,
 ) -> str:
+    def display(value: Any, *, identifier: bool = False) -> str:
+        text = _cell(value)
+        if not identifier:
+            text = text.replace("_", " ")
+        separator = "\u200b" if identifier else "\u00ad"
+        return re.sub(
+            r"\w{9,}",
+            lambda match: separator.join(
+                match.group()[start : start + 8]
+                for start in range(0, len(match.group()), 8)
+            ),
+            text,
+        )
+
     rows: list[str] = []
     ordered = sorted(
         missing_evidence,
@@ -899,13 +914,13 @@ def _missing_evidence_table_rows(
             "| "
             + " | ".join(
                 [
-                    _cell(row.get("target_id")),
-                    _cell(row.get("title")),
-                    _cell(row.get("evidence_type")),
-                    _cell(row.get("candidate_source")),
+                    display(row.get("target_id"), identifier=True),
+                    display(row.get("title")),
+                    display(row.get("evidence_type")),
+                    display(row.get("candidate_source")),
                     str(status) if status is not None else "not checked",
                     f"{float(row.get('match_confidence') or 0.0):.2f}",
-                    _cell(row.get("action_taken")),
+                    display(row.get("action_taken")),
                 ]
             )
             + " |"

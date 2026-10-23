@@ -1,6 +1,6 @@
 # Supplement: Bounded Missing-Evidence Search Queue {#sec:supp_missing_evidence}
 
-The search queue translates missing or partial target evidence into reviewable candidate actions. It is intentionally conservative: a row can guide review without changing corpus status, because source ownership, title matching, attribution, checksum, and rights metadata must be verified before a candidate becomes corpus evidence.
+The search queue translates missing or partial target evidence into reviewable candidate actions. It is intentionally conservative: a row can guide review without changing corpus status, because source ownership, title matching, attribution, checksum, and rights metadata must be verified before a candidate becomes corpus evidence. Display labels replace field-name underscores with spaces. Long prose words use discretionary hyphens, while identifiers may wrap without a printed hyphen; authoritative identifiers remain unchanged in the accompanying aggregate JSON.
 
 | Target ID | Title | Evidence | Candidate source | Status | Confidence | Action |
 |---|---|---|---|---:|---:|---|

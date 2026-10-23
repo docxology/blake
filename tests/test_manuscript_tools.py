@@ -20,6 +20,29 @@ from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics
 from scripts.acquire_missing_texts import TARGETS, clean_raw_wikitext
 
 
+def test_missing_evidence_table_wraps_long_identifiers_without_changing_identity():
+    from manuscript_tools.variables import _missing_evidence_table_rows
+
+    rendered = _missing_evidence_table_rows(
+        [
+            {
+                "target_id": "biblicaltemperas",
+                "title": "Illustrations",
+                "evidence_type": "source_match",
+                "candidate_source": "Archive",
+                "action_taken": "manual_review",
+            }
+        ]
+    )
+    cells = [cell.strip() for cell in rendered.strip("|").split("|")]
+    assert "\u200b" in cells[0]
+    assert cells[0].replace("\u200b", "") == "biblicaltemperas"
+    assert "\u00ad" in cells[1]
+    assert cells[1].replace("\u00ad", "") == "Illustrations"
+    assert cells[2] == "source match"
+    assert cells[-1] == "manual review"
+
+
 @pytest.fixture(scope="module")
 def manuscript_fixture_root(tmp_path_factory):
     """Offline synthetic corpus for projection tests, never publication evidence."""
@@ -167,7 +190,9 @@ def test_reproducibility_uses_generated_archive_sample_limit(manuscript_fixture_
     assert variables["ARCHIVE_API_SAMPLE_LIMIT"] == "2"
     assert variables["ARCHIVE_API_SAMPLE_OK"] == "1"
     assert "--limit 8" not in reproducibility
-    assert "Fresh remote acquisition can produce a different inventory" in reproducibility
+    assert (
+        "Fresh remote acquisition can produce a different inventory" in reproducibility
+    )
     assert "--data-dir blake_data/publication/reproduction" in reproducibility
     assert (
         variables["ARCHIVE_API_SAMPLE_LIMIT"] == variables["ARCHIVE_API_SAMPLE_COUNT"]
@@ -210,7 +235,9 @@ def test_reproducibility_uses_existing_template_validation_command():
     assert "04_render_html.py" not in reproducibility
     assert "scripts/pipeline/stage_04_validate.py" in reproducibility
     assert "scripts/pipeline/stage_03_render.py" in reproducibility
-    assert "--project blake" in reproducibility
+    assert "projects/active/blake" in reproducibility
+    assert "--project active/blake" in reproducibility
+    assert "--project blake" not in reproducibility
 
 
 def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
@@ -225,10 +252,7 @@ def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
     assert abstract.startswith("# Abstract {#sec:abstract .unnumbered}")
     assert "\t" not in abstract
     assert "{{ANALYSIS_WORKS_ANALYZED}}/{{ANALYSIS_WORKS_TOTAL}}" in abstract
-    assert (
-        "not completeness of Blake's oeuvre"
-        in abstract
-    )
+    assert "not completeness of Blake's oeuvre" in abstract
     assert "unverified authorship" in abstract
     assert "source-image mosaics remain local" in abstract
     assert r"\setlength{\parindent}{0pt}" in preamble
@@ -536,7 +560,9 @@ def test_supplemental_visual_mosaics_are_registered_and_cited():
         assert f"{name}.png" in supplement
         assert f"{{#fig:{name}}}" not in supplement
         assert f"](../output/figures/{name}.png)" not in supplement
-    assert "excluded from the public manuscript, HTML, and release archives" in supplement
+    assert (
+        "excluded from the public manuscript, HTML, and release archives" in supplement
+    )
 
 
 def test_figure_registry_briefs_cover_every_manuscript_figure():
@@ -556,8 +582,17 @@ def test_figure_registry_briefs_cover_every_manuscript_figure():
         registry_names = {
             Path(figure["filename"]).stem for figure in registry["figures"]
         }
-        omitted = {'all_acquired_images_mosaic', 'work_area_image_mosaics', 'source_audit', 'chronology'}
-        expected = figure_names - omitted if registry.get('scope') == 'public' else figure_names
+        omitted = {
+            "all_acquired_images_mosaic",
+            "work_area_image_mosaics",
+            "source_audit",
+            "chronology",
+        }
+        expected = (
+            figure_names - omitted
+            if registry.get("scope") == "public"
+            else figure_names
+        )
         assert registry_names == expected
         for figure in registry["figures"]:
             assert BRIEF_FIELDS <= figure.keys(), figure["filename"]
@@ -668,7 +703,12 @@ def test_registered_figures_are_cited_in_manuscript_sources():
 
     registered = {name for name, _builder in FIGURES}
     embedded = set(re.findall(r"\{#fig:([a-z_]+)\}", manuscript_text))
-    omitted = {"all_acquired_images_mosaic", "work_area_image_mosaics", "source_audit", "chronology"}
+    omitted = {
+        "all_acquired_images_mosaic",
+        "work_area_image_mosaics",
+        "source_audit",
+        "chronology",
+    }
     assert embedded == registered - omitted
 
 
