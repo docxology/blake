@@ -145,7 +145,7 @@ class BlakeGUI:
             with st.expander(f"{work.metadata.title} ({work.metadata.work_type})"):
                 self._render_work_details(work)
     
-    def _render_work_details(self, work: BlakeWork) -> None:
+    def _render_work_details(self, work: BlakeWork, key_prefix: str = "browse") -> None:
         """Render details for a specific work."""
         col1, col2 = st.columns([2, 1])
         
@@ -176,7 +176,10 @@ class BlakeGUI:
             # Text content
             if work.text_content:
                 st.subheader("Text Content")
-                st.text_area("", work.text_content, height=200, disabled=True)
+                st.text_area(
+                    "Text content", work.text_content, height=200, disabled=True,
+                    key=f"{key_prefix}:text:{work.id}",
+                )
             
             # Tags and themes
             if work.metadata.tags or work.metadata.themes:
@@ -234,9 +237,9 @@ class BlakeGUI:
         if st.button("Search"):
             filters = {}
             if work_types:
-                filters['work_type'] = work_types[0]  # Streamlit multiselect limitation
+                filters['work_type'] = work_types
             if sources:
-                filters['source'] = sources[0]
+                filters['source'] = sources
             if has_images != "All":
                 filters['has_images'] = has_images == "Yes"
             if has_text != "All":
@@ -249,7 +252,7 @@ class BlakeGUI:
             st.subheader(f"Search Results ({len(results)} found)")
             for work in results:
                 with st.expander(f"{work.metadata.title}"):
-                    self._render_work_details(work)
+                    self._render_work_details(work, key_prefix="search")
 
     def _manifest_payload(self) -> Dict[str, Any]:
         path = Path(self.output_dir) / "corpus_manifest.json"
@@ -522,9 +525,13 @@ class BlakeGUI:
         """Load works from cache or database."""
         if not self.works_cache:
             try:
-                # This would normally load from the database
-                # For now, return empty list
-                return []
+                from blake.metadata.database import MetadataDatabase
+
+                path = self.data_dir / "metadata/metadata.db"
+                if not path.is_file():
+                    return []
+                works = MetadataDatabase(path).load_all_works()
+                self.works_cache = {work.id: work for work in works}
             except Exception as e:
                 st.error(f"Error loading works: {e}")
                 return []
@@ -544,6 +551,8 @@ class BlakeGUI:
     def _search_works(self, query: str, filters: Dict[str, Any]) -> List[BlakeWork]:
         """Search works based on query and filters."""
         works = self._load_works()
+        selected_types = filters.get('work_types') or filters.get('work_type')
+        selected_sources = filters.get('sources') or filters.get('source')
         
         # Simple search implementation
         results = []
@@ -555,10 +564,14 @@ class BlakeGUI:
                     continue
             
             # Apply filters
-            if filters.get('work_type') and work.metadata.work_type != filters['work_type']:
-                continue
-            if filters.get('source') and work.metadata.source != filters['source']:
-                continue
+            if selected_types:
+                selected = selected_types
+                if work.metadata.work_type not in (selected if isinstance(selected, list) else [selected]):
+                    continue
+            if selected_sources:
+                selected = selected_sources
+                if work.metadata.source not in (selected if isinstance(selected, list) else [selected]):
+                    continue
             if filters.get('has_images') is not None:
                 has_images = len(work.images) > 0
                 if has_images != filters['has_images']:
@@ -579,6 +592,7 @@ class BlakeGUI:
             for work in works:
                 work_data = {
                     'id': work.id,
+                    'provenance': work_provenance(work),
                     'metadata': work.metadata.model_dump(mode="json"),
                     'text_content': work.text_content,
                     'images': [img.model_dump(mode="json") for img in work.images],
@@ -594,8 +608,8 @@ class BlakeGUI:
 
 # Main execution for Streamlit
 # This runs when Streamlit executes the script
-if STREAMLIT_AVAILABLE and st is not None:
+if __name__ == "__main__" and STREAMLIT_AVAILABLE and st is not None:
     # Initialize and run the GUI
-    data_dir = Path(__file__).resolve().parent.parent.parent / "data" / "blake"
+    data_dir = Path(__file__).resolve().parent.parent.parent / "blake_data"
     gui = BlakeGUI(data_dir)
     gui._render_app()
