@@ -27,13 +27,14 @@ source attribution. The provider license wrapper, transcriber's cover, images
 and modern annotations are excluded. The sample is neither the whole *Marriage*
 nor the Blake corpus. Zeros from it say nothing about unsampled passages.
 
-At the 2026-10-22 inspection, the canonical checkout and inspected older backup
+At the initial 2026-10-22 inspection, the canonical checkout and inspected older backup
 checkout had no `blake_data/` or `analysis_output/` directory. No saved manifest,
 text cache, source XML, letters, manuscript images or local analysis could be read
 from those locations. This bounded observation does not prove that other copies
 or a protected corpus are absent. Restoring access to a retained private corpus
-may be necessary; unlocking must use the owner's normal supported process.
-No screen/security bypass or bulk reacquisition is part of this tool.
+was necessary. A subsequent recovery retained a pinned source snapshot locally;
+the private workflow below supersedes that initial absence observation. Unlocking
+must use the owner's normal supported process.
 
 ## Reproduce searches
 
@@ -78,6 +79,52 @@ William Blake (1757–1827), not another person named Blake.
 
 ## Restored private corpus
 
+After recovery and verification, build the additional private search projection:
+
+```sh
+uv run --python 3.11 blake-text build-recovered
+uv run --python 3.11 blake-text --recovered coverage
+uv run --python 3.11 blake-text --recovered query state
+uv run --python 3.11 blake-text --recovered query 'Eternity is in love with the productions of time' --mode phrase
+uv run --python 3.11 blake-text --recovered query federation-hypothesis --mode concept
+uv run --python 3.11 blake-text --recovered query state --scope exploratory --plane erdman
+uv run --python 3.11 blake-text --recovered query phystext --scope exploratory --plane xml
+uv run --python 3.11 blake-text --recovered query Blake --scope exploratory --plane reading --role unverified
+```
+
+Use global `--data-dir PATH` for a different private recovery directory. The
+captured `recovery/search.sqlite` remains unchanged. The additional index lives
+under ignored `blake_data/search/recovered/`, with a directory identity derived
+from the captured manifest and producer code, normalization, runtime and lockfile.
+Its manifest binds every consumed input, index bytes, exact passage membership,
+role/plane counts and omitted empty Erdman pages. Changed inputs refuse a rebuild;
+a damaged derived index refuses to open rather than silently replacing evidence.
+
+The retained capture contains 727 Archive source documents and 540 extracted
+reading passages: 199 labeled primary and 341 unverified. The projection also
+indexes retained Erdman pages and all 727 raw Archive XML documents, plus the four
+Erdman XML parts. Raw XML includes markup, metadata, variants, deletions and
+apparatus. Erdman pages/parts are mixed edition material, labeled editorial with
+author `mixed-edition`; raw Archive XML has unverified author and role. Empty
+Erdman pages are disclosed separately. Coverage reports the actual indexed counts.
+
+Primary scope defaults to William Blake and the primary reading plane. Explicit
+`--scope exploratory` searches labeled source matches across all authors unless
+`--author-id` restricts them. Use `--plane`, `--role`, `--work-id` and `--edition-id`
+to narrow the selection. Exploratory totals are divided by role, plane and author,
+with Blake-primary occurrences reported separately. A match in markup or mixed
+editorial text does not become evidence that Blake wrote that expression.
+
+The private CLI omits full passage bodies and displays up to 20 matches per hit,
+with 120 characters of context on each side. Counts still cover the full selected
+scope before display limits. The Python API retains full original passages and
+spans. Opening a projection checks its index bytes, captured-manifest identity,
+producer and metadata consistency. It does not rehash every physical source file
+or image on every query; rebuilding revalidates consumed files, and recovery
+`verify` checks the complete retained capture. Keep all these indexes private.
+
+For the older flattened-cache contract:
+
 ```sh
 blake-text --index /PRIVATE/search.sqlite import-cache /PRIVATE/corpus_manifest.json /PRIVATE/blake_data
 blake-text --index /PRIVATE/search.sqlite coverage
@@ -91,6 +138,7 @@ unsafe IDs, escaping/symlink files, duplicate IDs, missing source URLs and empty
 selected texts. It cannot recover an erased copy/plate identity from flattened
 text. Such cache records receive only truthful **file-line** locators and
 **unverified** edition/primary status; they cannot appear as primary occurrences.
+They are available only as labeled exploratory source matches.
 
 Review the selected files against their editions before promoting them to search
 evidence. The Python API exposes this review material without modifying it:
@@ -199,7 +247,7 @@ Publication full text is scholarship, not primary Blake corpus membership.
 ## Focused verification
 
 ```sh
-python -m pytest tests/test_passage_search.py --noconftest -o addopts='' -q
+uv run --python 3.11 pytest tests/test_passage_search.py tests/test_search_scopes.py tests/test_recovered_search.py tests/test_private_search_display.py --noconftest -o addopts='' -q
 ```
 
 The focused suite exercises real SQLite, primary/edition/author boundaries,

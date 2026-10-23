@@ -71,6 +71,90 @@ analysis_output/
 
 Raw downloads, SQLite metadata, cached texts, and images live under `blake_data/`.
 
+## Recover the local corpus
+
+```bash
+uv sync --python 3.11 --extra dev --extra api --extra gui
+uv run --python 3.11 python -m blake.recovery recover --full
+uv run --python 3.11 python -m blake.recovery verify
+uv run --python 3.11 python -m blake.recovery register
+uv run --python 3.11 blake-text build-recovered
+uv run --python 3.11 blake-text --recovered query eternity
+uv run --python 3.11 blake-text --recovered query state --scope exploratory --plane erdman
+```
+
+Recovery saves the entire pinned `blakearchive/data` source repository, every
+work-copy XML file (including ZIP-delivered variants), and the complete response
+from the Archive's Erdman *Complete Poetry and Prose* reader. Files remain local
+under the gitignored `blake_data/recovery/` directory. The source archive, extracted
+files, per-copy reading texts, all Erdman page records, combined Erdman text,
+passage JSONL, and search index have SHA-256 receipts in `manifest.json`.
+
+The `register` command makes those source documents available to `BlakeCorpus`
+and the existing pipeline through `blake_data/metadata/metadata.db`. It preserves
+other works and existing recovery analyses. Source documents retain individual
+copy identities; the ZIP and XML versions of the same copy remain distinct.
+The equivalent commands are `blake corpus recover`, `blake corpus
+verify-recovery`, and `blake corpus import-recovery`.
+
+Reruns reuse saved sources and verify the prior manifest before updating it.
+Use `recover --offline --no-images` to rebuild from those sources without network
+access. Keep each Archive commit in a separate data directory; `--commit` accepts
+only a full commit SHA. The compatibility script
+`scripts/download_complete_archive.py` delegates to this workflow and propagates
+errors to its exit status.
+
+`--full` also retains the complete work, copy, and object API responses and a
+pinned snapshot of the full Erdman source edition, including its four XML parts.
+Once enabled, that profile is retained on subsequent offline rebuilds. The
+Image acquisition tries canonical lowercase and original source spellings;
+case exceptions retain their actual source URLs. Source identifiers retain their
+original case in the manifest. `--image-workers` controls concurrency (1–8).
+
+Source recovery, transcription extraction, image recovery, and coverage of
+Blake's oeuvre are reported separately. Recovery attempts every identified object
+at 300 dpi, then tries an explicitly recorded 100 dpi fallback when necessary.
+Resolution counts and fallback object IDs are reported separately. Lower
+resolution is never reported as meeting the requested 300 dpi target.
+Recovery records each remaining failure for retry. Downloaded images must decode
+before being saved. `verify` checks file hashes, snapshot membership, source
+bindings, page and search membership, and the complete image outcome ledger.
+Unresolved files are never counted as downloaded. Reviewed transcription rules
+are bound to exact source hashes; other ambiguous readings remain explicit errors.
+
+Create a portable local backup after recovery:
+
+```bash
+uv run --python 3.11 python -m blake.recovery backup --destination blake_data/backups/full-corpus.tar
+uv run --python 3.11 python -m blake.recovery verify-backup blake_data/backups/full-corpus.tar
+uv run --python 3.11 python -m blake.recovery restore-drill blake_data/backups/full-corpus.tar --destination blake_data/restore-check
+```
+
+The bundle includes every inventoried source, text, image and index, plus the
+exact recovery source code and dependency lockfile. A separate checksum receipt
+binds the complete bundle. `restore` works offline and quarantines conflicting
+bytes before restoring them. `restore-drill` requires an empty destination,
+restores every byte, deliberately corrupts a copy, proves verification rejects
+the corruption, and restores the original bytes again. It preserves the damaged
+control and writes a durable report. Existing backups are preserved; choose a
+new destination or use the default content-named path for later snapshots.
+
+`MetadataManager.export_metadata` also preserves the complete work model,
+including all four saved analysis fields. `import_metadata` validates the full
+input array before saving records and stores included text under the destination
+corpus. Image paths remain references; use the recovery backup for portable
+source and image bytes. Metadata import does not provide a transaction across
+the SQLite database and filesystem if an I/O failure interrupts saving.
+
+Primary occurrence search includes only Archive reading layers bound to text
+works in the existing canonical ledger. Other Archive transcriptions remain
+unverified. Erdman reading text retains editorial material and stays separate
+from primary occurrence search. The raw JSON and XML preserve the complete
+provider response and diplomatic apparatus, including material excluded from
+the reading layers. An unresolved original reading is reported explicitly;
+its source file is preserved. A recovered source snapshot establishes the saved
+inventory, not completeness of every surviving Blake work or edition.
+
 ## Python API
 
 ```python

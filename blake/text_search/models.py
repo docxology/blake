@@ -3,7 +3,10 @@
 from enum import Enum
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+
+TextRole = Literal["primary", "editorial", "unverified"]
+SourcePlane = Literal["reading", "erdman", "xml"]
 
 
 class SearchError(ValueError):
@@ -16,6 +19,11 @@ class SearchMode(str, Enum):
     LITERAL = "literal"
     VARIANTS = "variants"
     CONCEPT = "concept"
+
+
+class SearchScope(str, Enum):
+    PRIMARY = "primary"
+    EXPLORATORY = "exploratory"
 
 
 class Passage(BaseModel):
@@ -33,9 +41,16 @@ class Passage(BaseModel):
     locator_kind: Literal["plate", "page", "folio", "file_lines", "section"]
     source_url: HttpUrl
     rights: str = Field(min_length=1)
-    text_role: Literal["primary", "editorial", "unverified"]
+    text_role: TextRole
+    source_plane: SourcePlane = "reading"
     text: str = Field(min_length=1)
     source_sha256: Optional[str] = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+
+    @model_validator(mode="after")
+    def primary_reading_plane(self) -> "Passage":
+        if self.text_role == "primary" and self.source_plane != "reading":
+            raise SearchError("Primary passages must belong to the reading plane")
+        return self
 
 
 class Query(BaseModel):
@@ -44,7 +59,10 @@ class Query(BaseModel):
     mode: SearchMode = SearchMode.WORD
     work_id: Optional[str] = None
     edition_id: Optional[str] = None
-    author_id: str = "william-blake-1757-1827"
+    author_id: Optional[str] = "william-blake-1757-1827"
+    scope: SearchScope = SearchScope.PRIMARY
+    text_role: Optional[TextRole] = None
+    source_plane: Optional[SourcePlane] = None
     limit: int = Field(default=20, ge=1, le=1000)
 
 
@@ -72,6 +90,10 @@ class SearchResult(BaseModel):
     total_occurrences: int
     truncated: bool
     hits: tuple[SearchHit, ...]
+    blake_primary_occurrences: int = 0
+    occurrences_by_role: dict[str, int] = Field(default_factory=dict)
+    occurrences_by_plane: dict[str, int] = Field(default_factory=dict)
+    occurrences_by_author: dict[str, int] = Field(default_factory=dict)
 
 
 class Concept(BaseModel):
