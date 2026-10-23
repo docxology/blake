@@ -227,7 +227,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         ],
         "The work-level supplement keeps text, image, and coverage status visible for every target.",
         "Tiles encode target status by color, text availability by T mark, and linked image count by I count.",
-        "This is target-level evidence accounting, not copy-, plate-, or object-level completeness.",
+        "Text and image flags describe only the first matched source/copy record, not all copies of a target.",
         "Every tile carries redundant text labels for status, text, and image evidence.",
         qa_check="Confirm the grid has one tile per target and no text overflow in PDF/mobile screenshots.",
     ),
@@ -377,7 +377,7 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
         "statistical_question": "What target-level evidence profile exists for each ledger entry?",
         "data_shape": "One tile per target-ledger row with status, text flag, and linked image count.",
         "statistical_method": "Descriptive census of status counts, text availability, and image availability.",
-        "missingness_or_scope": "Target-level accounting only; copy, plate, object, and rights status are separate.",
+        "missingness_or_scope": "One tile per target; text and image fields use only its first matched source/copy record. Unmatched targets have no text and zero image associations.",
         "statistical_check": "Tile count must equal target_total and status counts must sum to tile count.",
     },
     "image_depth_by_work": {
@@ -2249,10 +2249,10 @@ def fig_work_evidence_profile_grid(ao: Path, out_dir: Path) -> Path:
     )
     draw.text(
         (gap, 38),
-        f"Status, T text, and I images: {text_count} text targets, {image_count} image targets, "
-        f"{status_counts.get('partial', 0) + status_counts.get('missing', 0)} open targets.",
+        f"First matched record: {text_count} with text, {image_count} with images; "
+        f"{status_counts.get('partial', 0) + status_counts.get('missing', 0)} partial or missing targets.",
         fill=MUTED,
-            font=_pil_font(11),
+        font=_pil_font(11),
     )
     for index, profile in enumerate(profiles):
         row, col = divmod(index, cols)
