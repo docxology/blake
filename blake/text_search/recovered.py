@@ -81,7 +81,6 @@ def _producer() -> Producer:
         Path(__file__).with_name("models.py"),
         Path(__file__).with_name("index.py"),
         Path(__file__).with_name("normalize.py"),
-        package.parent / "uv.lock",
         Path(inspect.getfile(RecoveryManifest)),
         Path(inspect.getfile(_safe_path)),
     ]
@@ -89,6 +88,14 @@ def _producer() -> Producer:
         str(p.relative_to(package.parent)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in set(files)
     }
+    # Wheels carry the same public dependency lock as the source distribution.
+    # Keep its logical binding stable across checkout and installed locations.
+    lock = package / "_resources/uv.lock"
+    if not lock.is_file():
+        lock = package.parent / "uv.lock"
+    if not lock.is_file():
+        raise SearchError("Producer dependency lock is absent; reinstall Blake")
+    bindings["uv.lock"] = hashlib.sha256(lock.read_bytes()).hexdigest()
     return Producer(
         normalization=NORMALIZATION,
         python=".".join(map(str, sys.version_info[:3])),

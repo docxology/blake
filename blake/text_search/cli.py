@@ -9,6 +9,7 @@ from pathlib import Path
 
 import click
 from pydantic import ValidationError
+from ..version import __version__
 
 from .cache import import_cache
 from .index import PassageIndex, read_passages
@@ -43,6 +44,7 @@ RESEARCH_WORDS = (
 
 
 @click.group()
+@click.version_option(__version__)
 @click.option(
     "--index",
     type=click.Path(path_type=Path),

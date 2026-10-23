@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blake"
-version = "0.2.0.dev0"
+dynamic = ["version"]
 description = "Target-aware corpus acquisition, analysis, and completeness accounting for William Blake research"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -27,6 +27,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "packaging>=23.0",
     "requests>=2.31.0",
     "beautifulsoup4>=4.12.0",
     "lxml>=4.9.0",
@@ -99,6 +100,20 @@ blake-text = "blake.text_search.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["blake"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"uv.lock" = "blake/_resources/uv.lock"
+
+[tool.hatch.version]
+path = "blake/version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
+    "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md",
+]
+exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 
 [tool.black]
 line-length = 88

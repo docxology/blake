@@ -1,4 +1,4 @@
-__version__ = "0.2.0.dev0"
+from .version import __version__, version_info
 __author__ = "Daniel Ari Friedman"
 __email__ = "daniel@activeinference.institute"
 __orcid__ = "0000-0001-6232-9096"
@@ -31,6 +31,8 @@ def __getattr__(name: str) -> type:
     return value
 
 __all__ = [
+    "__version__",
+    "version_info",
     "BlakeCorpus",
     "CorpusConfig",
     "CorpusManifest",

@@ -10,6 +10,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
+from packaging.version import Version
 
 from .. import __affiliation__, __author__, __email__, __orcid__, __version__
 from .evidence_acquisition import (
@@ -1086,13 +1087,14 @@ def _build_citation_cff(manifest: dict[str, Any]) -> str:
 
 
 def _github_release_metadata(
-    public_release_name: str, destination: str
+    public_release_name: str, destination: str, *, version: str = __version__
 ) -> dict[str, Any]:
+    parsed = Version(version)
     return {
-        "tag_name": f"v{__version__}",
+        "tag_name": f"v{parsed}",
         "name": f"{public_release_name} for {destination}",
         "draft": True,
-        "prerelease": False,
+        "prerelease": parsed.is_prerelease,
     }
 
 

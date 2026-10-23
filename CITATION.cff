@@ -7,15 +7,19 @@ abstract: >-
   with an auditable target ledger and a fail-closed rights gate that separates
   open-source code and aggregate analytics from provider-supplied source files.
 type: software
-version: "0.1.0"
-doi: "10.5281/zenodo.21047574"
+version: "0.2.0rc1"
 license: MIT
 url: "https://github.com/docxology/blake"
 repository-code: "https://github.com/docxology/blake"
-identifiers:
-  - type: doi
-    value: "10.5281/zenodo.21047574"
-    description: "Zenodo archived release (working paper + software bundle)"
+references:
+  - type: software
+    title: "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow"
+    version: "0.1.0"
+    doi: "10.5281/zenodo.21047574"
+    notes: "Archived working paper and software bundle; this DOI does not identify the current release candidate."
+    authors:
+      - family-names: Friedman
+        given-names: Daniel Ari
 keywords:
   - William Blake
   - digital humanities

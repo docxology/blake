@@ -32,8 +32,9 @@ from .models import (
     Visualization, Report, ReportTemplate, ReportSection
 )
 
-__version__ = "1.0.0"
+from ..version import __version__
 __all__ = [
+    '__version__',
     # Core engines
     'VisualizationEngine',
     'DataProcessor',
