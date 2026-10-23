@@ -49,12 +49,13 @@ class ImageRenderer:
         # Generate plot if output_path provided
         saved_path = None
         if config.output_path:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
                 matplotlib.use('Agg')
                 
-                plt.figure(figsize=(12, 6))
+                fig = plt.figure(figsize=(12, 6))
                 
                 # Create bar chart of colors
                 colors = [c[0] for c in top_colors]
@@ -69,11 +70,15 @@ class ImageRenderer:
                 # Ensure directory exists
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path)
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved color palette to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate color palette plot: {e}")
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
 
         # Create palette data
         palette_data = {
@@ -116,6 +121,7 @@ class ImageRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and evolution_data:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -146,12 +152,16 @@ class ImageRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved color evolution to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate color evolution plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'color_evolution',
             'data': {
@@ -188,6 +198,7 @@ class ImageRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and distribution_data:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -222,12 +233,16 @@ class ImageRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved color distribution to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate color distribution plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'color_distribution',
             'data': {
@@ -396,6 +411,7 @@ class ImageRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and clusters:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -412,15 +428,20 @@ class ImageRenderer:
                     size = cluster_info['size']
                     
                     # Generate random positions within cluster boundaries
-                    np.random.seed(cluster_id)  # Reproducible positions
-                    x = np.random.randn(size) * 0.5 + i * 2
-                    y = np.random.randn(size) * 0.5
+                    rng = np.random.default_rng(cluster_id)
+                    x = rng.standard_normal(size) * 0.5 + i * 2
+                    y = rng.standard_normal(size) * 0.5
                     
                     ax.scatter(x, y, c=[cluster_colors[i]], s=200, alpha=0.7,
                               label=f'Cluster {cluster_id} ({size} images)', edgecolors='black')
                 
-                ax.set_xlabel('Cluster Distribution', fontsize=12)
-                ax.set_ylabel('Image Grouping', fontsize=12)
+                ax.set_xlabel('Synthetic layout position', fontsize=12)
+                ax.set_ylabel('Illustrative grouping', fontsize=12)
+                ax.text(
+                    0.5, -0.12,
+                    'Illustrative grouping layout; positions and distances are not measured.',
+                    transform=ax.transAxes, ha='center', fontsize=9,
+                )
                 ax.set_title(config.title or 'William Blake - Image Clustering', fontsize=14, fontweight='bold')
                 ax.legend(loc='upper right', fontsize=9)
                 ax.grid(alpha=0.3)
@@ -430,12 +451,16 @@ class ImageRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved image clustering to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate image clustering plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'image_clustering',
             'data': {
@@ -450,7 +475,12 @@ class ImageRenderer:
             'metadata': {
                 'renderer': 'ImageRenderer',
                 'image_count': len(data.images),
-                'cluster_count': len(clusters)
+                'cluster_count': len(clusters),
+                'layout': {
+                    'kind': 'illustrative_grouping',
+                    'positions_are_measured': False,
+                    'note': 'Positions and distances are not analytical evidence.',
+                },
             }
         }
     

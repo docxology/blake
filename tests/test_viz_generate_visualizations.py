@@ -21,10 +21,9 @@ def test_load_corpus_computes_lexical_statistics(tmp_path):
     work = works[0]
     assert work["name"] == "songs_sample"
     assert work["title"] == "Songs Sample"
-    assert work["words"] == 12
+    assert work["words"] == 10
     assert work["lines"] == 3
     assert work["sentences"] == 3
-    assert work["words"] == 10
     assert work["unique_words"] == 8
 
 def test_generate_all_visualizations_writes_all_figures(tmp_path):

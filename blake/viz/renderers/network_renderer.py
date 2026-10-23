@@ -50,6 +50,7 @@ class NetworkRenderer:
         # Determine output path (config or default)
         saved_path = None
         if config.output_path:
+            fig = None
             try:
                 import networkx as nx
                 import matplotlib.pyplot as plt
@@ -63,8 +64,8 @@ class NetworkRenderer:
                 for edge in data.edges:
                     G.add_edge(edge['source'], edge['target'], weight=edge['weight'])
                 
-                plt.figure(figsize=(12, 12))
-                pos = nx.spring_layout(G, k=0.5, iterations=50)
+                fig = plt.figure(figsize=(12, 12))
+                pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
                 
                 # Draw nodes
                 nx.draw_networkx_nodes(G, pos, node_size=500, node_color='lightgreen', alpha=0.8)
@@ -79,12 +80,16 @@ class NetworkRenderer:
                 # Ensure directory exists
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=300, bbox_inches='tight')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved thematic network to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate thematic network plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'thematic_network',
             'data': {
@@ -117,6 +122,7 @@ class NetworkRenderer:
         # Determine output path (config or default)
         saved_path = None
         if config.output_path:
+            fig = None
             try:
                 import networkx as nx
                 import matplotlib.pyplot as plt
@@ -130,8 +136,8 @@ class NetworkRenderer:
                 for edge in data.edges:
                     G.add_edge(edge['source'], edge['target'], **edge)
                 
-                plt.figure(figsize=(12, 12))
-                pos = nx.spring_layout(G, k=0.5, iterations=50)
+                fig = plt.figure(figsize=(12, 12))
+                pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
                 
                 # Draw nodes
                 nx.draw_networkx_nodes(G, pos, node_size=700, node_color='lightblue', alpha=0.8)
@@ -146,13 +152,17 @@ class NetworkRenderer:
                 # Ensure directory exists
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=300, bbox_inches='tight')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved concept map to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate concept map plot: {e}")
                 import traceback
                 logger.error(traceback.format_exc())
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
 
         return {
             'type': 'concept_map',

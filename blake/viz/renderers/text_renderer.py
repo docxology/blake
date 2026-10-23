@@ -55,6 +55,7 @@ class TextRenderer:
         # Generate and save plot if output_path is provided
         saved_path = None
         if config.output_path and top_words:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -87,7 +88,7 @@ class TextRenderer:
                 
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved word cloud to {saved_path}")
                 
@@ -100,7 +101,11 @@ class TextRenderer:
                 
             except Exception as e:
                 logger.error(f"Failed to generate word cloud plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         word_cloud_data['saved_path'] = saved_path
         
         return {
@@ -139,6 +144,7 @@ class TextRenderer:
         # Generate and save plot if output_path is provided
         saved_path = None
         if config.output_path and top_words:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -167,7 +173,7 @@ class TextRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved frequency chart to {saved_path}")
                 
@@ -180,7 +186,11 @@ class TextRenderer:
                 
             except Exception as e:
                 logger.error(f"Failed to generate frequency chart plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         chart_data['saved_path'] = saved_path
         
         return {
@@ -215,12 +225,13 @@ class TextRenderer:
         # Generate and save plot if output_path is provided
         saved_path = None
         if config.output_path:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
                 matplotlib.use('Agg')  # Non-interactive backend
                 
-                plt.figure(figsize=(12, 6))
+                fig = plt.figure(figsize=(12, 6))
                 plt.plot([d['x'] for d in timeline_data], [d['y'] for d in timeline_data], marker='o', linestyle='-', alpha=0.7)
                 plt.axhline(y=0, color='r', linestyle='--', alpha=0.3)
                 plt.title(config.title or 'Sentiment Timeline')
@@ -231,11 +242,15 @@ class TextRenderer:
                 # Ensure directory exists
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path)
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved sentiment timeline to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate sentiment plot: {e}")
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
 
         return {
             'type': 'sentiment_timeline',

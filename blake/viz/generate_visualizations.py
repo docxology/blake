@@ -418,9 +418,14 @@ def generate_image_visualizations(works, output_base):
     ax = axes[1, 0]
     light_count = sum(all_text.count(t) for t in ['light', 'bright', 'sun', 'star', 'radiant'])
     dark_count = sum(all_text.count(t) for t in ['dark', 'shadow', 'night', 'black', 'gloom'])
-    ax.pie([light_count, dark_count], labels=['Light', 'Dark'],
-           colors=['gold', 'dimgray'], autopct='%1.1f%%', explode=(0.05, 0.05),
-           shadow=True, startangle=90)
+    if light_count + dark_count:
+        ax.pie([light_count, dark_count], labels=['Light', 'Dark'],
+               colors=['gold', 'dimgray'], autopct='%1.1f%%', explode=(0.05, 0.05),
+               shadow=True, startangle=90)
+    else:
+        ax.text(0.5, 0.5, 'No light or dark terms observed',
+                transform=ax.transAxes, ha='center', va='center')
+        ax.set_axis_off()
     ax.set_title('Light vs Dark Balance', fontsize=12, fontweight='bold')
 
     # Visual descriptors

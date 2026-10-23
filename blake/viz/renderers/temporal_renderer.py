@@ -49,6 +49,7 @@ class TemporalRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and timeline_data:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -65,8 +66,8 @@ class TemporalRenderer:
                         date = dt.fromisoformat(item['date'].replace('Z', '+00:00'))
                         dates.append(date.year)
                         titles.append(item['title'][:30] + '...' if len(item['title']) > 30 else item['title'])
-                    except:
-                        continue
+                    except (TypeError, ValueError, AttributeError) as exc:
+                        raise ValueError(f"Invalid timeline date for {item['work_id']}") from exc
                 
                 if dates:
                     colors = plt.cm.viridis([i / len(dates) for i in range(len(dates))])
@@ -86,7 +87,7 @@ class TemporalRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved work timeline to {saved_path}")
                 
@@ -99,7 +100,11 @@ class TemporalRenderer:
                 
             except Exception as e:
                 logger.error(f"Failed to generate work timeline plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'work_timeline',
             'data': {
@@ -136,6 +141,7 @@ class TemporalRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and theme_evolution:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -164,12 +170,16 @@ class TemporalRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved theme evolution to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate theme evolution plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'theme_evolution',
             'data': {
@@ -205,6 +215,7 @@ class TemporalRenderer:
         # Generate and save plot if output_path provided
         saved_path = None
         if config.output_path and periods_data:
+            fig = None
             try:
                 import matplotlib.pyplot as plt
                 import matplotlib
@@ -234,12 +245,16 @@ class TemporalRenderer:
                 plt.tight_layout()
                 config.output_path.parent.mkdir(parents=True, exist_ok=True)
                 plt.savefig(config.output_path, dpi=100, bbox_inches='tight', facecolor='white')
-                plt.close()
+                plt.close(fig)
                 saved_path = str(config.output_path)
                 logger.info(f"Saved creative periods to {saved_path}")
             except Exception as e:
                 logger.error(f"Failed to generate creative periods plot: {e}")
-        
+                raise
+            finally:
+                if fig is not None:
+                    plt.close(fig)
+
         return {
             'type': 'creative_periods',
             'data': {
