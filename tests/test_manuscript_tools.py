@@ -799,3 +799,7 @@ def test_public_only_generation_excludes_private_mosaics_and_matches_the_paper(
         (manuscript_fixture_root / "output/figures/figure_registry.json").read_text()
     )
     assert registry["scope"] == "public"
+    for figure in registry["figures"]:
+        assert figure["filename"] == figure["path"]
+        assert Path(figure["path"]).name == figure["path"]
+        assert figure["alt_text"] == figure["accessibility_summary"]

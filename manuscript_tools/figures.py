@@ -2534,7 +2534,8 @@ def generate_all_figures(
             {
                 "label": f"fig:{path.stem}",
                 "filename": path.name,
-                "path": str(path),
+                "path": path.name,
+                "alt_text": FIGURE_BRIEFS[path.stem]["accessibility_summary"],
                 "generated_by": "manuscript_tools.figures",
                 "bytes": path.stat().st_size,
                 "statistics": compute_figure_statistics(ao, path.stem),
