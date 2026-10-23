@@ -118,7 +118,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         "Color is paired with printed status text inside each row.",
     ),
     "chronology": _brief(
-        "Show how dated local works distribute across work types.",
+        "Show how dated local records distribute across work types.",
         ["visualizations/chronology.json"],
         "The current corpus spans multiple dated work types but remains source-bound.",
         "Scatter positions encode year and work type; color encodes acquisition source.",
@@ -152,7 +152,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
     "nlp_embedding_pca": _brief(
         "Show whether text-bearing works form visible lexical neighborhoods.",
         ["data/nlp_diagnostics.json", "visualizations/text_metrics.json"],
-        "The PCA/LSA map is a diagnostic of the text subset, not a complete literary map.",
+        "The covariance PCA map diagnoses the text subset, not the complete oeuvre.",
         "Point position encodes TF-IDF latent axes; size and color encode text length.",
         "Only works with local text evidence enter the embedding.",
         "Legend, axis variance, and selected labels explain the visual encoding.",
@@ -161,7 +161,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         "Inspect joint text/image density for local text-bearing works.",
         ["visualizations/text_metrics.json", "visualizations/text_image_linkage.json"],
         "Cross-modal inspection is bounded to works that have local text evidence.",
-        "X encodes log word count, y linked images, color lexical density, size distinct terms.",
+        "X encodes log word count, y image associations, color lexical density, size distinct terms.",
         "This is not plate-level or copy-level visual completeness.",
         "Axis labels, colorbar, and annotations describe all encodings.",
     ),
@@ -174,9 +174,9 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         "Direct bar labels keep the ranking readable without interaction.",
     ),
     "text_image_linkage": _brief(
-        "Rank local works by linked image evidence.",
+        "Rank local records by linked image evidence.",
         ["visualizations/text_image_linkage.json"],
-        "Image evidence is concentrated in particular local works.",
+        "Image evidence is concentrated in particular local records.",
         "Horizontal bars encode linked image counts; color marks whether text is also present.",
         "Linked image counts are local records, not all Archive objects.",
         "Printed counts and color categories support static and grayscale review.",
@@ -245,7 +245,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         ["visualizations/image_depth.json"],
         "Image-depth completeness varies by work area and source metadata shape.",
         "Grouped bars encode resolved Archive objects and downloaded image files by target-ledger category.",
-        "Category totals aggregate local works; they are not object-level Blake oeuvre totals.",
+        "Category totals aggregate local records; they are not object-level Blake oeuvre totals.",
         "Category labels, numeric bar labels, and a legend make the grouped comparison accessible.",
         qa_check="Confirm grouped bars fit mobile width and every category denominator is visible.",
     ),
@@ -276,7 +276,7 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
         "statistical_check": "Each stacked row must expose its denominator and unresolved count.",
     },
     "corpus_modalities": {
-        "statistical_question": "How many local works have text, images, both modalities, or metadata only?",
+        "statistical_question": "How many local records have text, images, both modalities, or metadata only?",
         "data_shape": "One local work row from text metrics joined to one local work row from image linkage.",
         "statistical_method": "Descriptive cross-tabulation of binary text and binary image availability.",
         "missingness_or_scope": "Local image presence does not imply Archive object or copy completeness.",
@@ -320,8 +320,8 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
     "nlp_embedding_pca": {
         "statistical_question": "What descriptive lexical neighborhoods appear among text-bearing works?",
         "data_shape": "One point per text-bearing work projected from TF-IDF features into two axes.",
-        "statistical_method": "Local-run TF-IDF LSA/PCA diagnostic with variance and top-axis terms.",
-        "missingness_or_scope": "Only text-bearing local works enter; no inferential literary clustering is claimed.",
+        "statistical_method": "Centered row-normalized TF-IDF covariance PCA with variance and top-axis terms.",
+        "missingness_or_scope": "Only text-bearing local records enter; no inferential literary clustering is claimed.",
         "statistical_check": "Registry statistics must include n, feature count, variance, and top terms for both axes.",
     },
     "text_image_density": {
@@ -339,9 +339,9 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
         "statistical_check": "Theme counts must be derived from graph edges rather than hand-written labels.",
     },
     "text_image_linkage": {
-        "statistical_question": "Which local works concentrate linked image evidence?",
+        "statistical_question": "Which local records concentrate linked image evidence?",
         "data_shape": "One local work row with text flag, image count, and linked image records.",
-        "statistical_method": "Ranked descriptive image counts and top-work share of linked images.",
+        "statistical_method": "Ranked descriptive image counts and top-work share of image associations.",
         "missingness_or_scope": "Linked images are local records, not all Archive objects or copies.",
         "statistical_check": "Image-rich bars must preserve local count labels and text-presence category.",
     },
@@ -381,7 +381,7 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
         "statistical_check": "Tile count must equal target_total and status counts must sum to tile count.",
     },
     "image_depth_by_work": {
-        "statistical_question": "Which local works have the deepest resolved/downloaded Archive object evidence?",
+        "statistical_question": "Which local records have the deepest resolved/downloaded Archive object evidence?",
         "data_shape": "One local work row with expected, resolved, downloaded, local-image, and failure counts.",
         "statistical_method": "Ranked descriptive resolved/downloaded counts and completion ratio.",
         "missingness_or_scope": "Counts cover discoverable Archive object metadata only.",
@@ -749,14 +749,14 @@ def _pipeline_phase_records(ao: Path) -> list[dict[str, Any]]:
 
         if name == "discovery":
             evidence = f"{items:,} source records"
-            note = "live/provider audit logged"
+            note = "saved discovery status; see phase flag"
         elif name == "acquisition" and raw_status == "skipped":
             action = "reused local corpus"
             action_class = "reused"
-            evidence = f"{total_works:,} works; {total_images:,} images"
+            evidence = f"{total_works:,} records; {total_images:,} image associations"
             note = "no live re-fetch"
         elif name == "metadata":
-            evidence = f"{target_total:,} targets; {total_works:,} works"
+            evidence = f"{target_total:,} targets; {total_works:,} records"
             note = "manifest regenerated"
         elif name == "analysis" and raw_status == "skipped":
             action = "deep analyzer not rerun"
@@ -764,7 +764,7 @@ def _pipeline_phase_records(ao: Path) -> list[dict[str, Any]]:
             evidence = f"{len(text_rows):,} text rows; {len(image_depth):,} image-depth rows"
             note = "diagnostics generated downstream"
         elif name == "analysis":
-            evidence = f"{items:,} works analyzed"
+            evidence = f"{items:,} records analyzed"
             note = "analysis artifacts regenerated"
         elif name == "visualizations":
             evidence = f"{artifact_count:,} visualization artifacts"
@@ -1394,7 +1394,7 @@ def fig_category_coverage(ao: Path, out_dir: Path) -> Path:
     ax.set_xlim(0, max_total * 1.42)
     _title_with_subtitle(
         ax,
-        "Open evidence is concentrated in manuscripts and poems",
+        "Target evidence states by ledger category",
         "Each row prints unresolved targets over the category denominator.",
     )
     ax.legend(frameon=False, ncol=5, loc="lower right", bbox_to_anchor=(1.0, -0.16))
@@ -1436,11 +1436,11 @@ def fig_corpus_modalities(ao: Path, out_dir: Path) -> Path:
             ha="center",
             va="bottom",
         )
-    ax.set_ylabel("local works")
+    ax.set_ylabel("local records")
     _title_with_subtitle(
         ax,
         "Local work records separate text, image, joint, and metadata evidence",
-        "Counts are local works; image presence is not object- or copy-complete coverage.",
+        "Counts are local records; image presence is not object- or copy-complete coverage.",
     )
     return _save(fig, out_dir, "corpus_modalities")
 
@@ -1550,8 +1550,26 @@ def fig_chronology(ao: Path, out_dir: Path) -> Path:
     ax.set_yticks(list(y_by_type.values()))
     ax.set_yticklabels(work_types)
     ax.set_xlabel("year")
-    ax.set_title("Chronology of acquired local works")
+    ax.set_title("Chronology of acquired local records")
     return _save(fig, out_dir, "chronology")
+
+
+def _record_bars(ax: Any, rows: list[dict[str, Any]], values: list[int], colors: Any):
+    """Keep equally titled source/copy records on distinct numeric rows."""
+    if len(rows) != len(values) or any(value < 0 for value in values):
+        raise ValueError("Record bars require matching nonnegative counts")
+    positions = list(range(len(rows)))
+    bars = ax.barh(positions, values, color=colors)
+    labels = [
+        f"{rank}. "
+        + _wrapped(_short(row.get("title") or row.get("work_id", ""), 32), width=24)
+        for rank, row in enumerate(rows, 1)
+    ]
+    ax.set_yticks(positions)
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_xlim(0, max(values + [1]) * 1.20)
+    return bars
 
 
 def fig_word_counts(ao: Path, out_dir: Path) -> Path:
@@ -1564,17 +1582,13 @@ def fig_word_counts(ao: Path, out_dir: Path) -> Path:
     rows = sorted(
         all_rows, key=lambda row: int(row.get("word_count", 0)), reverse=True
     )[:12]
-    labels = [
-        _wrapped(_short(row.get("title", row.get("work_id", "")), 36), width=22)
-        for row in rows
-    ]
     words = [int(row.get("word_count", 0)) for row in rows]
     top_share = _pct(sum(words), total_words)
 
-    fig, ax = plt.subplots(figsize=(9.4, 6.2))
+    fig, ax = plt.subplots(figsize=(9.4, max(5.2, len(rows) * 0.52 + 1.2)))
     _style(ax, grid_axis="x")
-    bars = ax.barh(labels[::-1], words[::-1], color=PALETTE["blue"])
-    for bar, value in zip(bars, words[::-1]):
+    bars = _record_bars(ax, rows, words, PALETTE["blue"])
+    for bar, value in zip(bars, words):
         ax.text(
             value + max(words) * 0.012,
             bar.get_y() + bar.get_height() / 2,
@@ -1584,8 +1598,8 @@ def fig_word_counts(ao: Path, out_dir: Path) -> Path:
     ax.set_xlabel("words")
     _title_with_subtitle(
         ax,
-        f"Top 12 text-bearing works hold {top_share:.1f}% of {total_words:,} words",
-        "Only works with local text evidence enter this denominator.",
+        f"Largest text records: {top_share:.1f}% of {total_words:,} words",
+        "Ranked bars distinguish source/copy records with repeated titles.",
     )
     return _save(fig, out_dir, "word_counts")
 
@@ -1613,32 +1627,17 @@ def fig_vocab_richness(ao: Path, out_dir: Path) -> Path:
     _title_with_subtitle(
         ax,
         f"Vocabulary richness is length-sensitive (n={len(rows)})",
-        f"Median TTR {richness_summary['median']:.2f}; short works can inflate type-token ratio.",
+        f"Median type-token ratio {richness_summary['median']:.2f}; short records can inflate type-token ratio.",
     )
     ax.text(
         0.02,
         0.03,
-        f"{short_count} texts under 1,000 words; short texts can inflate TTR",
+        f"{short_count} texts under 1,000 words; short texts can inflate type-token ratio",
         transform=ax.transAxes,
         fontsize=9.4,
         color=MUTED,
         bbox={"facecolor": BG, "edgecolor": GRID, "alpha": 0.92, "pad": 2.5},
     )
-    offsets = [(8, 14), (8, -18), (8, 8), (8, -12)]
-    for index, row in enumerate(
-        sorted(rows, key=lambda item: int(item.get("word_count", 0)), reverse=True)[:4]
-    ):
-        ax.annotate(
-            _short(row.get("title", ""), 22),
-            (
-                max(int(row.get("word_count", 0)), 1),
-                float(row.get("vocabulary_richness", 0.0)),
-            ),
-            xytext=offsets[index],
-            textcoords="offset points",
-            fontsize=9.2,
-            color=MUTED,
-        )
     return _save(fig, out_dir, "vocab_richness")
 
 
@@ -1677,16 +1676,21 @@ def fig_lexical_signature(ao: Path, out_dir: Path) -> Path:
             va="center",
         )
     ax_terms.set_xlabel("filtered token count")
-    ax_terms.set_title(
-        f"Top filtered terms (top term {top_share:.1f}% of lexical tokens)"
+    _title_with_subtitle(
+        ax_terms,
+        "Leading lexical terms",
+        f"Top term: {top_share:.1f}% of filtered tokens",
     )
+    ax_terms.set_xlim(0, max(term_values + [1]) * 1.18)
 
     phrase_labels = [_wrapped(row.get("phrase", ""), width=18) for row in phrases]
     phrase_values = [int(row.get("count", 0)) for row in phrases]
     ax_phrases.barh(phrase_labels[::-1], phrase_values[::-1], color=PALETTE["violet"])
     ax_phrases.set_xlabel("phrase count")
-    ax_phrases.set_title(
-        f"Top adjacent-term phrases (n={signature.get('text_work_count', 0)} works)"
+    _title_with_subtitle(
+        ax_phrases,
+        "Adjacent-term phrases",
+        f"{signature.get('text_work_count', 0)} text records",
     )
     return _save(fig, out_dir, "lexical_signature")
 
@@ -1721,29 +1725,8 @@ def fig_nlp_embedding_pca(ao: Path, out_dir: Path) -> Path:
         for point in points
     ]
     ax.scatter(x, y, s=sizes, color=colors, edgecolors=BG, linewidth=0.7, alpha=0.86)
+    ax.margins(x=0.08, y=0.12)
 
-    labelled = sorted(
-        points,
-        key=lambda point: int(point.get("word_count", 0)),
-        reverse=True,
-    )[:4]
-    label_offsets = [(-46, 34), (24, 30), (-44, -38), (24, -38)]
-    for index, point in enumerate(labelled):
-        x_value = float(point.get("pc1", 0.0))
-        y_value = float(point.get("pc2", 0.0))
-        offset = label_offsets[index]
-        ha = "right" if offset[0] < 0 else "left"
-        ax.annotate(
-            _short(point.get("title", point.get("work_id", "")), 19),
-            (x_value, y_value),
-            xytext=offset,
-            textcoords="offset points",
-            ha=ha,
-            fontsize=9.2,
-            color=MUTED,
-            bbox={"facecolor": BG, "edgecolor": "none", "alpha": 0.82, "pad": 0.5},
-            arrowprops={"arrowstyle": "-", "color": GRID, "lw": 0.75},
-        )
     ax.axhline(0, color=GRID, linewidth=0.8)
     ax.axvline(0, color=GRID, linewidth=0.8)
     legend_items = [
@@ -1771,14 +1754,14 @@ def fig_nlp_embedding_pca(ao: Path, out_dir: Path) -> Path:
     ax.legend(handles=legend_items, frameon=False, loc="lower right")
     pc1 = float(embedding.get("variance_pc1", 0.0)) * 100
     pc2 = float(embedding.get("variance_pc2", 0.0)) * 100
-    ax.set_xlabel(f"PC1 / LSA axis ({pc1:.1f}% variance)")
-    ax.set_ylabel(f"PC2 / LSA axis ({pc2:.1f}% variance)")
+    ax.set_xlabel(f"PC1 ({pc1:.1f}% variance)")
+    ax.set_ylabel(f"PC2 ({pc2:.1f}% variance)")
     top_pc1 = ", ".join(list(embedding.get("top_terms_pc1") or [])[:4])
     top_pc2 = ", ".join(list(embedding.get("top_terms_pc2") or [])[:4])
     ax.text(
         0.015,
         0.02,
-        f"{len(points)} works, {int(embedding.get('feature_count') or 0)} features\n"
+        f"{len(points)} records, {int(embedding.get('feature_count') or 0)} features\n"
         f"PC1 terms: {top_pc1}\nPC2 terms: {top_pc2}",
         transform=ax.transAxes,
         fontsize=9.0,
@@ -1788,7 +1771,7 @@ def fig_nlp_embedding_pca(ao: Path, out_dir: Path) -> Path:
     _title_with_subtitle(
         ax,
         f"Text-bearing PCA diagnostic: PC1+PC2 explain {pc1 + pc2:.1f}%",
-        "Local-run TF-IDF/LSA view only; point positions are not editorial clusters.",
+        "Centered TF-IDF covariance projection; points are source/copy records.",
         pad=20,
     )
     return _save(fig, out_dir, "nlp_embedding_pca")
@@ -1834,59 +1817,24 @@ def fig_text_image_density(ao: Path, out_dir: Path) -> Path:
     max_images = max(y + [1])
     ax.set_ylim(-0.12, max_images * 1.13)
     ax.set_xlabel("word count (log scale)")
-    ax.set_ylabel("linked images")
+    ax.set_ylabel("image associations")
     zero_count = sum(1 for value in y if value == 0)
     correlation = _pearson([math.log10(max(value, 1)) for value in x], y)
     ax.axhline(0, color=GRID, linewidth=1.0, linestyle="--")
     _note(
         ax,
-        f"{zero_count} of {len(text_rows)} text works have zero linked images\n"
+        f"{zero_count} of {len(text_rows)} text records have zero image associations\n"
         f"local Pearson r(log words, images) = {correlation:.2f}",
         xy=(0.02, 0.03),
     )
     _title_with_subtitle(
         ax,
-        "Cross-modal density is bounded to text-bearing local works",
+        "Cross-modal density is bounded to text-bearing local records",
         "Bubble size encodes distinct lexical terms; color encodes lexical density.",
     )
     colorbar = fig.colorbar(scatter, ax=ax, fraction=0.042, pad=0.03)
     colorbar.set_label("lexical density")
 
-    labelled = sorted(
-        text_rows,
-        key=lambda row: (
-            images_by_id.get(row.get("work_id"), 0),
-            int(row.get("word_count", 0)),
-        ),
-        reverse=True,
-    )[:4]
-    offsets = [(-22, 24), (-22, -28), (16, 34), (16, -38)]
-    for index, row in enumerate(labelled):
-        word_count = max(int(row.get("word_count", 0)), 1)
-        image_count = images_by_id.get(row.get("work_id"), 0)
-        va = "center"
-        if image_count > max_images * 0.82:
-            offset = [(-14, -28), (-18, -42), (12, -34)][index % 3]
-            ha = "right" if offset[0] < 0 else "left"
-            va = "top"
-        elif word_count > max(x) * 0.3:
-            offset = offsets[index]
-            ha = "right"
-        else:
-            offset = (9, 10 + (index % 3) * 8)
-            ha = "left"
-        ax.annotate(
-            _short(row.get("title", row.get("work_id", "")), 20),
-            (word_count, image_count),
-            xytext=offset,
-            textcoords="offset points",
-            ha=ha,
-            va=va,
-            fontsize=9.2,
-            color=MUTED,
-            bbox={"facecolor": BG, "edgecolor": "none", "alpha": 0.82, "pad": 0.45},
-            arrowprops={"arrowstyle": "-", "color": GRID, "lw": 0.8},
-        )
     return _save(fig, out_dir, "text_image_density")
 
 
@@ -1910,11 +1858,11 @@ def fig_theme_network(ao: Path, out_dir: Path) -> Path:
         ax.text(
             value + 0.2, bar.get_y() + bar.get_height() / 2, str(value), va="center"
         )
-    ax.set_xlabel("work-theme links")
+    ax.set_xlabel("record-theme links")
     _title_with_subtitle(
         ax,
-        "Most frequent generated themes in the work-theme graph",
-        "Counts are computational work-theme links, not editorial taxonomy.",
+        "Most frequent generated themes in the record-theme graph",
+        "Counts are computational record-theme links; metadata and model sources are retained.",
     )
     return _save(fig, out_dir, "theme_network")
 
@@ -1925,30 +1873,26 @@ def fig_text_image_linkage(ao: Path, out_dir: Path) -> Path:
     rows = sorted(rows, key=lambda row: int(row.get("image_count", 0)), reverse=True)[
         :12
     ]
-    labels = [
-        _wrapped(_short(row.get("title", row.get("work_id", "")), 36), width=22)
-        for row in rows
-    ]
     images = [int(row.get("image_count", 0)) for row in rows]
     colors = [
         PALETTE["green"] if row.get("has_text") else PALETTE["gold"] for row in rows
     ]
 
-    fig, ax = plt.subplots(figsize=(9.4, 6.1))
+    fig, ax = plt.subplots(figsize=(9.4, max(5.2, len(rows) * 0.52 + 1.2)))
     _style(ax, grid_axis="x")
-    bars = ax.barh(labels[::-1], images[::-1], color=colors[::-1])
-    for bar, value in zip(bars, images[::-1]):
+    bars = _record_bars(ax, rows, images, colors)
+    for bar, value in zip(bars, images):
         ax.text(
             value + max(images + [1]) * 0.012,
             bar.get_y() + bar.get_height() / 2,
             str(value),
             va="center",
         )
-    ax.set_xlabel("linked images")
+    ax.set_xlabel("image associations")
     _title_with_subtitle(
         ax,
-        f"Top 12 works hold {sum(images):,}/{total_linked_images:,} linked local images",
-        "Local image records are not all Archive objects or copies.",
+        f"Top {len(rows)} records: {sum(images):,}/{total_linked_images:,} image associations",
+        "Ranks distinguish source/copy records; associations can reuse files.",
     )
     return _save(fig, out_dir, "text_image_linkage")
 
@@ -1999,7 +1943,7 @@ def fig_evidence_gaps(ao: Path, out_dir: Path) -> Path:
     ax.set_xlabel("target entries")
     _title_with_subtitle(
         ax,
-        "Missing expected text dominates remaining evidence gaps",
+        "Open evidence gaps in the target ledger",
         "Gap-note categories guide review and do not replace source inspection.",
     )
     return _save(fig, out_dir, "evidence_gaps")
@@ -2382,7 +2326,8 @@ def fig_image_depth_by_work(ao: Path, out_dir: Path) -> Path:
             }
         ]
 
-    labels = [_short(row.get("title") or row.get("work_id"), 30) for row in rows]
+    labels = [f"{rank}. " + _short(row.get("title") or row.get("work_id"), 30)
+              for rank, row in enumerate(rows, 1)]
     downloaded = [local_count(row) for row in rows]
     resolved = [int(row.get("resolved_object_count") or 0) for row in rows]
     total_downloaded = sum(downloaded)
@@ -2395,7 +2340,7 @@ def fig_image_depth_by_work(ao: Path, out_dir: Path) -> Path:
         y,
         downloaded,
         color=PALETTE["green"],
-        label="downloaded local images",
+        label="local image associations",
         height=0.42,
     )
     for index, value in enumerate(downloaded):
@@ -2411,11 +2356,11 @@ def fig_image_depth_by_work(ao: Path, out_dir: Path) -> Path:
     ax.set_yticks(y)
     ax.set_yticklabels(labels)
     ax.invert_yaxis()
-    ax.set_xlabel("object/image files")
+    ax.set_xlabel("object candidates / image associations")
     ax.set_xlim(0, max(downloaded + resolved + [1]) * 1.16)
     _title_with_subtitle(
         ax,
-        f"Top image-depth works: {total_downloaded}/{total_resolved} downloaded/resolved",
+        f"Record image depth: {total_downloaded}/{total_resolved} downloaded/resolved",
         "Counts cover discoverable Archive object metadata with valid local image files.",
     )
     ax.legend(frameon=False, loc="lower right")
@@ -2463,7 +2408,7 @@ def fig_image_depth_by_area(ao: Path, out_dir: Path) -> Path:
         downloaded,
         height=height,
         color=PALETTE["green"],
-        label="downloaded images",
+        label="local image associations",
     )
     max_value = max(resolved + downloaded + [1])
     for index, value in enumerate(downloaded):
@@ -2520,11 +2465,11 @@ def fig_source_authority_tiers(ao: Path, out_dir: Path) -> Path:
             color=INK,
         )
     ax.set_ylim(0, max_value * 1.28)
-    ax.set_ylabel("local works")
+    ax.set_ylabel("local records")
     _title_with_subtitle(
         ax,
         "Authority tiers separate Archive and validated fallback evidence",
-        "Percentages use the local-work denominator for this saved run.",
+        "Percentages use the local-record denominator for this saved run.",
         pad=18,
     )
     ax.tick_params(axis="x", rotation=18)
@@ -2555,7 +2500,19 @@ FIGURES = [
 ]
 
 
-def generate_all_figures(project_root: Path | str) -> list[Path]:
+PUBLICATION_OMISSIONS = frozenset(
+    {
+        "all_acquired_images_mosaic",
+        "work_area_image_mosaics",
+        "source_audit",
+        "chronology",
+    }
+)
+
+
+def generate_all_figures(
+    project_root: Path | str, *, public_only: bool = False
+) -> list[Path]:
     root = Path(project_root)
     ao = root / "analysis_output"
     if not ao.exists():
@@ -2565,10 +2522,13 @@ def generate_all_figures(project_root: Path | str) -> list[Path]:
     _configure()
     out_dir = root / "output" / "figures"
     written: list[Path] = []
-    for _name, builder in FIGURES:
+    for name, builder in FIGURES:
+        if public_only and name in PUBLICATION_OMISSIONS:
+            continue
         written.append(builder(ao, out_dir))
     registry = {
-        "schema_version": "1.4",
+        "schema_version": "1.5",
+        "scope": "public" if public_only else "local",
         "generated_at": datetime.now().isoformat(),
         "figures": [
             {

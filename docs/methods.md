@@ -1,7 +1,7 @@
 # Local source evidence methods
 
-Software: **0.2.0rc1**. Methods profile: `local-source-evidence-v1`.
-Dashboard schema: `1`. These labels describe software contracts. Captured source
+Software: **0.2.0**. Methods profile: `local-source-evidence-v2`.
+Dashboard schema: `2`. These labels describe software contracts. Captured source
 commits, manifest hashes, target-ledger versions and search normalization remain
 independently versioned evidence identities.
 
@@ -50,10 +50,29 @@ and identifies its hash. Viewing counts is not a fresh physical corpus verificat
 Projection-receipt inspection is distinguished from the checksum and membership
 validation performed on search. Unknown, absent or malformed evidence is disclosed.
 
+The Streamlit browser can use a separate publication analysis database while
+Local evidence continues to inspect the original captured store. Admission
+requires a completed pipeline, matching run identities and hashes of the saved
+manifest, results, metadata databases, preparation receipt and transcriptions.
+A changed or malformed epoch is disclosed; it is not presented as current analysis.
+New analyses persist all component payloads to SQLite. The explicit
+`scripts/refresh_manuscript_epoch.py` repair command can restore an admitted
+legacy epoch from its exact identified JSON ledger. It refuses conflicts, backs
+up the affected derived files, and regenerates reports without repeating model
+inference. Resealing binds the separate derived receipt and its artifact hashes.
+Record/theme/entity links deduplicate record pairs and retain metadata versus
+model provenance; categorized entity values supply their actual labels.
+
+Publication postprocessing uses the identified saved result ledger rather than
+guessing analyzer filenames. Its schema `1.3` separates saved text membership,
+missing and filtered inputs, entity summaries, and text-analysis summaries.
+Covariance principal components are checked with an independent singular-value
+oracle, including rank-deficient and constant inputs. Top-level completion and
+nested component errors remain separate counts.
+
 The generated HTML workbench reports the software version and methods profile
-alongside the saved run's target profile and coverage. Its analysis statistics
-remain bound to the pipeline run that produced them. Metadata recovery or a new
-software version does not silently refresh NLP results, figures or manuscript data.
+alongside the saved run's target profile and coverage. A rendering or package
+version change does not retrospectively rerun the record analyses.
 
 ## Reproduction
 
@@ -69,6 +88,7 @@ uv run --python 3.11 streamlit run blake/gui/gui.py
 ```
 
 Source and image terms still apply. Raw corpus data, private indexes, backups and
-provider text stay local. The archived paper and software bundle identified in
-`CITATION.cff` belong to the earlier release; their DOI is not assigned to this
-release candidate.
+provider text stay local. The current software assets accompany the versioned working paper at
+[10.5281/zenodo.23601681](https://doi.org/10.5281/zenodo.23601681). The earlier
+record contains the earlier PDF. Saved record analyses retain their actual
+producer identity independently from the current package and manuscript diagnostics.

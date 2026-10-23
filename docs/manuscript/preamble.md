@@ -24,7 +24,7 @@ TeX has one margin declaration.
 % Typography and formatting
 \usepackage{microtype}
 \usepackage{fontsize}
-\changefontsize[10.6pt]{8.7pt}
+\changefontsize[13.2pt]{10.5pt}
 \usepackage{xcolor}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em plus 0.1em minus 0.05em}

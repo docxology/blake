@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+
 from manuscript_tools.figures import (
     BRIEF_FIELDS,
     FIGURE_BRIEFS,
@@ -166,7 +167,8 @@ def test_reproducibility_uses_generated_archive_sample_limit(manuscript_fixture_
     assert variables["ARCHIVE_API_SAMPLE_LIMIT"] == "2"
     assert variables["ARCHIVE_API_SAMPLE_OK"] == "1"
     assert "--limit 8" not in reproducibility
-    assert "--limit {{ARCHIVE_API_SAMPLE_LIMIT}}" in reproducibility
+    assert "Fresh remote acquisition can produce a different inventory" in reproducibility
+    assert "--data-dir blake_data/publication/reproduction" in reproducibility
     assert (
         variables["ARCHIVE_API_SAMPLE_LIMIT"] == variables["ARCHIVE_API_SAMPLE_COUNT"]
     )
@@ -206,8 +208,9 @@ def test_reproducibility_uses_existing_template_validation_command():
     # absolute filesystem location (which would leak a home path and only pass on one
     # machine).
     assert "04_render_html.py" not in reproducibility
-    assert "scripts/04_validate_output.py" in reproducibility
-    assert "--project working/blake" in reproducibility
+    assert "scripts/pipeline/stage_04_validate.py" in reproducibility
+    assert "scripts/pipeline/stage_03_render.py" in reproducibility
+    assert "--project blake" in reproducibility
 
 
 def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
@@ -223,10 +226,11 @@ def test_abstract_is_unnumbered_block_scoped_and_artifact_bound():
     assert "\t" not in abstract
     assert "{{ANALYSIS_WORKS_ANALYZED}}/{{ANALYSIS_WORKS_TOTAL}}" in abstract
     assert (
-        "not a claim to have completed or exhaustively analyzed Blake's works"
+        "not completeness of Blake's oeuvre"
         in abstract
     )
-    assert "Manual scholarship and source leads remain review candidates" in abstract
+    assert "unverified authorship" in abstract
+    assert "source-image mosaics remain local" in abstract
     assert r"\setlength{\parindent}{0pt}" in preamble
     assert r"\setlength{\parskip}" in preamble
 
@@ -239,7 +243,7 @@ def test_render_typography_uses_compact_pdf_layout():
     )
 
     assert 'geometry: "left=0.48in,right=0.48in,top=0.6in,bottom=0.65in"' in config
-    assert r"\changefontsize[10.6pt]{8.7pt}" in preamble
+    assert r"\changefontsize[13.2pt]{10.5pt}" in preamble
 
 
 def test_manuscript_title_and_section_titles_are_evidence_bounded():
@@ -259,7 +263,7 @@ def test_manuscript_title_and_section_titles_are_evidence_bounded():
     )
     for title in [
         "# Introduction: Making Blake Coverage Measurable {#sec:introduction}",
-        "# Methods: Target Ledger, Source Audit, and Local Acquisition {#sec:methods_pipeline}",
+        "# Methods: Target Ledger, Source Custody, and Offline Analysis {#sec:methods_pipeline}",
         "# Methods: Local Text, Image, Cross-Modal, and Theme Diagnostics {#sec:methods_analysis}",
         "# Results: Target Coverage, Provenance, and Evidence Gaps {#sec:results_coverage}",
         "# Results: Text Scale, Visual Evidence, and Cross-Modal Diagnostics {#sec:results_text}",
@@ -301,23 +305,18 @@ def test_manuscript_overclaims_are_negated_or_scoped():
         assert phrase.lower() not in scrubbed.lower(), phrase
 
 
-def test_reproducibility_runs_fallback_text_acquisition_before_local_refresh():
+def test_reproducibility_prepares_a_fresh_store_before_offline_analysis():
     root = Path(__file__).resolve().parents[1]
     reproducibility = (
         root / "docs" / "manuscript" / "08_reproducibility.md"
     ).read_text(encoding="utf-8")
 
-    acquire_index = reproducibility.index("blake corpus acquire-evidence")
-    refresh_index = reproducibility.index("blake corpus run --skip-download")
-    assert acquire_index < refresh_index
-    assert "--archive-scope archive-inventory" in reproducibility
-    assert "--image-mode archive-all" in reproducibility
-    assert "--image-dpi 300" in reproducibility
-    assert "--max-images-per-work none" in reproducibility
-    assert "uv run blake corpus run --skip-download --output-dir" in reproducibility
-    assert (
-        "uv run blake corpus run --skip-download --skip-analysis" not in reproducibility
-    )
+    prepare_index = reproducibility.index("scripts/prepare_manuscript_epoch.py")
+    analysis_index = reproducibility.index("scripts/reproduce_manuscript_analysis.py")
+    assert prepare_index < analysis_index
+    assert "--seed {{ANALYSIS_SEED}}" in reproducibility
+    assert "no synthetic fixtures" in reproducibility
+    assert "preserves Blake's analysis environment" in reproducibility
 
 
 def test_public_docs_use_canonical_local_regeneration_command():
@@ -331,7 +330,6 @@ def test_public_docs_use_canonical_local_regeneration_command():
         root / "docs" / "api-reference.md",
         root / "docs" / "developer-guide.md",
         root / "docs" / "guides" / "download-workflow.md",
-        root / "docs" / "manuscript" / "08_reproducibility.md",
         root / "docs" / "manuscript" / "AGENTS.md",
     ]
     canonical = "blake corpus run --skip-download --output-dir analysis_output"
@@ -531,8 +529,14 @@ def test_supplemental_visual_mosaics_are_registered_and_cited():
         "source_authority_tiers",
     }
     assert expected <= figure_names
-    for name in expected:
+    private = {"all_acquired_images_mosaic", "work_area_image_mosaics"}
+    for name in expected - private:
         assert f"{{#fig:{name}}}" in supplement
+    for name in private:
+        assert f"{name}.png" in supplement
+        assert f"{{#fig:{name}}}" not in supplement
+        assert f"](../output/figures/{name}.png)" not in supplement
+    assert "excluded from the public manuscript, HTML, and release archives" in supplement
 
 
 def test_figure_registry_briefs_cover_every_manuscript_figure():
@@ -548,11 +552,13 @@ def test_figure_registry_briefs_cover_every_manuscript_figure():
 
     if registry_path.exists():
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
-        assert registry["schema_version"] == "1.4"
+        assert registry["schema_version"] == "1.5"
         registry_names = {
             Path(figure["filename"]).stem for figure in registry["figures"]
         }
-        assert registry_names == figure_names
+        omitted = {'all_acquired_images_mosaic', 'work_area_image_mosaics', 'source_audit', 'chronology'}
+        expected = figure_names - omitted if registry.get('scope') == 'public' else figure_names
+        assert registry_names == expected
         for figure in registry["figures"]:
             assert BRIEF_FIELDS <= figure.keys(), figure["filename"]
             assert STATISTICAL_FIELDS <= figure.keys(), figure["filename"]
@@ -607,9 +613,8 @@ def test_pipeline_dag_explains_reused_phase_states(manuscript_fixture_root):
 
     assert "skipped acquisition stays visible" not in brief["claim"].lower()
     assert "skipped/acquired states" not in methods
-    assert "reused existing local evidence" in methods
-    assert "acquisition reused the existing local corpus" in methods
-    assert "analysis and downstream reporting generated current artifacts" in methods
+    assert "reused the retained local evidence" in methods
+    assert "Analysis and downstream reporting generated fresh artifacts" in methods
     assert records["acquisition"]["action"] in {
         "reused local corpus",
         "generated this run",
@@ -661,8 +666,10 @@ def test_registered_figures_are_cited_in_manuscript_sources():
         for path in sorted((root / "docs" / "manuscript").glob("*.md"))
     )
 
-    for name, _builder in FIGURES:
-        assert f"{{#fig:{name}}}" in manuscript_text, name
+    registered = {name for name, _builder in FIGURES}
+    embedded = set(re.findall(r"\{#fig:([a-z_]+)\}", manuscript_text))
+    omitted = {"all_acquired_images_mosaic", "work_area_image_mosaics", "source_audit", "chronology"}
+    assert embedded == registered - omitted
 
 
 def test_forward_todo_has_no_resolved_missing_target_task():
@@ -768,3 +775,27 @@ def test_cover_reads_canonical_manuscript_source(tmp_path, monkeypatch):
     provenance = json.loads(result["provenance"].read_text())
     assert provenance["model_tool_provenance"]["source_image_path"] == str(source_path)
     assert result["cover"].exists()
+
+
+def test_public_only_generation_excludes_private_mosaics_and_matches_the_paper(
+    manuscript_fixture_root,
+):
+    from manuscript_tools.figures import generate_all_figures
+
+    written = generate_all_figures(manuscript_fixture_root, public_only=True)
+    omitted = {
+        "all_acquired_images_mosaic",
+        "work_area_image_mosaics",
+        "source_audit",
+        "chronology",
+    }
+    assert {path.stem for path in written} == {name for name, _ in FIGURES} - omitted
+    assert all(path.is_file() and path.stat().st_size > 0 for path in written)
+    for name in omitted:
+        assert not (
+            manuscript_fixture_root / "output/figures" / (name + ".png")
+        ).exists()
+    registry = json.loads(
+        (manuscript_fixture_root / "output/figures/figure_registry.json").read_text()
+    )
+    assert registry["scope"] == "public"

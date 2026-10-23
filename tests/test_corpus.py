@@ -274,7 +274,7 @@ async def test_quick_corpus_run_writes_required_artifacts(tmp_path):
     from blake import __version__, version_info
     assert f'<meta name="blake-version" content="{__version__}">' in workbench
     assert version_info()["methods_profile"] in workbench
-    assert '<meta name="blake-dashboard-schema" content="1">' in workbench
+    assert f'<meta name="blake-dashboard-schema" content="{version_info()["dashboard_schema_version"]}">' in workbench
     assert "Dataset Statistics" in workbench
     assert "Descriptive local-run statistics" in workbench
     assert "dataset_statistics" in workbench

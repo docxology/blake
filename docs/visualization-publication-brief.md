@@ -1,6 +1,6 @@
 # Visualization Publication Brief
 
-This inventory records the story job, source, encoding, caveat, fallback, QA check, and statistical mini-brief for the 20 manuscript figures. Previously published figure filenames and labels remain stable. The same brief fields are written additively to `output/figures/figure_registry.json`, now at schema `1.4`.
+This inventory records the story job, source, encoding, caveat, fallback, QA check, and statistical mini-brief for registered local figures. `scripts/generate_manuscript_figures.py --public-only` selects the aggregate figures used by the public paper and excludes source-image mosaics, stale source-health displays, and chronology. The default local mode retains the full registry. Filenames and labels remain stable; `output/figures/figure_registry.json` records its explicit `public` or `local` scope at schema `1.5`.
 
 The current visual contract is PDF-first, accessible, and static-output safe: figure text must be readable after manuscript scaling, high-density figures must carry direct labels or embedded keys, and crowded notes must move into compact subtitles or in-figure caveats rather than overloaded titles. Web and mobile output should preserve the same reading order without relying on hover or external legends.
 

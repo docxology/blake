@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 
 import pytest
+from packaging.version import Version
 
 import blake
 from blake.corpus.public_release import _github_release_metadata
@@ -20,7 +21,7 @@ def test_release_metadata_marks_current_development_or_candidate_version():
     metadata = _github_release_metadata("Blake", "github")
     assert metadata["tag_name"] == "v" + blake.__version__
     assert metadata["draft"] is True
-    assert metadata["prerelease"] is True
+    assert metadata["prerelease"] is Version(blake.__version__).is_prerelease
 
 
 @pytest.mark.parametrize(
@@ -57,7 +58,8 @@ def test_source_metadata_cites_current_software_and_preserves_archived_identity(
     assert re.search(
         r'^version: "' + re.escape(blake.__version__) + r'"$', citation, re.M
     )
-    assert not re.search(r"^doi:", citation, re.M)
+    assert re.search(r'^doi: "10.5281/zenodo.23601681"$', citation, re.M)
+    assert metadata["identifier"] == "https://doi.org/10.5281/zenodo.23601681"
     assert '    version: "0.1.0"' in citation
     assert '    doi: "10.5281/zenodo.21047574"' in citation
 
@@ -65,5 +67,5 @@ def test_source_metadata_cites_current_software_and_preserves_archived_identity(
 def test_public_version_contract_names_software_methods_and_dashboard():
     info = blake.version_info()
     assert info["package_version"] == blake.__version__
-    assert info["methods_profile"] == "local-source-evidence-v1"
-    assert info["dashboard_schema_version"] == 1
+    assert info["methods_profile"] == "local-source-evidence-v2"
+    assert info["dashboard_schema_version"] == 2

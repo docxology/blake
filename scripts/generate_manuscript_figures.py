@@ -13,6 +13,7 @@ Exit codes:
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -24,8 +25,15 @@ def main() -> int:
     from manuscript_tools.cover import generate_cover
     from manuscript_tools.figures import generate_all_figures
 
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--public-only",
+        action="store_true",
+        help="Generate only the aggregate figures used by the public paper; exclude source-image mosaics.",
+    )
+    args = parser.parse_args()
     cover_paths = generate_cover(_PROJECT_ROOT)
-    written = generate_all_figures(_PROJECT_ROOT)
+    written = generate_all_figures(_PROJECT_ROOT, public_only=args.public_only)
     for path in cover_paths.values():
         print(str(path))
     for path in written:

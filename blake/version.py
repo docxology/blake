@@ -1,8 +1,8 @@
 """Software and interface identities, independent of captured corpus evidence."""
 
-__version__ = "0.2.0rc1"
-METHODS_PROFILE = "local-source-evidence-v1"
-DASHBOARD_SCHEMA_VERSION = 1
+__version__ = "0.2.0"
+METHODS_PROFILE = "local-source-evidence-v2"
+DASHBOARD_SCHEMA_VERSION = 2
 
 
 def version_info() -> dict[str, object]:

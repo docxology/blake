@@ -51,3 +51,24 @@ The current manuscript reports each generated denominator and the membership
 digest. No historical replacement count is asserted. A revised numerical result
 still requires the authorized corpus/run artifacts, which are absent from this
 clean checkout; fixture tests establish the contract, not a Blake corpus result.
+
+
+## Fresh publication epoch
+
+The current publication uses a new analysis store rather than attempting to
+reconstruct or retrospectively correct the archived run. Its membership and
+transcription hashes reconcile with the captured source ledger. The completed
+record analyses retain their original producer version; subsequent diagnostic
+and rendering identities are separate.
+
+Two additional defects were reproduced before correction: diagnostics selected
+the default cache rather than the saved manifest's data directory, and
+filename-based model summaries missed the analyzer's title-bearing filenames.
+Current summaries use the saved, identified result ledger. A rank-one projection
+also exposed duplicated explained variance in the former power-iteration
+fallback; covariance eigendecomposition now passes an independent singular-value
+oracle and the degenerate-input controls.
+
+The new epoch's row-level diagnostics, component-error census and publication
+evidence live under `analysis_output/data/` locally. They do not establish the
+cause of the older publication's six-record discrepancy.

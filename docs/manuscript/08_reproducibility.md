@@ -1,52 +1,73 @@
-# Reproducibility: Regenerating Evidence, Figures, Web, and PDF Outputs {#sec:reproducibility}
+# Reproducibility: Source Snapshot, Analysis Epoch, and Publication {#sec:reproducibility}
 
-The manuscript is generated from the same artifacts that drive the corpus workbench. This design treats reproducibility as an artifact relation: source records, local files, analysis outputs, figures, variables, and manuscript claims can be regenerated and inspected as a chain rather than as disconnected products [@peng2011reproducible; @sandve2013ten; @wilson2014best; @w3cprov2013overview]. The preservation target is therefore not a single PDF snapshot, but the documented relation among inputs, local cache state, commands, hashes, derived JSON, figures, and rendered outputs [@owens2018digitalpreservation]. Reproduction begins by refreshing the bounded live source audit with the same Archive API sample size reported in the methods:
+Reproduction requires the captured source inventory, its private local files, the recorded analysis producer, and a compatible environment. The public release supplies project-owned source, the manuscript, aggregate evidence, producer identities, and checksums; it does not supply the provider corpus. The preservation chain connects inputs, commands, derived results, figures, and rendered bytes [@peng2011reproducible; @sandve2013ten; @wilson2014best; @w3cprov2013overview; @owens2018digitalpreservation].
 
-```bash
-uv run blake corpus audit-sources --limit {{ARCHIVE_API_SAMPLE_LIMIT}} --output-dir analysis_output --archive-scope archive-inventory
-```
+## Verify Retained Inputs Before Analysis
 
-The audit records {{SOURCE_RECORDS_DISCOVERED}} discovered source records, {{SOURCE_MATCHED_TARGETS}} matched target records, {{SOURCE_UNMATCHED_TARGETS}} unmatched source-discovery target records, {{PROVIDER_DISCOVERY_FAILURES}} provider discovery failures, the {{SOURCE_URL_CHECKED}} reviewed source endpoints shown in [@tbl:source_audit], and the missing-evidence candidates shown in [@tbl:supp_missing_evidence]. It also records Archive metadata enrichment as `{{ARCHIVE_METADATA_STATUS}}` with {{ARCHIVE_METADATA_SUCCEEDED}} of {{ARCHIVE_METADATA_ATTEMPTED}} attempts succeeding, so a successful local run cannot hide live API degradation.
-
-Validated fallback text evidence is then pulled only from audit candidates that pass the confidence and authority policy:
+Use a fresh reproduction checkout with the recorded dependency lock and the documented Python environment. Restore or acquire the local evidence under applicable provider terms, then run the integrity verifier:
 
 ```bash
-uv run blake corpus acquire-evidence --from-audit analysis_output/data/source_audit.json
+uv run python -m blake.recovery verify
 ```
 
-For an optional object-depth acquisition refresh, the acquisition pass uses the opt-in Archive mirror mode. This is a remote acquisition refresh, not the saved local rerun reported here; use it only when the local evidence cache needs to be rebuilt under the source providers' terms:
+The saved recovery-manifest digest is `{{RECOVERY_MANIFEST_SHA256}}`. A different capture defines a different input epoch. Source inventory recovery, unresolved images, and the historical restore drill are reported in [@sec:supp_recoverability]. Fresh remote acquisition can produce a different inventory and must not be substituted for the recorded capture without updating the evidence identities.
+
+## Create and Analyze a New Local Epoch
+
+Preserve previous outputs before using a fresh checkout or an unused output directory. The preparation command refuses an occupied destination and writes a new metadata database and copied transcriptions; it references original local image files without copying or altering them.
 
 ```bash
-uv run blake corpus run --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
+uv run python scripts/prepare_manuscript_epoch.py \
+  --destination blake_data/publication/reproduction
+uv run python scripts/reproduce_manuscript_analysis.py \
+  --data-dir blake_data/publication/reproduction \
+  --seed {{ANALYSIS_SEED}}
 ```
 
-The main corpus outputs can then be regenerated from local data without reacquiring remote assets. This is the command used for the saved analysis state reported here; it reruns text, visual, cross-modal, and ontology analysis over the existing local corpus:
+The driver uses the corpus API with offline reuse, no synthetic fixtures, the core visualization profile, Archive-inventory scope, and Archive-all image metadata. It seeds Python and NumPy and limits numerical-library and OpenCV threads. The analyzed publication epoch used software `{{ANALYSIS_PRODUCER_VERSION}}`, seed {{ANALYSIS_SEED}}, and run ID `{{ANALYSIS_RUN_ID}}`. The reproduction bundle records its exact producer-file digests separately from the final publication software. The original run saved its model payloads in JSON but omitted the SQLite handoff consumed by reports and the dashboard. A separately receipted derived refresh restored those exact payloads to the independent publication database and regenerated reports without repeating inference. The repair command, when needed for an already sealed legacy epoch, is:
 
 ```bash
-uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
+uv run python scripts/refresh_manuscript_epoch.py
 ```
 
-This command rebuilds the manifest, current analysis results, analysis diagnostics, visualization datasets, exports, and reports without reacquiring remote assets. The run reported here completed with status {{RUN_STATUS}}, processed {{WORKS_PRESENT}} local works, analyzed {{ANALYSIS_WORKS_ANALYZED}} of {{ANALYSIS_WORKS_TOTAL}} works with analysis status `{{ANALYSIS_STATUS}}`, and wrote a manifest with {{TARGET_TOTAL}} target entries. The analysis ledger marks current results as `{{ANALYSIS_RESULTS_CURRENT}}`, records {{ANALYSIS_ERROR_COUNT}} analysis errors, and exposes {{ANALYSIS_DIAGNOSTIC_SECTIONS}} diagnostics. It also refreshes the source-audit payload with coverage-aware missing-evidence candidates when a manifest is available.
+Reseal after that command. New analyses persist each component directly. The original model receipt remains unchanged; derived-artifact provenance names its own producer. Subsequent manuscript diagnostics select the saved run's actual data directory and identified result ledger.
 
-The manuscript cover, cover provenance, and figures are regenerated from the JSON artifacts:
+The saved pipeline status is `{{RUN_STATUS}}`, with {{ANALYSIS_WORKS_ANALYZED}}/{{ANALYSIS_WORKS_TOTAL}} records analyzed and current-results status `{{ANALYSIS_RESULTS_CURRENT}}`. Its top-level ledger reports {{ANALYSIS_ERROR_COUNT}} errors; the recursive component census reports {{ANALYSIS_NESTED_ERROR_COUNT}} nested errors, including {{TOPIC_INSUFFICIENT_WORKS}} insufficient-text and {{TOPIC_PRUNED_WORKS}} pruned-vocabulary topic results. Successful pipeline completion does not erase component unavailability.
+
+## Generate Figures and Hydrate the Manuscript
+
+With the retained backup and historical restore-control files available locally,
+the publication seal freshly verifies the captured inventory, existing backup,
+private search projection, and the retained repaired/corrupted control copies:
 
 ```bash
-uv run python scripts/generate_manuscript_figures.py
+uv run python scripts/seal_manuscript_evidence.py \
+  --analysis-receipt analysis_output/data/analysis_epoch_receipt.json
 ```
 
-The cover asset is written to `output/cover/cover_blakean.png`, and its prompt/provenance record is written to `analysis_output/data/cover_image_provenance.json`. The cover is configured through `paper.cover.image` in `docs/manuscript/config.yaml`, so the sibling template renderer uses the same release-safe cover path as the PDF title page. A future release package could expose the same corpus, manuscript, preservation, and provenance relationships through a research-object packaging format rather than only through the project tree [@owens2018digitalpreservation; @rocrate2022].
+This verifies the existing restore evidence; it does not run another restore drill.
+The commands require the private corpus for analytical regeneration. The public
+reproduction archive separately includes hydrated manuscript sources and aggregate
+figures for rendering the deposited paper without redistributing those source files.
 
-The manuscript token layer is then hydrated by the rendering pipeline, or directly with the template repository on the import path:
+The figure producer reads the saved analysis artifacts:
 
 ```bash
-TEMPLATE_REPO_ROOT=/path/to/template uv run python scripts/z_generate_manuscript_variables.py
+uv run python scripts/generate_manuscript_figures.py --public-only
+TEMPLATE_REPO_ROOT=../template \
+  uv run python scripts/z_generate_manuscript_variables.py
 ```
 
-Finally, from the sibling template repository, the PDF can be rendered and the publication output can be validated:
+The cover is a labeled project-authored generated asset with provenance, outside the corpus evidence ledger. Local source-image mosaics can be generated for private inspection but are excluded from the public manuscript and reproduction archive. Publication hydration requires every used quantitative token to resolve from the saved artifacts and verified publication evidence. The input membership and content digests remain inspectable.
+
+## Render and Validate
+
+The shared template renderer uses a separate compatible environment. Bind its local ignored `projects/blake` leaf link to this checkout without changing other project bindings. After strict hydration succeeds, run from that template checkout:
 
 ```bash
-uv run python scripts/03_render_pdf.py --project working/blake
-uv run python scripts/04_validate_output.py --project working/blake
+uv run python scripts/pipeline/stage_03_render.py \
+  --project blake --skip-manuscript-hydration
+uv run python scripts/pipeline/stage_04_validate.py --project blake
 ```
 
-No result number in the manuscript body is hand-entered. Values such as {{WORKS_PRESENT}} local works, {{TARGETS_PRESENT}} present targets, {{WORDS_TOTAL}} words, {{TOTAL_IMAGES}} images, {{IMAGE_DEPTH_DOWNLOADED_IMAGES}} downloaded object images, {{NETWORK_NODES}} graph nodes, {{NETWORK_EDGES}} graph edges, {{MISSING_EVIDENCE_CANDIDATES}} missing-evidence candidates, and {{ACQUISITION_REVIEW_MANUAL_CANDIDATES}} manual-review source leads are injected from `output/data/manuscript_variables.json`, which is itself computed from `analysis_output/`. This keeps the prose, tables, figures, and gap-search narrative synchronized with the latest corpus run. If the software is released as a citable research tool, the corpus paper should also provide software citation metadata rather than treating code as an invisible implementation detail [@smith2016software].
+The explicit hydration step preserves Blake's analysis environment while using the template's native rendering infrastructure. The skip flag reuses already validated hydrated sources; it does not authorize unresolved tokens or stale results. Rendered-page inspection, citation and cross-reference checks, privacy checks, source tests, installed-package checks, and release-asset checksums qualify the final artifact set. The deposited PDF and software assets must match the independently verified download bytes. Publication and an identifier do not themselves establish peer review, scientific validation, or whole-oeuvre completeness [@smith2016software; @rocrate2022].

@@ -90,7 +90,7 @@ api = [
 
 [project.urls]
 Homepage = "https://github.com/docxology/blake"
-Documentation = "https://blake.readthedocs.io"
+Documentation = "https://github.com/docxology/blake/tree/main/docs"
 Repository = "https://github.com/docxology/blake"
 Issues = "https://github.com/docxology/blake/issues"
 

@@ -1,12 +1,12 @@
 # Blake Corpus Analysis Platform
 
-Current software: **0.2.0rc1**. See [release changes](CHANGELOG.md) and the
+Current software: **0.2.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21047574-blue.svg)](https://doi.org/10.5281/zenodo.21047574)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23601681-blue.svg)](https://doi.org/10.5281/zenodo.23601681)
 
 Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
@@ -22,9 +22,40 @@ uv run blake corpus public-release-package --output-dir analysis_output --data-d
 
 A quick run is offline and uses the local `blake_data/` cache. If that cache is empty, quick mode seeds a tiny bundled fixture corpus so the pipeline proves non-empty processing, visualization, export, and reporting without network access. A full run enables live acquisition through registered source providers.
 
-For docs/manuscript/regression work, the canonical local regeneration command is the second command above: it reuses the existing local corpus with `--skip-download`, then regenerates metadata, analysis, visualizations, exports, and reports. Do not add `--skip-analysis` unless you are explicitly testing a stale-analysis scenario.
+The second command refreshes the existing pipeline store. Publication analysis instead uses a fresh store so captured metadata and earlier results remain intact; see the workflow below. Do not add `--skip-analysis` when claiming newly computed results.
 
 `archive-all` is an evidence-depth setting for local Archive image acquisition. It is not a redistribution permission. Public-release preflight and package commands stage metadata, checksums, and release-safe files locally; they do not publish, tag, deposit, or clear rights-gated source materials.
+
+## Publication analysis and rendered paper
+
+The [versioned working paper](https://doi.org/10.5281/zenodo.23601681) accompanies
+the software assets. Its source/copy records, target-ledger entries, image
+associations and distinct files are separate denominators. Exploratory NLP
+retains unverified authorship labels. Recoverability of captured bytes does not
+establish whole-oeuvre completeness or permission to redistribute provider files.
+
+For a fresh reproduction checkout, preserve prior outputs and prepare a new store:
+
+```bash
+uv run python scripts/prepare_manuscript_epoch.py --destination blake_data/publication/reproduction
+uv run python scripts/reproduce_manuscript_analysis.py --data-dir blake_data/publication/reproduction --seed 20261023
+uv run python scripts/seal_manuscript_evidence.py --analysis-receipt analysis_output/data/analysis_epoch_receipt.json
+uv run python scripts/generate_manuscript_figures.py --public-only
+TEMPLATE_REPO_ROOT=../template uv run python scripts/z_generate_manuscript_variables.py
+```
+
+The seal verifies the existing recovery inventory, backup, private search and
+retained corruption/repair controls; it does not run another restore drill.
+These analytical commands require the private corpus and retained backup/control
+files. The public reproduction archive includes hydrated manuscript sources,
+aggregate figures and rendering instructions. See [the paper workflow](docs/manuscript/08_reproducibility.md).
+
+The saved record analyses retain their actual 0.2.0rc1 producer identity.
+Version 0.2.0 supplies corrected membership-bound summaries and covariance
+projection, methods profile `local-source-evidence-v2`, and dashboard schema `2`.
+The dashboard admits a completed saved epoch only while its bound metadata,
+results and transcriptions match. It discloses stale evidence and keeps the
+original recovery store separate.
 
 ## Output Layout
 
@@ -261,8 +292,9 @@ The manuscript's legal distribution section and rights-matrix supplement are the
 
 This project is archived on Zenodo with a DOI, cross-linked to this repository:
 
-- **DOI:** [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574)
-- **Zenodo record:** the working-paper PDF (rights-safe; Blake Archive image mosaics omitted) plus the open-source software release bundle.
+- **DOI:** [10.5281/zenodo.23601681](https://doi.org/10.5281/zenodo.23601681)
+- **Zenodo record:** working-paper PDF, wheel, source distribution, allowlisted reproduction archive, release manifest and SHA-256 checksums. Provider image mosaics are omitted.
+- **Earlier paper:** [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574), whose published record contains the earlier PDF.
 - See [`CITATION.cff`](CITATION.cff) for citation metadata.
 
 The MIT license covers project code and project-authored outputs only. Provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts are not included here and remain under their source-provider terms.

@@ -3,12 +3,13 @@
   "@type": "SoftwareSourceCode",
   "name": "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow",
   "isBasedOn": {
-    "@type": "SoftwareSourceCode",
+    "@type": "CreativeWork",
     "identifier": "https://doi.org/10.5281/zenodo.21047574",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "name": "Mapping William Blake’s Works (earlier working-paper PDF)"
   },
   "description": "Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports, with an auditable target ledger and a fail-closed rights gate separating open-source code and aggregate analytics from provider-supplied source files.",
-  "version": "0.2.0rc1",
+  "version": "0.2.0",
   "license": "https://spdx.org/licenses/MIT",
   "codeRepository": "https://github.com/docxology/blake",
   "programmingLanguage": "Python",
@@ -31,5 +32,7 @@
       },
       "email": "daniel@activeinference.institute"
     }
-  ]
+  ],
+  "identifier": "https://doi.org/10.5281/zenodo.23601681",
+  "datePublished": "2026-10-23"
 }

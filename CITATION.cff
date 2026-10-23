@@ -7,16 +7,18 @@ abstract: >-
   with an auditable target ledger and a fail-closed rights gate that separates
   open-source code and aggregate analytics from provider-supplied source files.
 type: software
-version: "0.2.0rc1"
+version: "0.2.0"
+date-released: "2026-10-23"
+doi: "10.5281/zenodo.23601681"
 license: MIT
 url: "https://github.com/docxology/blake"
 repository-code: "https://github.com/docxology/blake"
 references:
-  - type: software
-    title: "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow"
+  - type: report
+    title: "Mapping William Blake’s Works"
     version: "0.1.0"
     doi: "10.5281/zenodo.21047574"
-    notes: "Archived working paper and software bundle; this DOI does not identify the current release candidate."
+    notes: "Earlier working-paper PDF; the published record does not include the current software assets."
     authors:
       - family-names: Friedman
         given-names: Daniel Ari
@@ -32,3 +34,14 @@ authors:
     orcid: "https://orcid.org/0000-0001-6232-9096"
     affiliation: "Active Inference Institute"
     email: "daniel@activeinference.institute"
+preferred-citation:
+  type: report
+  title: "Mapping William Blake’s Works: Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
+  version: "0.2.0"
+  year: 2026
+  doi: "10.5281/zenodo.23601681"
+  authors:
+    - family-names: Friedman
+      given-names: Daniel Ari
+      orcid: "https://orcid.org/0000-0001-6232-9096"
+      affiliation: "Active Inference Institute"

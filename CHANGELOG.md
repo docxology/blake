@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 - 2026-10-23
+
+- Preserve the captured corpus while analyzing a fresh metadata and transcription store.
+- Reconcile manuscript inputs with the saved manifest and identified result ledger.
+- Fix rank-deficient covariance projection and verify it against an independent numerical oracle.
+- Persist all analysis components through database reloads and restore missing legacy payloads without repeating inference.
+- Count nested component unavailability separately from top-level analysis completion; honor canonical error fields in the workbench.
+- Bind publication claims to verified source, backup, search and retained restore-control evidence.
+- Load qualified saved analysis epochs in the dashboard; disclose changed evidence and explicit record/image units.
+- Version the methods profile and dashboard schema independently from source-capture and analysis identities.
+- Revise the manuscript, repair bibliography identifiers and author attribution, and omit provider-image mosaics from public artifacts.
+- Add public-only figure generation and keep repeated source/copy titles on distinct ranked chart rows.
+- Reserve the versioned working-paper DOI and synchronize software citation metadata for the reviewed release assets.
+
 ## 0.2.0rc1 - 2026-10-23
 
 - Recover pinned Archive and Erdman sources with file receipts, retained image
