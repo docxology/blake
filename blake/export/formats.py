@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 from datetime import datetime
+from html import escape
 
 from ..models import BlakeWork, ExportConfig
 from ..exceptions import ExportError
@@ -103,6 +104,8 @@ class JSONExporter(BaseExporter):
         
         if config.include_metadata:
             work_data['text_content'] = work.text_content
+
+        if config.include_images:
             work_data['images'] = [img.model_dump(mode="json") for img in work.images]
         
         if config.include_analysis:
@@ -543,7 +546,7 @@ class HTMLExporter(BaseExporter):
         for work in works:
             html_content += f'''
             <div class="work-analysis">
-                <h3>{work.metadata.title}</h3>
+                <h3>{escape(work.metadata.title)}</h3>
                 <div class="analysis-grid">
             '''
             
@@ -578,6 +581,7 @@ class HTMLExporter(BaseExporter):
     
     def _generate_html_header(self, title: str) -> str:
         """Generate HTML header with CSS styling."""
+        title = escape(title)
         return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -630,7 +634,7 @@ class HTMLExporter(BaseExporter):
         """Convert work to HTML card."""
         html = f'''
         <div class="work-card">
-            <h3>{work.metadata.title}</h3>
+            <h3>{escape(work.metadata.title)}</h3>
             <p class="work-meta">
                 <b>Type:</b> {work.metadata.work_type} | 
                 <b>Date:</b> {work.metadata.creation_date.strftime('%Y') if work.metadata.creation_date else 'Unknown'} | 
@@ -639,14 +643,14 @@ class HTMLExporter(BaseExporter):
         '''
         
         if work.metadata.description:
-            html += f'<p>{work.metadata.description}</p>'
+            html += f'<p>{escape(work.metadata.description)}</p>'
         
         if work.metadata.themes:
-            html += f'<p class="work-meta"><b>Themes:</b> {", ".join(work.metadata.themes)}</p>'
+            html += f'<p class="work-meta"><b>Themes:</b> {escape(", ".join(work.metadata.themes))}</p>'
         
         if detailed and work.text_content:
             text_preview = work.text_content[:2000] + '...' if len(work.text_content) > 2000 else work.text_content
-            html += f'<div class="work-text">{text_preview}</div>'
+            html += f'<div class="work-text">{escape(text_preview)}</div>'
         
         if config.include_analysis and work.text_analysis:
             basic_stats = work.text_analysis.get('basic_stats', {})
