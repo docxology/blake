@@ -3,6 +3,7 @@ Metadata manager that coordinates all metadata operations.
 """
 
 import asyncio
+from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
@@ -10,6 +11,7 @@ import logging
 from .database import MetadataDatabase
 from .processor import MetadataProcessor
 from .search import MetadataSearcher
+from .transfer import store_imported_text
 from ..models import BlakeWork, BlakeMetadata, BlakeImage
 from ..exceptions import MetadataError
 
@@ -364,18 +366,7 @@ class MetadataManager:
                 works = await self.load_all_works()
             
             # Convert works to dictionaries
-            export_data = []
-            for work in works:
-                work_dict = {
-                    'id': work.id,
-                    'metadata': work.metadata.model_dump(mode="json"),
-                    'text_content': work.text_content,
-                    'images': [img.model_dump(mode="json") for img in work.images],
-                    'text_analysis': work.text_analysis,
-                    'visual_analysis': work.visual_analysis,
-                    'cross_analysis': work.cross_analysis,
-                }
-                export_data.append(work_dict)
+            export_data = [work.model_dump(mode="json") for work in works]
             
             # Save to file
             import json
@@ -404,14 +395,22 @@ class MetadataManager:
             with open(input_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
-            works = []
-            for work_data in data:
-                # Reconstruct BlakeWork from dictionary
-                work = BlakeWork(**work_data)
-                works.append(work)
-                
+            if not isinstance(data, list):
+                raise ValueError("Metadata import must contain a JSON array of works")
+            # Validate every record before allowing malformed input to change SQLite.
+            works = [BlakeWork(**work_data) for work_data in data]
+            for work in works:
+                if work.text_content is not None:
+                    work.metadata.file_path = store_imported_text(self.data_dir, work.text_content)
                 # Save to database
                 await self.save_work(work)
+                for analysis_type, field in (
+                    ("text", "text_analysis"), ("visual", "visual_analysis"),
+                    ("cross", "cross_analysis"), ("ontology", "ontological_analysis"),
+                ):
+                    results = getattr(work, field)
+                    if results:
+                        await self.save_analysis_result(work.id, analysis_type, results)
             
             logger.info(f"Imported {len(works)} works from: {input_path}")
             return works
