@@ -7,9 +7,10 @@ real-time reporting, analysis options, and workflow management.
 
 import asyncio
 import logging
+import json
 import sys
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional, TextIO
 
 from rich.console import Console
 from rich.table import Table
@@ -19,6 +20,8 @@ from rich.prompt import Prompt, Confirm, IntPrompt
 from rich import box
 
 from .corpus import BlakeCorpus
+from .models import ExportConfig
+from .provenance import enum_value
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -30,17 +33,23 @@ console = Console()
 class InteractiveOrchestrator:
     """Interactive terminal orchestrator for Blake system."""
     
-    def __init__(self, data_dir: str = "./blake_data"):
+    def __init__(
+        self, data_dir: str = "./blake_data", *,
+        output_dir: Optional[Path] = None, console: Optional[Console] = None,
+        input_stream: Optional[TextIO] = None,
+    ):
         """Initialize the orchestrator."""
         self.data_dir = Path(data_dir)
         self.blake = None
-        self.console = Console()
+        self.console = console if console is not None else Console()
+        self.output_dir = output_dir
+        self.input_stream = input_stream
         
     async def initialize(self):
         """Initialize the Blake system."""
         try:
             with self.console.status("[bold green]Initializing Blake system..."):
-                self.blake = BlakeCorpus(self.data_dir)
+                self.blake = BlakeCorpus(self.data_dir, output_dir=self.output_dir)
                 await self.blake.initialize()
             self.console.print("✅ [green]Blake system initialized successfully![/green]")
         except Exception as e:
@@ -139,8 +148,8 @@ class InteractiveOrchestrator:
             table.add_row(
                 work.id,
                 work.metadata.title[:50] + "..." if len(work.metadata.title) > 50 else work.metadata.title,
-                work.metadata.work_type.value if work.metadata.work_type else "Unknown",
-                work.metadata.source.value if work.metadata.source else "Unknown",
+                enum_value(work.metadata.work_type) or "Unknown",
+                enum_value(work.metadata.source) or "Unknown",
                 status
             )
         
@@ -177,13 +186,13 @@ class InteractiveOrchestrator:
         # Work types
         work_types = {}
         for work in works:
-            work_type = work.metadata.work_type.value if work.metadata.work_type else "Unknown"
+            work_type = enum_value(work.metadata.work_type) or "Unknown"
             work_types[work_type] = work_types.get(work_type, 0) + 1
         
         # Sources
         sources = {}
         for work in works:
-            source = work.metadata.source.value if work.metadata.source else "Unknown"
+            source = enum_value(work.metadata.source) or "Unknown"
             sources[source] = sources.get(source, 0) + 1
         
         # Create statistics panel
@@ -205,7 +214,7 @@ class InteractiveOrchestrator:
     
     async def search_works(self):
         """Search works by content."""
-        query = Prompt.ask("\n[bold cyan]🔍 Enter search query[/bold cyan]")
+        query = Prompt.ask("\n[bold cyan]🔍 Enter search query[/bold cyan]", console=self.console, stream=self.input_stream)
         
         if not query:
             self.console.print("❌ [red]Search query cannot be empty[/red]")
@@ -264,7 +273,7 @@ class InteractiveOrchestrator:
             for key, desc in analysis_options.items():
                 self.console.print(f"  {key}. {desc}")
             
-            choice = Prompt.ask("Select analysis type", choices=list(analysis_options.keys()))
+            choice = Prompt.ask("Select analysis type", choices=list(analysis_options.keys()), console=self.console, stream=self.input_stream)
             
             with self.console.status("[bold green]Running text analysis..."):
                 if choice == "1":
@@ -297,9 +306,15 @@ class InteractiveOrchestrator:
         for result in results:
             if result.text_analysis:
                 if 'sentiment' in result.text_analysis:
-                    sentiment_scores.append(result.text_analysis['sentiment'].get('compound', 0))
+                    sentiment = result.text_analysis['sentiment']
+                    sentiment_scores.append(sentiment.get('compound_score', sentiment.get('compound', 0)))
                 if 'topics' in result.text_analysis:
-                    topics.extend(result.text_analysis['topics'])
+                    records = result.text_analysis['topics']
+                    if isinstance(records, dict):
+                        records = records.get('topics', [])
+                    if not isinstance(records, list):
+                        raise ValueError("Saved topic records must be a list")
+                    topics.extend(json.dumps(record, sort_keys=True, default=str) for record in records)
         
         avg_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0
         unique_topics = len(set(topics))
@@ -308,8 +323,8 @@ class InteractiveOrchestrator:
 [bold cyan]📊 Analysis Summary:[/bold cyan]
 • Works Analyzed: {analyzed_count}
 • Average Sentiment: {avg_sentiment:.2f}
-• Unique Topics: {unique_topics}
-• Total Topics Found: {len(topics)}
+• Distinct Saved Topic Records: {unique_topics}
+• Total Saved Topic Records: {len(topics)}
         """
         
         self.console.print(Panel(summary_text, title="📊 Analysis Results", border_style="green"))
@@ -331,7 +346,7 @@ class InteractiveOrchestrator:
             for i, viz in enumerate(viz_types, 1):
                 self.console.print(f"  {i}. {viz['type']} - {viz['description']}")
             
-            choice = IntPrompt.ask("Select visualization (number)", default=1)
+            choice = IntPrompt.ask("Select visualization (number)", default=1, console=self.console, stream=self.input_stream)
             
             if 1 <= choice <= len(viz_types):
                 selected_viz = viz_types[choice - 1]
@@ -381,7 +396,7 @@ class InteractiveOrchestrator:
             self.console.print(table)
             
             # Ask if user wants to create a dashboard
-            if Confirm.ask("\n[bold cyan]Would you like to create a dashboard?[/bold cyan]"):
+            if Confirm.ask("\n[bold cyan]Would you like to create a dashboard?[/bold cyan]", console=self.console, stream=self.input_stream):
                 await self.create_dashboard()
                 
         except Exception as e:
@@ -399,7 +414,7 @@ class InteractiveOrchestrator:
         for key, (_, name) in dashboard_types.items():
             self.console.print(f"  {key}. {name}")
         
-        choice = Prompt.ask("Select dashboard type", choices=list(dashboard_types.keys()))
+        choice = Prompt.ask("Select dashboard type", choices=list(dashboard_types.keys()), console=self.console, stream=self.input_stream)
         
         if choice in dashboard_types:
             dashboard_type, dashboard_name = dashboard_types[choice]
@@ -429,7 +444,7 @@ class InteractiveOrchestrator:
         for key, (_, name) in report_types.items():
             self.console.print(f"  {key}. {name}")
         
-        choice = Prompt.ask("Select report type", choices=list(report_types.keys()))
+        choice = Prompt.ask("Select report type", choices=list(report_types.keys()), console=self.console, stream=self.input_stream)
         
         if choice in report_types:
             report_type, report_name = report_types[choice]
@@ -443,11 +458,11 @@ class InteractiveOrchestrator:
                     result = await self.blake.generate_public_report()
             
             self.console.print(f"✅ [green]{report_name} generated successfully![/green]")
-            self.console.print(f"• Report ID: {result.get('report', {}).get('id', 'Unknown')}")
+            self.console.print(f"• Report ID: {result['report'].id}")
     
     async def clear_cache(self):
         """Clear system cache."""
-        if Confirm.ask("\n[bold red]Are you sure you want to clear the cache?[/bold red]"):
+        if Confirm.ask("\n[bold red]Are you sure you want to clear the cache?[/bold red]", console=self.console, stream=self.input_stream):
             try:
                 with self.console.status("[bold green]Clearing cache..."):
                     await self.blake.clear_cache()
@@ -469,18 +484,23 @@ class InteractiveOrchestrator:
         for key, format_name in export_formats.items():
             self.console.print(f"  {key}. {format_name}")
         
-        choice = Prompt.ask("Select export format", choices=list(export_formats.keys()))
+        choice = Prompt.ask("Select export format", choices=list(export_formats.keys()), console=self.console, stream=self.input_stream)
         
         if choice in export_formats:
             format_name = export_formats[choice]
             
             try:
                 with self.console.status(f"[bold green]Exporting data as {format_name}..."):
-                    # This would call the actual export method
-                    # result = await self.blake.export_works(format=format_name.lower())
-                    pass
+                    result = await self.blake.export_works(
+                        ExportConfig(
+                            format=format_name.lower(),
+                            output_dir=self.blake.output_dir / "exports",
+                        )
+                    )
                 
                 self.console.print(f"✅ [green]Data exported as {format_name} successfully![/green]")
+                self.console.print(f"• Path: {result}")
+                return result
             except Exception as e:
                 self.console.print(f"❌ [red]Export failed: {e}[/red]")
     
@@ -506,7 +526,7 @@ class InteractiveOrchestrator:
         while True:
             try:
                 self.display_main_menu()
-                choice = Prompt.ask("", choices=[str(i) for i in range(1, 16)])
+                choice = Prompt.ask("", choices=[str(i) for i in range(1, 16)], console=self.console, stream=self.input_stream)
                 
                 if choice == "1":
                     await self.download_all_works()
@@ -538,16 +558,16 @@ class InteractiveOrchestrator:
                 elif choice == "14":
                     await self.show_settings()
                 elif choice == "15":
-                    if Confirm.ask("\n[bold red]Are you sure you want to exit?[/bold red]"):
+                    if Confirm.ask("\n[bold red]Are you sure you want to exit?[/bold red]", console=self.console, stream=self.input_stream):
                         self.console.print("👋 [green]Goodbye![/green]")
                         break
                 
                 # Pause before showing menu again
                 if choice != "15":
-                    Prompt.ask("\n[dim]Press Enter to continue...[/dim]")
+                    Prompt.ask("\n[dim]Press Enter to continue...[/dim]", console=self.console, stream=self.input_stream)
                     
             except KeyboardInterrupt:
-                if Confirm.ask("\n[bold red]Are you sure you want to exit?[/bold red]"):
+                if Confirm.ask("\n[bold red]Are you sure you want to exit?[/bold red]", console=self.console, stream=self.input_stream):
                     self.console.print("👋 [green]Goodbye![/green]")
                     break
             except Exception as e:
