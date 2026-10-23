@@ -271,6 +271,10 @@ async def test_quick_corpus_run_writes_required_artifacts(tmp_path):
     assert "analysis_results_current" in dataset_statistics["source_health"]
     assert "manual_review_candidate_count" in dataset_statistics["source_health"]
     workbench = (output_dir / "visualizations" / "corpus_workbench.html").read_text()
+    from blake import __version__, version_info
+    assert f'<meta name="blake-version" content="{__version__}">' in workbench
+    assert version_info()["methods_profile"] in workbench
+    assert '<meta name="blake-dashboard-schema" content="1">' in workbench
     assert "Dataset Statistics" in workbench
     assert "Descriptive local-run statistics" in workbench
     assert "dataset_statistics" in workbench

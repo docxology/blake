@@ -35,6 +35,8 @@ else:
     from ..exceptions import BlakeError
     from ..provenance import manifest_context_for_work, work_provenance
 
+from blake.version import version_info
+
 logger = logging.getLogger(__name__)
 
 
@@ -80,7 +82,9 @@ class BlakeGUI:
     
     def _render_app(self) -> None:
         """Render the main application."""
-        st.title("📚 Blake Works Explorer")
+        st.title("Blake Works Explorer")
+        identity = version_info()
+        st.caption(f"Blake {identity['package_version']} · Methods {identity['methods_profile']}")
         st.markdown("Explore the current target-aware Blake corpus with interactive analysis and visualization.")
         
         # Sidebar
@@ -88,7 +92,7 @@ class BlakeGUI:
             self._render_sidebar()
         
         # Main content
-        tab1, tab2, tab3, tab4 = st.tabs(["Browse Works", "Search & Filter", "Analysis", "Export"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["Browse Works", "Search & Filter", "Analysis", "Export", "Local evidence"])
         
         with tab1:
             self._render_browse_works()
@@ -101,6 +105,10 @@ class BlakeGUI:
         
         with tab4:
             self._render_export()
+
+        with tab5:
+            from blake.gui.evidence_panel import render_evidence_panel
+            render_evidence_panel(self.data_dir)
     
     def _render_sidebar(self) -> None:
         """Render the sidebar."""
@@ -141,10 +149,21 @@ class BlakeGUI:
             filtered_works = [w for w in works if w.metadata.work_type == selected_type]
         
         # Display works
-        for work in filtered_works:
+        for work in self._paged_works(filtered_works, "browse"):
             with st.expander(f"{work.metadata.title} ({work.metadata.work_type})"):
-                self._render_work_details(work)
+                if st.checkbox("Load details and images", key=f"browse:load:{work.id}"):
+                    self._render_work_details(work)
     
+    def _paged_works(self, works: List[BlakeWork], scope: str) -> List[BlakeWork]:
+        """Bound rendered media while retaining the complete collection and counts."""
+        if len(works) <= 25:
+            return works
+        pages = (len(works) + 24) // 25
+        page = st.selectbox("Results page", list(range(1, pages + 1)), key=scope + ":page")
+        start = (page - 1) * 25
+        st.caption(f"Showing {start + 1}–{min(start + 25, len(works))} of {len(works)} works")
+        return works[start:start + 25]
+
     def _render_work_details(self, work: BlakeWork, key_prefix: str = "browse") -> None:
         """Render details for a specific work."""
         col1, col2 = st.columns([2, 1])
@@ -245,14 +264,17 @@ class BlakeGUI:
             if has_text != "All":
                 filters['has_text'] = has_text == "Yes"
             
-            # Perform search
-            results = self._search_works(search_query, filters)
-            
-            # Display results
+            st.session_state["metadata-search-request"] = {"query": search_query, "filters": filters}
+            st.session_state.pop("search:page", None)
+
+        request = st.session_state.get("metadata-search-request")
+        if request is not None:
+            results = self._search_works(request["query"], request["filters"])
             st.subheader(f"Search Results ({len(results)} found)")
-            for work in results:
+            for work in self._paged_works(results, "search"):
                 with st.expander(f"{work.metadata.title}"):
-                    self._render_work_details(work, key_prefix="search")
+                    if st.checkbox("Load details and images", key=f"search:load:{work.id}"):
+                        self._render_work_details(work, key_prefix="search")
 
     def _manifest_payload(self) -> Dict[str, Any]:
         path = Path(self.output_dir) / "corpus_manifest.json"
@@ -612,4 +634,4 @@ if __name__ == "__main__" and STREAMLIT_AVAILABLE and st is not None:
     # Initialize and run the GUI
     data_dir = Path(__file__).resolve().parent.parent.parent / "blake_data"
     gui = BlakeGUI(data_dir)
-    gui._render_app()
+    gui.run()

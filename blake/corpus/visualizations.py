@@ -9,6 +9,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from ..models import BlakeWork
+from ..version import version_info
 from .models import CorpusManifest
 
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z'\\-]*")
@@ -714,12 +715,16 @@ class CorpusVisualizationBuilder:
             for row in (signature.get("top_bigrams") or [])[:10]
         )
         payload = json.dumps(datasets, ensure_ascii=False).replace("</", "<\\/")
+        software = version_info()
         document = f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blake Corpus Workbench</title>
+  <meta name="blake-version" content="{esc(software['package_version'])}">
+  <meta name="blake-methods-profile" content="{esc(software['methods_profile'])}">
+  <meta name="blake-dashboard-schema" content="{esc(software['dashboard_schema_version'])}">
   <style>
     :root {{ color-scheme: light; --ink:#20242a; --muted:#5f625d; --line:#d8d2c4; --bg:#fcfaf4; --panel:#f7f2e8; --green:#009E73; --gold:#E69F00; --red:#D55E00; --blue:#0072B2; --violet:#7A4FA3; --slate:#34495E; }}
     * {{ box-sizing: border-box; }}
@@ -759,6 +764,7 @@ class CorpusVisualizationBuilder:
 <body>
   <header>
     <h1>Blake Corpus Workbench</h1>
+    <p>Software: {esc(software['package_version'])}. Methods: {esc(software['methods_profile'])}. Dashboard schema: {esc(software['dashboard_schema_version'])}.</p>
     <p>Profile: {esc(profile)}. Target: {esc(manifest.target_profile)}. Coverage: {esc(manifest.coverage_status)}.</p>
   </header>
   <main>
