@@ -12,6 +12,7 @@ from functools import wraps
 from datetime import datetime, timedelta
 import traceback
 import json
+import math
 from pathlib import Path
 
 from .logging_config import get_logger
@@ -56,6 +57,12 @@ class RetryConfig:
     def __init__(self, max_attempts: int = 3, base_delay: float = 1.0, 
                  max_delay: float = 60.0, exponential_base: float = 2.0,
                  jitter: bool = True):
+        if type(max_attempts) is not int or max_attempts < 1:
+            raise ValueError("max_attempts must be a positive integer")
+        for name, value in (("base_delay", base_delay), ("max_delay", max_delay),
+                            ("exponential_base", exponential_base)):
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
         self.max_attempts = max_attempts
         self.base_delay = base_delay
         self.max_delay = max_delay
@@ -332,7 +339,7 @@ class CircuitBreaker:
         if self.last_failure_time is None:
             return True
         
-        return (datetime.now() - self.last_failure_time).seconds >= self.recovery_timeout
+        return (datetime.now() - self.last_failure_time).total_seconds() >= self.recovery_timeout
     
     def _on_success(self):
         """Handle successful call."""

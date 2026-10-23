@@ -6,7 +6,6 @@ and resource usage tracking.
 """
 
 import asyncio
-import time
 import psutil
 import logging
 from typing import Dict, Any, List, Optional, Callable
@@ -15,6 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import json
 from functools import wraps
+from uuid import uuid4
 
 from .logging_config import get_logger
 
@@ -65,7 +65,7 @@ class PerformanceTracker:
     
     def start_operation(self, operation_name: str, metadata: Optional[Dict[str, Any]] = None) -> str:
         """Start tracking an operation."""
-        operation_id = f"{operation_name}_{int(time.time() * 1000)}"
+        operation_id = f"{operation_name}_{uuid4().hex}"
         
         metrics = PerformanceMetrics(
             operation_name=operation_name,
@@ -96,6 +96,7 @@ class PerformanceTracker:
             metrics.error_count += 1
         
         metrics.items_processed += items_processed
+        metrics.__post_init__()
         
         # Get current resource usage
         metrics.memory_usage = self.process.memory_info().rss / 1024 / 1024  # MB
@@ -231,7 +232,7 @@ class PerformanceTracker:
         
         # Check for low success rates
         low_success_operations = [m for m in recent_metrics 
-                                 if m.success_rate and m.success_rate < 0.8]
+                                 if m.success_rate is not None and m.success_rate < 0.8]
         
         if low_success_operations:
             suggestions.append(
