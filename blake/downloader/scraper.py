@@ -6,7 +6,7 @@ import asyncio
 import aiohttp
 import aiofiles
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Callable
 from urllib.parse import urljoin, urlparse
 import logging
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ import json
 import time
 from datetime import datetime
 import os
+import tempfile
 
 # Optional imports with fallbacks
 try:
@@ -22,12 +23,6 @@ try:
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False
-
-try:
-    import cv2
-    CV2_AVAILABLE = True
-except ImportError:
-    CV2_AVAILABLE = False
 
 from ..models import BlakeWork, BlakeImage, BlakeMetadata, WorkType, SourceType, LicenseType
 from ..exceptions import DownloadError
@@ -90,7 +85,7 @@ class WebScraper:
     
     def _is_file_downloaded(self, url: str, file_path: Path) -> bool:
         """Check if file has already been downloaded and is complete."""
-        if url in self.downloaded_files:
+        if url in self.downloaded_files and self.downloaded_files[url].get('success') is True:
             recorded_path = self.downloaded_files[url].get('path')
             recorded_size = self.downloaded_files[url].get('size')
             
@@ -130,7 +125,9 @@ class WebScraper:
         
         async with self.semaphore:
             try:
-                async with aiohttp.ClientSession(headers=default_headers) as session:
+                async with aiohttp.ClientSession(
+                    headers=default_headers, timeout=aiohttp.ClientTimeout(total=self.timeout)
+                ) as session:
                     async with session.get(url) as response:
                         response.raise_for_status()
                         content = await response.text()
@@ -141,7 +138,8 @@ class WebScraper:
     
     async def download_file(self, url: str, file_path: Path, 
                           headers: Optional[Dict[str, str]] = None, 
-                          force: bool = False) -> bool:
+                          force: bool = False,
+                          validate: Optional[Callable[[Path], None]] = None) -> bool:
         """
         Download a file from URL with retry logic and duplicate checking.
         
@@ -157,7 +155,14 @@ class WebScraper:
         # Check if file already exists and is complete
         if not force and self._is_file_downloaded(url, file_path):
             logger.info(f"File already downloaded: {url}")
-            return True
+            if validate is None:
+                return True
+            try:
+                validate(file_path)
+            except (OSError, ValueError) as exc:
+                logger.warning("Cached file failed validation: %s", exc)
+            else:
+                return True
         
         default_headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -181,25 +186,11 @@ class WebScraper:
                         async with session.get(url) as response:
                             response.raise_for_status()
                             
-                            # Create parent directory
-                            file_path.parent.mkdir(parents=True, exist_ok=True)
-                            
-                            # Download file
-                            total_size = 0
-                            async with aiofiles.open(file_path, 'wb') as f:
-                                async for chunk in response.content.iter_chunked(8192):
-                                    await f.write(chunk)
-                                    total_size += len(chunk)
-                            
-                            # Verify file was downloaded completely
-                            if total_size > 0:
-                                self._record_download(url, file_path, success=True)
-                                logger.info(f"Downloaded: {url} -> {file_path} ({total_size} bytes)")
-                                return True
-                            else:
-                                logger.warning(f"Downloaded empty file: {url}")
-                                return False
-                            
+                            await self._save_response(response, file_path, validate)
+                            self._record_download(url, file_path, success=True)
+                            logger.info('Downloaded: %s -> %s', url, file_path)
+                            return True
+
                 except asyncio.TimeoutError:
                     logger.warning(f"Timeout downloading {url} (attempt {attempt + 1}/{self.retry_attempts})")
                     if attempt < self.retry_attempts - 1:
@@ -221,6 +212,28 @@ class WebScraper:
             logger.error(f"Failed to download {url} after {self.retry_attempts} attempts")
             return False
     
+    async def _save_response(self, response, file_path: Path,
+                             validate: Optional[Callable[[Path], None]]) -> None:
+        """Publish complete, optionally validated bytes without truncating prior files."""
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(
+            dir=file_path.parent, prefix=".", suffix=".part", delete=False
+        ) as handle:
+            temporary = Path(handle.name)
+        try:
+            total = 0
+            async with aiofiles.open(temporary, 'wb') as handle:
+                async for chunk in response.content.iter_chunked(8192):
+                    await handle.write(chunk)
+                    total += len(chunk)
+            if not total:
+                raise DownloadError("Downloaded empty file")
+            if validate is not None:
+                validate(temporary)
+            os.replace(temporary, file_path)
+        finally:
+            temporary.unlink(missing_ok=True)
+
     async def extract_text_from_html(self, html: str, selectors: List[str]) -> str:
         """
         Extract text content from HTML using CSS selectors.
@@ -283,11 +296,21 @@ class ImageDownloader:
         self.max_size = max_size
         
         # Create directories
+        self._check_image_path(self.images_dir)
+        self._check_image_path(self.thumbnails_dir)
         self.images_dir.mkdir(parents=True, exist_ok=True)
         self.thumbnails_dir.mkdir(parents=True, exist_ok=True)
         
         # Supported image formats
         self.supported_formats = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'}
+
+    def _check_image_path(self, path: Path) -> None:
+        """Refuse symlinked image storage before decoding or writing source bytes."""
+        absolute = path.absolute()
+        if any(parent.is_symlink() for parent in (absolute, *absolute.parents)):
+            raise ValueError(f"Symlink in image storage: {path}")
+        if not absolute.resolve().is_relative_to(self.images_dir.absolute().resolve()):
+            raise ValueError(f"Path is outside image storage: {path}")
     
     async def download_image(self, url: str, filename: str, 
                            create_thumbnail: bool = True,
@@ -305,6 +328,12 @@ class ImageDownloader:
             BlakeImage object or None if failed
         """
         try:
+            if Path(filename).name != filename or "\\" in filename:
+                logger.warning("Image filename must be a single contained name: %s", filename)
+                return None
+            if not PIL_AVAILABLE:
+                logger.error("PIL is required to validate image downloads")
+                return None
             # Validate filename extension
             file_ext = Path(filename).suffix.lower()
             if file_ext not in self.supported_formats:
@@ -313,9 +342,16 @@ class ImageDownloader:
             
             # Download image
             image_path = self.images_dir / filename
+            self._check_image_path(image_path)
+            if create_thumbnail:
+                self._check_image_path(
+                    self.thumbnails_dir / f"thumb_{Path(filename).stem}.jpg"
+                )
             scraper = WebScraper(self.data_dir)
             
-            success = await scraper.download_file(url, image_path, force=force)
+            success = await scraper.download_file(
+                url, image_path, force=force, validate=self._validate_image
+            )
             if not success:
                 return None
             
@@ -326,6 +362,8 @@ class ImageDownloader:
             
             # Process image
             image_info = await self._process_image(image_path)
+            if image_info.get('width') is None:
+                return None
             
             # Create thumbnail if requested
             thumbnail_path = None
@@ -354,6 +392,14 @@ class ImageDownloader:
             logger.error(f"Error downloading image {url}: {e}")
             return None
     
+    @staticmethod
+    def _validate_image(path: Path) -> None:
+        """Check the complete encoded image before replacing an existing image."""
+        with Image.open(path) as image:
+            image.verify()
+        with Image.open(path) as image:
+            image.load()
+
     async def _process_image(self, image_path: Path) -> Dict[str, Any]:
         """
         Process image and extract metadata.
@@ -377,18 +423,17 @@ class ImageDownloader:
         
         try:
             with Image.open(image_path) as img:
+                width, height = img.size
+                format_name = img.format
                 # Convert to RGB if necessary
                 if img.mode != 'RGB':
                     img = img.convert('RGB')
                 
                 # Get basic info
-                width, height = img.size
-                format_name = img.format
                 
                 # Resize if too large for processing
                 if width > self.max_size[0] or height > self.max_size[1]:
                     img.thumbnail(self.max_size, Image.Resampling.LANCZOS)
-                    width, height = img.size
                 
                 # Calculate brightness and contrast
                 try:
@@ -532,6 +577,8 @@ class ImageDownloader:
             # Create thumbnail filename
             name_without_ext = Path(filename).stem
             thumbnail_path = self.thumbnails_dir / f"thumb_{name_without_ext}.jpg"
+            self._check_image_path(image_path)
+            self._check_image_path(thumbnail_path)
             
             # Skip if thumbnail already exists
             if thumbnail_path.exists():

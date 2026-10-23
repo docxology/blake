@@ -39,7 +39,6 @@ from ..models import (
     LicenseType,
 )
 from ..exceptions import DownloadError
-from ..corpus.targets import load_corpus_target
 from ..metadata.database import MetadataDatabase
 
 logger = logging.getLogger(__name__)
@@ -298,6 +297,8 @@ class BlakeArchiveScraper:
         Returns:
             List of BlakeArchiveWork objects
         """
+        from ..corpus.targets import load_corpus_target
+
         logger.info(
             "Fetching works catalog from Blake Archive API and GitHub XML inventory"
         )
@@ -384,6 +385,8 @@ class BlakeArchiveScraper:
             return await self._fetch_works_fallback()
 
     async def _fetch_archive_inventory_catalog(self) -> List[BlakeArchiveWork]:
+        from ..corpus.targets import load_corpus_target
+
         file_names = await self._fetch_work_file_names()
         copy_index = self._copy_index_from_file_names(file_names)
         target = load_corpus_target("canonical")
@@ -1233,19 +1236,22 @@ class BlakeArchiveScraper:
         return None
 
     def _image_candidate_urls(self, object_id: str, dpi: int) -> List[str]:
+        spellings = list(dict.fromkeys((object_id.casefold(), object_id)))
         primary = [300]
         if dpi not in primary:
             primary.append(dpi)
         if 100 not in primary:
             primary.append(100)
         urls = [
-            f"{self.ARCHIVE_BASE_URL}/images/{object_id}.{candidate_dpi}.jpg"
+            f"{self.ARCHIVE_BASE_URL}/images/{spelling}.{candidate_dpi}.jpg"
             for candidate_dpi in primary
+            for spelling in spellings
         ]
         urls.extend(
             [
-                f"{self.WAYBACK_PREFIX}/{self.ARCHIVE_BASE_URL}/images/{object_id}.{candidate_dpi}.jpg"
+                f"{self.WAYBACK_PREFIX}/{self.ARCHIVE_BASE_URL}/images/{spelling}.{candidate_dpi}.jpg"
                 for candidate_dpi in primary
+                for spelling in spellings
             ]
         )
         return list(dict.fromkeys(urls))

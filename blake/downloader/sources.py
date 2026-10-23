@@ -59,10 +59,8 @@ class BlakeArchiveSource(BaseSource):
             
             # Try browsing by work type
             browse_urls = [
-                "https://blakearchive.org/works",
-                "https://blakearchive.org/browse",
-                "https://blakearchive.org/works/poems",
-                "https://blakearchive.org/works/prophecies"
+                urljoin(self.BASE_URL, path)
+                for path in ("/works", "/browse", "/works/poems", "/works/prophecies")
             ]
             
             for url in browse_urls:
@@ -85,7 +83,7 @@ class BlakeArchiveSource(BaseSource):
             
         except Exception as e:
             logger.error(f"Error fetching work list from Blake Archive: {e}")
-            return []  # Return empty list instead of raising error
+            raise DownloadError(f"Failed to fetch work list: {e}") from e
     
     def _extract_works_from_page(self, soup) -> List[Dict[str, Any]]:
         """Extract works from a Blake Archive page."""
@@ -199,7 +197,8 @@ class BlakeArchiveSource(BaseSource):
             location=location,
             source=SourceType.BLAKE_ARCHIVE,
             source_url=work_info['url'],
-            license_type=LicenseType.PUBLIC_DOMAIN,
+            license_type=LicenseType.UNKNOWN,
+            usage_terms="Source-provider edition and image terms require review.",
         )
     
     async def _extract_text_content(self, soup) -> Optional[str]:
@@ -217,12 +216,12 @@ class BlakeArchiveSource(BaseSource):
         for selector in text_selectors:
             text_elem = soup.select_one(selector)
             if text_elem:
-                return text_elem.get_text(strip=True)
+                return text_elem.get_text(' ', strip=True)
         
         # Fallback to body text
         body = soup.find('body')
         if body:
-            return body.get_text(strip=True)
+            return body.get_text(' ', strip=True)
         
         return None
     
@@ -337,7 +336,10 @@ class ProjectGutenbergSource(BaseSource):
             text_path = None
             
             # Look for any file starting with this ID
-            existing_files = list((self.data_dir / "texts").glob(f"{work_id}*.txt"))
+            existing_files = sorted((self.data_dir / "texts").glob(f"{work_id}_*.txt"))
+            direct_file = self.data_dir / "texts" / f"{work_id}.txt"
+            if direct_file.is_file():
+                existing_files.insert(0, direct_file)
             if existing_files:
                 text_path = existing_files[0]
                 try:
@@ -400,6 +402,9 @@ class ProjectGutenbergSource(BaseSource):
             # Clean text content
             original_length = len(text_content) if text_content else 0
             text_content = self._clean_gutenberg_text(text_content)
+            if not text_content:
+                logger.warning("No body text remains after wrapper removal for %s", work_id)
+                return None
             cleaned_length = len(text_content) if text_content else 0
             logger.debug(f"Text cleaning for {work_id}: {original_length} -> {cleaned_length} characters")
             
@@ -465,12 +470,12 @@ class ProjectGutenbergSource(BaseSource):
             script.decompose()
         
         # Get text
-        text = soup.get_text()
+        text = soup.get_text('\n')
         
         # Clean up whitespace
         lines = (line.strip() for line in text.splitlines())
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        text = ' '.join(chunk for chunk in chunks if chunk)
+        text = '\n'.join(chunk for chunk in chunks if chunk)
         
         return text
     
@@ -480,14 +485,16 @@ class ProjectGutenbergSource(BaseSource):
         
         # Common file patterns for Project Gutenberg
         patterns = [
-            f"https://www.gutenberg.org/files/{work_id}/{work_id}-0.txt",
-            f"https://www.gutenberg.org/files/{work_id}/{work_id}.txt",
-            f"https://www.gutenberg.org/files/{work_id}/pg{work_id}.txt",
-            f"https://www.gutenberg.org/files/{work_id}/{work_id}-h/{work_id}-h.htm",
-            f"https://www.gutenberg.org/files/{work_id}/{work_id}-h/{work_id}-h.html"
+            urljoin(self.BASE_URL, f"/files/{work_id}/{work_id}-0.txt"),
+            urljoin(self.BASE_URL, f"/files/{work_id}/{work_id}.txt"),
+            urljoin(self.BASE_URL, f"/files/{work_id}/pg{work_id}.txt"),
+            urljoin(self.BASE_URL, f"/files/{work_id}/{work_id}-h/{work_id}-h.htm"),
+            urljoin(self.BASE_URL, f"/files/{work_id}/{work_id}-h/{work_id}-h.html")
         ]
         
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=self.scraper.timeout)
+        ) as session:
             for url in patterns:
                 try:
                     async with session.get(url) as response:
@@ -651,7 +658,8 @@ class InternetArchiveSource(BaseSource):
             description=description,
             source=SourceType.INTERNET_ARCHIVE,
             source_url=work_info['url'],
-            license_type=LicenseType.PUBLIC_DOMAIN,
+            license_type=LicenseType.UNKNOWN,
+            usage_terms="Source-provider edition and image terms require review.",
         )
     
     async def _download_files(self, soup, work_id: str) -> Dict[str, Any]:
