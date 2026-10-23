@@ -2,7 +2,7 @@
 
 The *blake* pipeline is organized as a {{PHASE_COUNT}}-phase directed acyclic graph (DAG): discovery, acquisition, metadata, analysis, visualizations, export, and reports. The saved publication run completed {{PHASES_COMPLETED}} phases with status {{RUN_STATUS}}. Discovery and acquisition reused the retained local evidence; this run did not make new source-availability measurements. Analysis and downstream reporting generated fresh artifacts. [@fig:pipeline_dag] distinguishes those actions. Automated derivation connects the saved inputs, analysis, figures, and quantitative prose [@sandve2013ten; @wilson2014best].
 
-![Saved corpus workflow as a {{PHASE_COUNT}}-phase directed acyclic graph. Discovery and acquisition reused retained local evidence without a live refresh; analysis and downstream reporting generated new artifacts. Counts describe this saved run and do not establish that every external Blake source has been mirrored.](../output/figures/pipeline_dag.png){#fig:pipeline_dag}
+![Saved corpus workflow as a {{PHASE_COUNT}}-phase directed acyclic graph. Discovery and acquisition reused retained local evidence without a live refresh; analysis and downstream reporting generated new artifacts. Counts describe this saved run and do not establish that every external Blake source has been mirrored.](../../output/figures/pipeline_dag.png){#fig:pipeline_dag}
 
 ## Units and Target-Ledger Denominator
 
