@@ -1,0 +1,14 @@
+{
+  "reviews": [
+    {
+      "review_id": "lt1825.1-esquire-annotation",
+      "source_sha256": "c42b50de1fd61462384bc449224f1c7e184337f95115942f4aae1655645de103",
+      "line_locator": "lt1825.1.ltr.01.01",
+      "original_prefix": "J Linnell Esqre",
+      "annotation_xml": "<choice><reg>Esquire</reg></choice>",
+      "reason": "The original abbreviation is already supplied before this regularization-only search annotation. Retain that source reading once and exclude the editorial expansion.",
+      "source_url": "https://raw.githubusercontent.com/blakearchive/data/7063e9ea8b13d18bd5a585e87610164fd75d3f60/works/lt1825.1.xml",
+      "markup_reference": "https://blog.blakearchive.org/2018/04/04/a-new-guide-to-choice-tags/"
+    }
+  ]
+}

@@ -17,6 +17,10 @@ from .corpus.public_release import (
 )
 from .corpus.release_preflight import write_private_release_preflight
 from .corpus.source_audit import provider_reason_code
+from .recovery import (
+    backup_command, recover_command, register_command, restore_command,
+    verify_backup_command, verify_command,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -86,6 +90,14 @@ def main(ctx, data_dir, output_dir, verbose):
 @click.pass_context
 def corpus(ctx):
     pass
+
+
+corpus.add_command(recover_command, name="recover")
+corpus.add_command(verify_command, name="verify-recovery")
+corpus.add_command(register_command, name="import-recovery")
+corpus.add_command(backup_command, name="backup")
+corpus.add_command(verify_backup_command, name="verify-backup")
+corpus.add_command(restore_command, name="restore")
 
 
 @corpus.command(

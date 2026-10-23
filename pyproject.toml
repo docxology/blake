@@ -53,6 +53,7 @@ dependencies = [
     "aiofiles>=23.0.0",
     "aiohttp>=3.8.0",
     "httpx>=0.24.0",
+    "truststore>=0.10; python_version >= '3.10'",
     "scrapy>=2.10.0",
     "selenium>=4.10.0",
     "pytest>=8.4.2",

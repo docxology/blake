@@ -154,6 +154,11 @@ Thumbs.db
 data/
 test_data/
 
+# Complete source snapshots, recovery receipts, and derived local corpus files.
+# Keep these explicit if the default cache layout is changed later.
+corpus_local/
+recovery_output/
+
 # Passage indexes duplicate source expression and always remain local.
 *.sqlite
 *.sqlite-*

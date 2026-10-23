@@ -242,7 +242,14 @@ class MetadataDatabase:
             
             # Look for file matching pattern {work_id}_*.txt or {work_id}.txt
             text_file = None
-            if texts_dir.exists():
+            if metadata.file_path is not None:
+                candidate = metadata.file_path.resolve()
+                data_root = self.db_path.parent.parent.resolve()
+                if candidate.is_file() and candidate.is_relative_to(data_root):
+                    text_file = candidate
+                elif candidate.exists():
+                    logger.warning("Recorded text path is outside corpus storage: %s", candidate)
+            if text_file is None and texts_dir.exists():
                 # Direct match
                 direct_file = texts_dir / f"{work_id}.txt"
                 if direct_file.exists():
@@ -256,15 +263,27 @@ class MetadataDatabase:
             if text_file and text_file.exists():
                 try:
                     text_content = text_file.read_text(encoding='utf-8')
-                except Exception as e:
+                except (OSError, UnicodeError) as e:
                     logger.warning(f"Failed to load text content for work {work_id}: {e}")
             
+            analysis_fields = {
+                'text': 'text_analysis', 'visual': 'visual_analysis',
+                'cross': 'cross_analysis', 'ontology': 'ontological_analysis',
+            }
+            saved_analyses = {}
+            for record in self.load_analysis_results(work_id):
+                field = analysis_fields.get(record['analysis_type'])
+                if field is not None and field not in saved_analyses:
+                    saved_analyses[field] = record['results']
+
             # Create BlakeWork
             work = BlakeWork(
                 id=work_id,
                 metadata=metadata,
                 images=images,
                 text_content=text_content,
+                fully_processed=metadata.processed,
+                **saved_analyses,
             )
             
             # Set primary image
@@ -379,14 +398,14 @@ class MetadataDatabase:
                     SELECT analysis_type, timestamp, results, confidence, metadata
                     FROM analysis_results 
                     WHERE work_id = ? AND analysis_type = ?
-                    ORDER BY timestamp DESC
+                    ORDER BY timestamp DESC, id DESC
                 """, (work_id, analysis_type))
             else:
                 cursor.execute("""
                     SELECT analysis_type, timestamp, results, confidence, metadata
                     FROM analysis_results 
                     WHERE work_id = ?
-                    ORDER BY timestamp DESC
+                    ORDER BY timestamp DESC, id DESC
                 """, (work_id,))
             
             results = []
