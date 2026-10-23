@@ -28,6 +28,17 @@ The source registry contains {{SOURCE_REGISTRY_COUNT}} providers: {{SOURCE_PROVI
 
 The acquisition path builds Archive-backed work records from the target ledger and the public GitHub TEI inventory; live per-work Archive API metadata is attempted opportunistically as enrichment, not as the only catalog source. In this run the enrichment status was `{{ARCHIVE_METADATA_STATUS}}`: {{ARCHIVE_METADATA_SUCCEEDED}} of {{ARCHIVE_METADATA_ATTEMPTED}} attempted metadata requests succeeded, {{ARCHIVE_METADATA_FAILED}} failed, and {{ARCHIVE_METADATA_SKIPPED}} were skipped after the bounded budget or degradation guard. The fallback source for work-record construction was {{ARCHIVE_METADATA_FALLBACK_SOURCE}}. TEI acquisition uses actual inventory filenames before falling back to inferred copy-letter patterns, treating TEI as a structured encoding model rather than a plain-text dump [@teiP5; @burnard2014tei; @derose1990text]. Image acquisition normalizes object identifiers before trying Archive and Wayback image URL variants. Text-canon targets without primary Archive work ids are handled through an explicit Wikisource fallback script, with the fallback source recorded in local metadata rather than folded into Archive authority. The source audit found {{GITHUB_WORK_XML_COUNT}} work XML files and {{GITHUB_WORK_PREFIX_COUNT}} distinct work prefixes in the GitHub works API, then sampled {{ARCHIVE_API_SAMPLE_COUNT}} Archive work API records, of which {{ARCHIVE_API_SAMPLE_OK}} responded successfully. The resulting discovery set produced {{SOURCE_RECORDS_DISCOVERED}} normalized source records and matched {{SOURCE_MATCHED_TARGETS}} ledger targets ({{SOURCE_MATCHED_PCT}}%). Endpoint status is evidence about a run-time source environment, not a permanent property of the cited resource; long-lived digital humanities projects and public web corpora both face changing interfaces, link rot, reference rot, time-varying representations, and provider-specific access policies [@reed2014managing; @klein2014reference; @vandesompel2013memento].
 
+## Retained Sources and Recoverability
+
+The software also supports a retained-source workflow that records source commits,
+file sizes, checksums, extraction outcomes and unresolved image references in a
+captured manifest. Portable backup and offline restoration operate on that
+inventory; a restore drill requires a deliberately corrupted copy to fail
+verification before repair. This preservation procedure is separate from the
+saved acquisition and analysis run reported by the manuscript. Its current
+software contract is documented in `docs/methods.md`; neither recovery nor a
+software version change promotes unverified source text or refreshes result data.
+
 ## Provenance Audit: Evidence Traces and Missing-Work Search
 
 Every local work stores source type, source identifier, source URL, license fields, and image source URLs where available. The audit layer separately records endpoint status for the research sources, so source availability is not inferred from successful local acquisition alone. It also emits missing-evidence candidates for targets that remain missing or partial, separating text, image, and source-match searches. This makes provenance a recorded relationship among sources, acquisition activities, derived artifacts, and manuscript claims rather than an informal note [@w3cprov2013overview; @rocrate2022]. [@fig:source_audit] summarizes the checked endpoints, and [@tbl:source_audit] retains the exact checked status table used for this manuscript.

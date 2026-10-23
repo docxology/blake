@@ -1,5 +1,19 @@
 # Methods: Local Text, Image, Cross-Modal, and Theme Diagnostics {#sec:methods_analysis}
 
+## Source-bound Occurrence Search
+
+An independently versioned search profile indexes retained reading passages,
+editorial pages and raw XML in separate source planes. Primary scope requires
+identified authorship and primary reading text; exploratory scope preserves
+unverified and editorial labels. Normalized token and phrase matches retain
+offsets into original expression, while exact matching is case-sensitive.
+Curated variants and concept vocabularies provide navigation aids rather than
+new semantic or whole-oeuvre occurrence claims. Search counts cover the selected
+indexed scope before display limits, and failed source or index integrity checks
+refuse the query. The implementation contract is recorded in `docs/methods.md`.
+
+## Saved-run Descriptive Analysis
+
 The analysis phase operates over the acquired local corpus, not over the target ledger directly. In the present run, {{WORKS_PRESENT}} local works entered analysis. Of these, {{WORKS_WITH_TEXT}} contain text, {{WORKS_WITH_IMAGES}} contain image evidence, and {{WORKS_WITH_BOTH}} contain both. The separation is important: coverage results describe the state of target evidence, while analysis results describe only works for which the relevant modality is locally available. The analysis design is therefore descriptive and census-like for the saved local run; it is not an inferential sample of an undefined Blake population.
 
 The text module tokenizes each text-bearing work, computes word and unique-word counts, estimates lexical sentiment, derives vocabulary richness as type-token ratio, extracts recurring themes from metadata and analysis outputs, and writes concordance-ready JSON. A separate lexical-signature artifact applies the same deterministic tokenizer with a stopword filter, an editorial-apparatus filter, adjacent-term phrase counts, per-work lexical density, and simple distinctive term scores. Those descriptors are reproducible and comparable across runs; they are not treated here as final literary judgments. The method therefore treats tokenization and markup as modeling decisions [@derose1990text; @teiP5], treats type-token ratio as a length-sensitive lexical diagnostic [@tweediebaayen1998lexical; @mccarthyjarvis2010lexical], and treats sentiment as a fragile descriptor for literary language rather than as an affective interpretation [@panglee2008sentiment; @kimklinger2019sentiment]. The visual module processes local image files, recording image-level composition and color descriptors exposed by the package's visual-analysis engine. In distant-viewing terms, these descriptors are computed metadata for a bounded image corpus, not iconographic readings or copy-state judgments [@arnoldtilton2019distantviewing; @weverssmits2020visualdigitalturn]. The cross-modal layer links work text to local image records when both modalities are present; that linkage is an evidentiary join, not a theory of how word and image co-produce meaning in Blake's composite art [@mitchell1994picture; @viscomi1993blake].

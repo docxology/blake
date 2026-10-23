@@ -1,5 +1,9 @@
 # Blake Corpus Analysis Platform
 
+Current software: **0.2.0rc1**. See [release changes](CHANGELOG.md) and the
+[versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
+view exposes recorded recovery status and scoped, read-only corpus search.
+
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21047574-blue.svg)](https://doi.org/10.5281/zenodo.21047574)
