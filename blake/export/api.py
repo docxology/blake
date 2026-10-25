@@ -13,6 +13,7 @@ from pathlib import Path
 from ..models import BlakeWork, ExportConfig, SourceType
 from ..exceptions import BlakeError
 from ..provenance import manifest_context_for_work, work_provenance
+from ..version import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class BlakeAPI:
         self.app = FastAPI(
             title="Blake API",
             description="REST API for William Blake's works",
-            version="0.1.0"
+            version=__version__,
         )
         
         self._setup_routes()
@@ -52,7 +53,7 @@ class BlakeAPI:
         @self.app.get("/")
         async def root():
             """Root endpoint."""
-            return {"message": "Blake API", "version": "0.1.0"}
+            return {"message": "Blake API", "version": __version__}
         
         @self.app.get("/works")
         async def get_works(
