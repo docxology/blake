@@ -12,7 +12,7 @@ Export and API functionality for William Blake's works data.
 ## Usage
 
 ```python
-from blake.blake_export import BlakeExporter
+from blake.export import BlakeExporter
 from blake.models import ExportConfig
 
 exporter = BlakeExporter()
@@ -29,15 +29,31 @@ path = exporter.export_works(works, config)
 
 ## API Server
 
-```bash
-# Start API server
-uvicorn blake.blake_export.api:app --reload
+`BlakeAPI` builds a FastAPI app over a `BlakeCorpus` instance; serve that app
+with any ASGI server:
 
-# Endpoints
-GET /works           # List works
-GET /works/{id}      # Get work
-GET /search?q=query  # Search
-POST /export         # Export data
+```python
+import uvicorn
+
+from blake import BlakeCorpus
+from blake.export.api import BlakeAPI
+
+api = BlakeAPI(BlakeCorpus())
+uvicorn.run(api.app, host="127.0.0.1", port=8000)
+```
+
+Endpoints:
+
+```
+GET  /                                  # Service banner and package version
+GET  /works                             # List works
+GET  /works/{work_id}                   # Get one work
+GET  /works/{work_id}/analysis          # Saved analysis for one work
+POST /works/{work_id}/analyze           # Analyze one work
+GET  /search?q=query                    # Search works
+GET  /statistics                        # Local collection statistics
+GET  /export/{work_id}                  # Export one work
+GET  /health                            # Health probe
 ```
 
 ## Export Options

@@ -441,34 +441,23 @@ from pathlib import Path
 corpus = BlakeCorpus(Path("/path/to/my/blake/data"))
 ```
 
-### Environment Variables
+### Configuration Surfaces
 
-Set these environment variables for global configuration:
+The package reads no `BLAKE_*` environment variables and no configuration file.
+Run settings live in `CorpusConfig` or the matching `blake corpus run` options,
+while data and output locations come from the `BlakeCorpus` constructor or the
+global `--data-dir` / `--output-dir` CLI options:
 
-```bash
-export BLAKE_DATA_DIR="/path/to/data"
-export BLAKE_MAX_CONCURRENT_DOWNLOADS=5
-export BLAKE_DOWNLOAD_TIMEOUT=60
-```
+```python
+from pathlib import Path
 
-### Configuration File
+from blake import BlakeCorpus, CorpusConfig
 
-Create `blake_config.yaml` in your data directory:
-
-```yaml
-download:
-  max_concurrent: 5
-  timeout: 60
-  retry_attempts: 3
-
-analysis:
-  text_analysis: true
-  visual_analysis: true
-  cross_analysis: true
-
-export:
-  default_format: "json"
-  include_images: true
+corpus = BlakeCorpus(
+    Path("/path/to/my/blake/data"),
+    output_dir=Path("analysis_output"),
+    config=CorpusConfig(quick=True, max_workers=2, export_formats=["json"]),
+)
 ```
 
 ### Custom Analysis

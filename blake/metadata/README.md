@@ -12,7 +12,7 @@ Metadata management with SQLite storage and search functionality.
 ## Usage
 
 ```python
-from blake.blake_metadata import MetadataManager
+from blake.metadata import MetadataManager
 
 manager = MetadataManager(data_dir="./blake_data")
 

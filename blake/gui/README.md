@@ -13,7 +13,7 @@ Streamlit-based interactive exploration interface for William Blake's works.
 ## Usage
 
 ```python
-from blake.blake_gui import BlakeGUI
+from blake.gui import BlakeGUI
 
 gui = BlakeGUI(blake_works)
 gui.launch(host="localhost", port=8501)

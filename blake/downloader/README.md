@@ -13,7 +13,7 @@ Multi-source data acquisition for William Blake's works.
 ## Usage
 
 ```python
-from blake.blake_downloader import BlakeDownloader
+from blake.downloader import BlakeDownloader
 
 downloader = BlakeDownloader(data_dir="./blake_data")
 

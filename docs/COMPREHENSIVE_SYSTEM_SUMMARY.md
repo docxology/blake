@@ -14,7 +14,6 @@ blake/
 │   ├── interactive_orchestrator.py # Rich terminal interface
 │   ├── downloader/                 # Download system
 │   │   ├── downloader.py           # Core downloader
-│   │   ├── manager.py              # Download management
 │   │   ├── sources.py              # Source adapters
 │   │   └── scraper.py              # Web scraping utilities
 │   ├── analysis/                   # Analysis system
@@ -33,13 +32,11 @@ blake/
 ├── tests/                          # Test suite
 │   ├── unit/                       # Unit tests
 │   ├── integration/                # Integration tests
-│   ├── performance/                # Performance tests
 │   └── run_all_tests.py            # Test runner
 ├── docs/                           # Documentation
 │   ├── api-reference.md            # API documentation
 │   ├── ARCHITECTURE.md             # System architecture
-│   ├── guides/                     # User guides
-│   └── examples/                   # Usage examples
+│   └── guides/                     # User guides
 ├── examples/                       # Example scripts
 │   ├── download_all.py             # Headless download orchestrator
 │   └── blake_interactive.py        # Interactive launcher

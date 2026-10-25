@@ -13,7 +13,7 @@ NLP and visual analysis for William Blake's works.
 ## Usage
 
 ```python
-from blake.blake_analysis import BlakeAnalyzer, TextAnalyzer
+from blake.analysis import BlakeAnalyzer, TextAnalyzer
 
 analyzer = BlakeAnalyzer()
 results = analyzer.analyze_work(work)

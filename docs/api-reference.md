@@ -645,42 +645,9 @@ Raised when export operations fail.
 
 ## Configuration
 
-### Environment Variables
+### Configuration Surfaces
 
-- `BLAKE_DATA_DIR`: Default data directory
-- `BLAKE_MAX_CONCURRENT_DOWNLOADS`: Maximum concurrent downloads (default: 10)
-- `BLAKE_DOWNLOAD_TIMEOUT`: Download timeout in seconds (default: 30)
-- `BLAKE_RETRY_ATTEMPTS`: Number of retry attempts (default: 3)
-
-### Configuration File
-
-Create `blake_config.yaml` in your data directory:
-
-```yaml
-download:
-  max_concurrent: 10
-  timeout: 30
-  retry_attempts: 3
-  user_agent: "Blake Package/1.0"
-
-analysis:
-  text_analysis: true
-  visual_analysis: true
-  cross_analysis: true
-  batch_size: 5
-
-export:
-  default_format: "json"
-  include_images: true
-  include_analysis: true
-
-gui:
-  host: "localhost"
-  port: 8501
-  theme: "light"
-
-api:
-  host: "0.0.0.0"
-  port: 8000
-  cors_origins: ["*"]
-```
+The package reads no `BLAKE_*` environment variables and no configuration file.
+Configuration is passed programmatically through `CorpusConfig`, through the
+`BlakeCorpus` constructor, or through the CLI options described under
+[Corpus CLI](#corpus-cli).

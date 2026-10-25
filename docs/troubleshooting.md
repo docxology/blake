@@ -78,12 +78,10 @@ works = await blake.downloader.download_from_source(SourceType.PROJECT_GUTENBERG
 
 **Solutions:**
 ```python
-# Increase timeout
-import os
-os.environ['BLAKE_DOWNLOAD_TIMEOUT'] = '60'
+# Lower the pipeline's phase concurrency
+from blake import CorpusConfig
 
-# Reduce concurrent downloads
-os.environ['BLAKE_MAX_CONCURRENT_DOWNLOADS'] = '5'
+config = CorpusConfig(max_workers=2)
 
 # Enable debug logging
 import logging
@@ -152,14 +150,11 @@ except Exception as e:
 
 **Solutions:**
 ```bash
-# Download spaCy model
-python -m spacy download en_core_web_sm
-
-# Or install with pip
-pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.1/en_core_web_sm-3.4.1.tar.gz
+# Reinstall the model wheel pinned by the project (en-core-web-sm in pyproject.toml)
+uv sync
 
 # Verify installation
-python -c "import spacy; nlp = spacy.load('en_core_web_sm'); print('Model loaded successfully')"
+uv run python -c "import spacy; nlp = spacy.load('en_core_web_sm'); print('Model loaded successfully')"
 ```
 
 #### Issue: Memory Issues During Analysis
@@ -308,9 +303,9 @@ print(f"Memory usage: {psutil.virtual_memory().percent}%")
 print(f"Disk usage: {psutil.disk_usage('/').percent}%")
 
 # Optimize configuration
-import os
-os.environ['BLAKE_MAX_CONCURRENT_DOWNLOADS'] = '3'
-os.environ['BLAKE_BATCH_SIZE'] = '2'
+from blake import CorpusConfig
+
+config = CorpusConfig(max_workers=2)
 
 # Clear caches
 blake.clear_cache()
@@ -409,9 +404,8 @@ blake = BlakeCorpus(Path("/path/to/larger/disk/blake_data"), output_dir=Path("/p
 
 **Solutions:**
 ```python
-# Increase timeout
-import os
-os.environ['BLAKE_DOWNLOAD_TIMEOUT'] = '120'
+# Reuse already captured local sources instead of re-downloading
+# uv run blake corpus run --skip-download --output-dir analysis_output
 
 # Check network connectivity
 import aiohttp
@@ -436,13 +430,11 @@ asyncio.run(test_connectivity())
 
 **Solutions:**
 ```python
-# Reduce download rate
-import os
-os.environ['BLAKE_MAX_CONCURRENT_DOWNLOADS'] = '1'
-os.environ['BLAKE_DELAY_BETWEEN_REQUESTS'] = '2.0'
+# Reduce concurrency for acquisition and image recovery
+from blake import CorpusConfig
 
-# Use different user agent
-os.environ['BLAKE_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+config = CorpusConfig(max_workers=1)
+# Image recovery: uv run blake corpus recover --image-workers 1
 
 # Wait and retry
 import time
