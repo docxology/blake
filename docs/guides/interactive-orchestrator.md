@@ -43,8 +43,8 @@ Successfully implemented a comprehensive interactive terminal orchestrator for t
 #### **Architecture**
 ```
 blake/interactive_orchestrator.py    # Main orchestrator class
-blake/cli_orchestrator.py           # CLI entry point
-blake_interactive.py                # Standalone script
+blake/cli.py                         # `blake interactive` CLI entry point
+examples/blake_interactive.py        # Standalone script
 examples/interactive_demo.py        # Demo script
 ```
 
@@ -63,10 +63,10 @@ examples/interactive_demo.py        # Demo script
 blake interactive
 
 # Standalone script
-python blake_interactive.py
+python examples/blake_interactive.py
 
-# Installed script
-blake-interactive
+# Installed CLI group
+blake interactive
 ```
 
 #### **Dependencies Added**

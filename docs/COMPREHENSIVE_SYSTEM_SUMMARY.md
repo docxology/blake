@@ -9,7 +9,6 @@ The Blake system is a modular platform for acquiring, analyzing, visualizing, an
 ```
 blake/
 ├── blake/                          # Main package
-│   ├── core.py                     # Main orchestrator
 │   ├── models.py                   # Data models
 │   ├── cli.py                      # Command-line interface
 │   ├── interactive_orchestrator.py # Rich terminal interface
@@ -218,17 +217,17 @@ python examples/blake_interactive.py
 ### **CLI Usage**
 
 ```bash
-# Download works
-blake download --all
+# Acquire, analyze, and report on the local corpus
+blake corpus run --quick --output-dir analysis_output
 
-# Search works
-blake search "innocence"
+# Search local metadata
+blake search --query "innocence"
 
-# Analyze works
-blake analyze --works "1934,45315"
+# Inspect one work
+blake info --work-id "1934"
 
-# Export data
-blake export --works "1934" --format json
+# Write JSON exports during the run
+blake corpus run --format json
 ```
 
 ### **Programmatic Usage**

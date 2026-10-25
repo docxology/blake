@@ -27,7 +27,7 @@ blake/                  # Main package
 
 ## Key Patterns
 
-- **Orchestrator**: `BlakeCorpus` defined in `blake/corpus/pipeline.py`; `core.py` is a compatibility shim
+- **Orchestrator**: `BlakeCorpus` defined in `blake/corpus/pipeline.py`, re-exported from `blake`
 - **Async-first**: Download and analysis operations are async
 - **Pydantic models**: All data structures in `models.py`
 - **Click CLI**: Commands defined in `cli.py`

@@ -6,7 +6,7 @@ Core Python package for William Blake's works analysis platform.
 
 | Module | Purpose |
 |--------|---------|
-| `core.py` | `BlakeCorpus` orchestrator class |
+| `corpus/pipeline.py` | `BlakeCorpus` orchestrator class |
 | `models.py` | Pydantic data models |
 | `cli.py` | Click-based CLI commands |
 | `exceptions.py` | Custom exception classes |

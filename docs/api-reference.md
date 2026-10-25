@@ -2,7 +2,7 @@
 
 ## BlakeCorpus Class
 
-The primary orchestrator for reproducible Blake corpus workflows. `BlakeCorpus` remains available as a compatibility shim over this class.
+The primary orchestrator for reproducible Blake corpus workflows. `BlakeCorpus` is defined in `blake.corpus.pipeline` and re-exported as `blake.BlakeCorpus`.
 
 ## Current Evidence Contract
 

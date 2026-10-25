@@ -4,7 +4,7 @@ The heart of the Blake platform: the target-aware corpus pipeline, canonical
 target ledger, source providers/audit, evidence acquisition, visualization
 generation, and public-release packaging. Exposed to users through
 `uv run blake corpus ...` (see `../cli.py`) and the `BlakeCorpus` orchestrator
-(`../pipeline.py` re-exports it as `core.py`).
+defined in `pipeline.py` and re-exported from the `blake` package.
 
 ## Canonical regeneration (from repo root)
 

@@ -48,7 +48,6 @@ the saved-run membership boundary of text coverage and NLP diagnostics.
 ```
 blake/
 ├── corpus/              # BlakeCorpus workflow, manifests, source registry
-├── core.py              # BlakeCorpus compatibility shim
 ├── models.py            # Data models and schemas
 ├── exceptions.py        # Custom exception handling
 ├── downloader/          # Download management

@@ -187,43 +187,27 @@ blake corpus public-release-package --output-dir analysis_output --data-dir blak
 
 `--skip-download` means acquisition is reused from the existing local corpus; it does not skip analysis. `--image-mode archive-all` is a local evidence-depth setting, not a redistribution permission.
 
-### Download Works
+### Acquire and Analyze Works
 
 ```bash
-# Compatibility provider fetch shortcuts
-blake download --all
+# Reuse the local corpus and regenerate analysis
+blake corpus run --skip-download --output-dir analysis_output
 
-# Download from specific source
-blake download --source project_gutenberg
+# Inspect one work's local metadata
+blake info --work-id "21160"
 
-# Download specific work
-blake download --work-id "21160"
+# Write JSON exports during the run
+blake corpus run --format json
 ```
 
-### Analyze Works
+### Explore and Search
 
 ```bash
-# Compatibility analysis shortcut over the local corpus
-blake analyze --all
-
-# Analyze specific work
-blake analyze --work-id "21160"
-
-# Run specific analysis types
-blake analyze --all --text --visual --cross
-```
-
-### Explore and Export
-
-```bash
-# Start web interface
+# Start the Streamlit interface
 blake explore
 
-# Export data
-blake export --format json --include-analysis
-
-# Search works
-blake search "innocence" --work-type poem
+# Search local metadata
+blake search --query "innocence" --work-type poem
 ```
 
 ## Advanced Examples
@@ -277,39 +261,26 @@ asyncio.run(custom_analysis())
 
 ## Configuration
 
-### Environment Variables
+### Command Line
 
 ```bash
-# Set data directory
-export BLAKE_DATA_DIR="/path/to/your/data"
-
-# Configure download settings
-export BLAKE_MAX_CONCURRENT_DOWNLOADS=5
-export BLAKE_DOWNLOAD_TIMEOUT=60
-
-# Configure analysis
-export BLAKE_ENABLE_TEXT_ANALYSIS=true
-export BLAKE_ENABLE_VISUAL_ANALYSIS=true
+blake --data-dir /path/to/your/data --output-dir /path/to/output corpus run --quick
 ```
 
-### Configuration File
+### Python
 
-Create `blake_config.yaml` in your data directory:
+```python
+from pathlib import Path
 
-```yaml
-download:
-  max_concurrent: 5
-  timeout: 60
+from blake import BlakeCorpus, CorpusConfig
 
-analysis:
-  text_analysis: true
-  visual_analysis: true
-
-gui:
-  host: "localhost"
-  port: 8501
-  theme: "light"
+corpus = BlakeCorpus(Path("/path/to/your/data"), output_dir=Path("/path/to/output"))
+summary = await corpus.run(CorpusConfig(quick=True))
 ```
+
+Run settings live in `CorpusConfig` (fixture mode, visualization profile, export
+formats, archive scope, image depth) or in the corresponding `blake corpus run`
+options. No separate configuration file or environment override is read.
 
 ## Troubleshooting
 

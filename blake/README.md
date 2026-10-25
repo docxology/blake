@@ -1,6 +1,6 @@
 # Blake Package
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/uv-package%20manager-green.svg)](https://github.com/astral-sh/uv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -56,9 +56,14 @@ summary = await corpus.run(CorpusConfig(quick=True))
 matches = await corpus.search_works("innocence")
 
 # Export to multiple formats
+from pathlib import Path
+
 from blake.export import get_exporter
-exporter = get_exporter('html')
-await exporter.export_works(works, output_dir, config)
+from blake.models import ExportConfig
+
+works = await corpus.get_all_works()
+config = ExportConfig(format="html", output_dir=Path("analysis_output/exports"))
+await get_exporter("html").export_works(works, config.output_dir, config)
 ```
 
 ### CLI
@@ -71,10 +76,10 @@ blake corpus acquire-evidence --from-audit analysis_output/data/source_audit.jso
 blake corpus private-release-preflight --output-dir analysis_output --data-dir blake_data
 blake corpus public-release-preflight --output-dir analysis_output --data-dir blake_data
 blake corpus public-release-package --output-dir analysis_output --data-dir blake_data
-blake download --all  # compatibility provider fetch shortcut
-blake analyze --text --visual
+blake corpus status --coverage
+blake info --work-id 21160
+blake search --query "innocence"
 blake explore
-blake export --format json
 ```
 
 ## Module Reference
@@ -118,7 +123,7 @@ Default data directory: `./blake_data`
 Override via:
 - Constructor: `BlakeCorpus(data_dir=Path("..."), output_dir=Path("..."))`
 - CLI: `blake --data-dir /path --output-dir /path corpus run --quick`
-- Environment: `BLAKE_DATA_DIR=/path`
+- Pipeline: `CorpusConfig(data_dir=Path("..."))`
 
 ## Development
 
@@ -129,6 +134,7 @@ uv run pytest tests/ -v
 # Type checking
 uv run mypy blake/
 
-# Linting
-uv run ruff check blake/
+# Formatting and import checks
+uv run --extra dev black --check blake/
+uv run --extra dev isort --check blake/
 ```

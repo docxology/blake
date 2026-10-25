@@ -108,7 +108,7 @@ Key sources to audit, acquire from when permitted, or record as corroborating le
 **API/CLI:**
 
 - Modular Python API for all major functions (scraping, querying, analysis)
-- CLI: pipeline orchestration (e.g., `blake download --all`, `blake explore`, `blake export --format json`)
+- CLI: pipeline orchestration (e.g., `blake corpus run --quick`, `blake corpus run --format json`, `blake explore`)
 - Documentation auto-generation (Sphinx/README integration)
 
 ## 7. Extensibility \& Collaboration

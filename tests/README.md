@@ -25,7 +25,6 @@ regeneration.
 |-----------|-------------|
 | `unit/` | Isolated unit tests |
 | `integration/` | End-to-end flows |
-| `performance/` | Performance benchmarks |
 
 ## Test Files
 

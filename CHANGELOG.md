@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Correct documentation that still described the removed `blake/corpus/core.py` shim and the removed `blake download`, `blake analyze`, and `blake export` CLI shortcuts; document the current `blake corpus`, `blake info`, and `blake search` commands instead.
+- Remove a fabricated environment-variable/`blake_config.yaml` configuration section and an undeclared `ruff` command from the docs; align `requirements.txt` with the package manifest.
+
 ## 0.2.0 - 2026-10-23
 
 - Preserve the captured corpus while analyzing a fresh metadata and transcription store.
