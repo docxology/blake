@@ -22,6 +22,14 @@ is built separately and can be regenerated from the retained text inputs.
 
 ## Search and interpretation
 
+The [application contract](applications.md) exports immutable private passage
+snapshots for independent papers. `blake.applications` verifies caller-pinned
+manifests and complete membership; `blake.studies` runs application-supplied forms
+without pagination and retains all zero cells and source denominators. A
+category/source/span is a retrieval candidate. Applications own contextual review
+and interpretation. This extension does not repin earlier analyses or alter the
+`local-source-evidence-v2` capture/search semantics.
+
 `nfkc-casefold-source-spans-v2` normalizes Unicode composition and case while
 retaining offsets into unchanged source expression. Word and phrase searches use
 contiguous normalized tokens. Literal mode is case-sensitive exact matching.
