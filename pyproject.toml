@@ -104,6 +104,8 @@ packages = ["blake"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "uv.lock" = "blake/_resources/uv.lock"
+"pyproject.toml" = "blake/_resources/pyproject.toml"
+"LICENSE" = "blake/_resources/LICENSE"
 
 [tool.hatch.version]
 path = "blake/version.py"
