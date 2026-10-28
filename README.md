@@ -288,7 +288,7 @@ python -m blake.text_search --index blake_data/search/demo.sqlite suite
 ## Development
 
 ```bash
-uv sync --extra full --extra dev --extra api
+uv sync --extra full --extra dev --extra api --extra gui
 uv run pytest tests/ -q
 uv run pytest tests/ -q -m "not slow and not integration"
 uv run blake corpus run --quick --output-dir analysis_output
@@ -299,9 +299,10 @@ uv run blake corpus public-release-package --output-dir analysis_output --data-d
 ```
 
 Plain `uv sync` installs the methods-only dependency set: packaging, Click,
-Pydantic and typing extensions. Use `uv sync --extra full --extra dev` for
-the full pipeline and its tests. Add `--extra gui` for Streamlit/Gradio or
-`--extra api` for FastAPI; both surfaces also require `--extra full`.
+Pydantic and typing extensions. Use `uv sync --extra full` for the legacy
+pipeline. The complete test suite includes GUI tests: install its dependencies
+with `uv sync --extra full --extra dev --extra gui`. GUI/API serving needs its
+surface extra (`gui` or `api`) together with `full`.
 
 ## License and Data Rights
 

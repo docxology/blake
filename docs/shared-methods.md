@@ -2,8 +2,10 @@
 
 The 0.3.0 candidate separates reusable evidence methods from application policy.
 Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
-`uv sync --extra full --extra dev` for acquisition, NLP, vision, the corpus
-pipeline and its tests. GUI/API serving also needs `full` and its surface extra.
+`uv sync --extra full` for acquisition, NLP, vision and the corpus pipeline.
+The complete test suite includes GUI tests and requires
+`uv sync --extra full --extra dev --extra gui`. GUI/API serving also needs `full`
+and its surface extra.
 Clean installed-package qualification is a separate gate; this document describes
 the candidate source API and does not attest a published release.
 
@@ -191,8 +193,9 @@ The core is qualified on actual Python 3.9 and 3.11. A normal wheel installation
 uses eight distributions and supports portable-bundle reading and these methods.
 Use `uv sync --extra recovery` for source recovery and recovered-projection export;
 this adds HTML parsing, image verification and platform certificate support.
-Use `uv sync --extra full --extra dev` for the complete legacy pipeline and its
-test suite. The full legacy workflow is qualified separately on Python 3.11;
+Use `uv sync --extra full --extra dev --extra gui` for the complete test suite,
+including its Streamlit native tests. The full legacy workflow is qualified
+separately on Python 3.11;
 the core's Python 3.9 result does not qualify that optional stack.
 
 This is a private full-text artifact. Do not put its HTML or payload into a public
