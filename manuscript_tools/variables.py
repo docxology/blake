@@ -27,7 +27,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from manuscript_tools.core_architecture import architecture_tokens
 from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics, validate_membership
+from manuscript_tools.paths import manuscript_roots
 from manuscript_tools.publication import publication_tokens
 
 # Human-readable labels for the registered source providers. Used only to
@@ -112,6 +114,7 @@ def generate_variables(
     project_root: Path | str,
     *,
     require_analysis_outputs: bool = True,
+    evidence_root: Path | str | None = None,
 ) -> dict[str, str]:
     """Compute the manuscript token table from ``analysis_output/`` artifacts.
 
@@ -120,13 +123,16 @@ def generate_variables(
         require_analysis_outputs: When True (pipeline mode), raise
             :class:`AnalysisOutputsMissing` if any required artifact is absent.
             When False (draft mode), missing optional artifacts are skipped.
+        evidence_root: Explicit read root for saved analysis and source custody.
+            Defaults to project_root; never falls back to authoring artifacts.
 
     Returns:
         Mapping ``{TOKEN: value_string}`` covering every quantitative claim in
         the manuscript.
     """
-    root = Path(project_root)
-    ao = root / "analysis_output"
+    roots = manuscript_roots(project_root, evidence_root)
+    root = roots.authoring
+    ao = roots.analysis
 
     statistics = (
         _read_json(
@@ -215,7 +221,7 @@ def generate_variables(
     source_discovery = (
         _read_json(ao / "data" / "source_discovery.json", required=False) or []
     )
-    nlp_diagnostics = build_nlp_diagnostics(root)
+    nlp_diagnostics = build_nlp_diagnostics(roots.evidence)
     nlp_membership = validate_membership(
         nlp_diagnostics,
         publication=require_analysis_outputs,
@@ -225,9 +231,10 @@ def generate_variables(
     )
 
     v: dict[str, str] = {}
+    v.update(architecture_tokens())
     v.update(
         publication_tokens(
-            root,
+            roots.evidence,
             required=require_analysis_outputs
             and (root / "docs/manuscript/14_supplement_recoverability.md").exists(),
         )

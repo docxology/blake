@@ -10,6 +10,14 @@ manuscript-variable producer that feeds template token substitution.
 | `figures.py` | Manuscript figures from `analysis_output/` artifacts |
 | `nlp_diagnostics.py` | Builds/saves NLP diagnostics for the paper |
 | `variables.py` | Manuscript-variable producer (auto-injected at render; no hard-coded counts) |
+| `paths.py` | Explicit authoring/output and evidence read-root routing, without fallback |
+| `core_architecture.py` | Source-bound profile/ownership diagnostic, figure and tokens; independent of saved NLP |
 
 Invoked by `scripts/z_generate_manuscript_variables.py` and
 `scripts/generate_manuscript_figures.py` (thin orchestrators at repo root).
+
+Both orchestrators accept `--evidence-root` and the
+`BLAKE_MANUSCRIPT_EVIDENCE_ROOT` environment default. Source code and authoring
+remain in this project; analysis and publication custody come from the selected
+read root; generated artifacts go under this project's `output/`. Existing
+verification requirements remain in force. See [shared conventions](../docs/style-guide.md).
