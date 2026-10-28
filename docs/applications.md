@@ -115,7 +115,29 @@ compare exported passages by ID and text hash against its historical import,
 then compare roles, authors, planes, editions and locators before considering new
 analysis. Keep historical figures and conclusions bound to their original inputs.
 
-The current `blake` installation resolves its full declared NLP/vision dependencies;
-these modules themselves import only the lightweight existing search contracts,
-Click and Pydantic. Packaging that full stack into optional extras is separate
-work. A future packaging change must preserve existing CLI and pipeline installs.
+The 0.3.0 candidate moves acquisition, NLP, vision and legacy orchestration
+requirements into `full`. Plain `uv sync` installs methods dependencies;
+`uv sync --extra full --extra dev` prepares the complete pipeline and tests.
+GUI/API surfaces need `full` together with their respective extras. Clean
+installed-package qualification is tracked separately from this documentation.
+
+## Shared methods and application policy
+
+[Shared methods](shared-methods.md) provide literal search, regex concordance,
+counted statistics and sensitivity, configurable proximity, immutable review
+queues, run verification and an offline search workspace. Import the relevant
+module explicitly; a profile label does not silently change a matcher's behavior.
+The existing `blake.text_search` and `blake.studies` implementations and their
+source-hashed identities remain unchanged by this extraction.
+
+Portable bundle and historical projection passage models are distinct contracts.
+Use `bundle_to_projection` or `projection_to_bundle` from
+`blake.methods.compatibility` when crossing that boundary. Conversion validates
+existing fields; it cannot invent provenance or promote a source role. A bundle
+manifest digest is not interchangeable with a projection pin.
+
+Federalism and Entomology retain private query selections, decision vocabularies,
+classification policy, branding and manuscript interpretation. Shared code has no
+default political or animal interpretation. New application runs bind both their
+own code and delegated shared methods with `source_binding_sha256`; changing
+producer code requires a new epoch, while historical output receipts stay intact.

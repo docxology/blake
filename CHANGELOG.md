@@ -1,6 +1,21 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 candidate — unreleased
+
+- Extract reusable projection custody, regex concordance, literal casefold search,
+  counted statistics, sensitivity, configurable proximity and search-study models
+  into `blake.methods`, with explicit bundle/projection conversion.
+- Share immutable review queues, run artifact checks and source-closure bindings
+  while leaving decision vocabularies and interpretation in applications.
+- Add a neutral offline workspace with caller-supplied branding and private-output
+  policy, Python Unicode tables, complete pre-cap counts and one browser matcher.
+- Make packaging, Click, Pydantic and typing extensions the mandatory dependencies;
+  move acquisition, NLP, vision and legacy orchestration into `full`. GUI/API
+  surfaces require `full` plus their own extras.
+- Retain existing `text_search` and `studies` implementations and historical
+  producer identities. New delegated producers require new result epochs.
+- Document the dependency split as a candidate pending clean installed-package
+  qualification; this entry does not attest publication or scientific acceptance.
 
 - Define the shared corpus/methods versus application-paper boundary and document independent application pins.
 - Export portable private passage snapshots with caller-pinned manifests, complete membership and physical source-input verification.

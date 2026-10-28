@@ -1,6 +1,6 @@
 # Blake Corpus Analysis Platform
 
-Current software: **0.2.0**. See [release changes](CHANGELOG.md) and the
+Software candidate: **0.3.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 
@@ -25,12 +25,20 @@ search forms and receives every category/source-span match, all zero cells and
 source denominators. Source roles and authorship labels survive the transfer.
 Applications do not need to read an internal SQLite schema or copy search code.
 The package imports this surface without loading the legacy NLP/vision stack;
-the full package installation still declares that stack.
+the default installation contains only the methods dependencies. Install the `full`
+extra for acquisition, NLP, vision and the legacy corpus pipeline. The narrower
+`recovery` extra supports recovered-source export with HTML parsing and image
+verification. See the
+[shared methods API](docs/shared-methods.md) for explicit retrieval profiles,
+counted statistics, proximity, review custody and offline workspaces.
+
+The 0.3.0 dependency split is a candidate until clean installed-package checks
+are completed; these instructions do not attest a published release.
 
 ## Primary Workflow
 
 ```bash
-uv sync
+uv sync --extra full --extra dev
 uv run blake corpus run --quick --output-dir analysis_output
 uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
 uv run blake corpus public-release-preflight --output-dir analysis_output --data-dir blake_data
@@ -126,7 +134,7 @@ Raw downloads, SQLite metadata, cached texts, and images live under `blake_data/
 ## Recover the local corpus
 
 ```bash
-uv sync --python 3.11 --extra dev --extra api --extra gui
+uv sync --python 3.11 --extra full --extra dev --extra api --extra gui
 uv run --python 3.11 python -m blake.recovery recover --full
 uv run --python 3.11 python -m blake.recovery verify
 uv run --python 3.11 python -m blake.recovery register
@@ -280,8 +288,7 @@ python -m blake.text_search --index blake_data/search/demo.sqlite suite
 ## Development
 
 ```bash
-uv sync
-uv sync --extra dev --extra api
+uv sync --extra full --extra dev --extra api
 uv run pytest tests/ -q
 uv run pytest tests/ -q -m "not slow and not integration"
 uv run blake corpus run --quick --output-dir analysis_output
@@ -291,7 +298,10 @@ uv run blake corpus public-release-preflight --output-dir analysis_output --data
 uv run blake corpus public-release-package --output-dir analysis_output --data-dir blake_data
 ```
 
-The default install keeps GUI/API serving packages out of the core dependency set. Use `--extra gui` for Streamlit/Gradio surfaces and `--extra api` for FastAPI serving.
+Plain `uv sync` installs the methods-only dependency set: packaging, Click,
+Pydantic and typing extensions. Use `uv sync --extra full --extra dev` for
+the full pipeline and its tests. Add `--extra gui` for Streamlit/Gradio or
+`--extra api` for FastAPI; both surfaces also require `--extra full`.
 
 ## License and Data Rights
 

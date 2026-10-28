@@ -1,7 +1,7 @@
 {
   "title": "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow",
   "upload_type": "software",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. It pairs an auditable canonical target ledger with a fail-closed rights gate that separates open-source code and project-authored aggregate analytics from provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts. The MIT license covers project code and project-authored outputs only; provider-supplied source materials and the local evidence cache are excluded from the public release and remain under their source-provider terms.",
   "creators": [
     {
@@ -31,5 +31,5 @@
       "scheme": "doi"
     }
   ],
-  "notes": "MIT covers project code and project-authored aggregate outputs only. Provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts are excluded from this deposit and remain under their source-provider terms. Software version 0.2.0 is included as wheel and source-distribution assets in the versioned working-paper deposit 10.5281/zenodo.23601681; that deposit has publication type working paper."
+  "notes": "MIT covers project code and project-authored aggregate outputs only. Provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts are excluded from this deposit and remain under their source-provider terms. Software version 0.2.0 is included as wheel and source-distribution assets in the versioned working-paper deposit 10.5281/zenodo.23601681; that deposit has publication type working paper. The 0.3.0 shared-method source candidate is a later software version; this metadata update does not assert that it has been deposited or included in that historical working-paper record."
 }

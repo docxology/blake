@@ -28,6 +28,20 @@ classifiers = [
 
 dependencies = [
     "packaging>=23.0",
+    "click>=8.1.0",
+    "pydantic>=2.11,<3",
+    "typing-extensions>=4.12",
+]
+
+[project.optional-dependencies]
+# Source recovery and recovered-projection export need no NLP/vision stack.
+recovery = [
+    "beautifulsoup4>=4.12.0",
+    "pillow>=10.0.0",
+    "truststore>=0.10; python_version >= '3.10'",
+]
+# Acquisition, NLP, vision and legacy orchestration are explicit capabilities.
+full = [
     "requests>=2.31.0",
     "beautifulsoup4>=4.12.0",
     "lxml>=4.9.0",
@@ -45,8 +59,6 @@ dependencies = [
     "plotly>=5.15.0",
     "sqlalchemy>=2.0.0",
     "pyarrow>=12.0.0",
-    "click>=8.1.0",
-    "pydantic>=2.0.0",
     "rich>=13.0.0",
     "prompt-toolkit>=3.0.0",
     "tqdm>=4.65.0",
@@ -57,18 +69,13 @@ dependencies = [
     "truststore>=0.10; python_version >= '3.10'",
     "scrapy>=2.10.0",
     "selenium>=4.10.0",
-    "pytest>=8.4.2",
-    "pytest-asyncio>=1.2.0",
-    "pytest-cov>=7.0.0",
     "psutil>=7.0.0",
     "en-core-web-sm",
 ]
-
-[project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.1.0",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
     "black>=23.0.0",
     "isort>=5.12.0",
     "flake8>=6.0.0",
@@ -114,7 +121,7 @@ path = "blake/version.py"
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
     "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
-    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 
