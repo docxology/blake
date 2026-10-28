@@ -1,6 +1,12 @@
 # Copyright (c) 2026 Daniel Ari Friedman
 """Reusable research methods with explicit, independently versioned contracts."""
 
+from .hierarchy import (
+    EvidenceTree,
+    EvidenceTreeNode,
+    TreePlacement,
+    layout_evidence_tree,
+)
 from .models import (
     Artifact,
     BundleCorpusPin,
@@ -17,9 +23,13 @@ __all__ = [
     "BundleCorpusPin",
     "BundlePassage",
     "EvidenceError",
+    "EvidenceTree",
+    "EvidenceTreeNode",
     "ProjectionCorpusPin",
     "ProjectionPassage",
     "ResearchError",
     "RetrievalProfile",
+    "TreePlacement",
     "describe_profile",
+    "layout_evidence_tree",
 ]

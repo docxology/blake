@@ -2,6 +2,10 @@
 
 ## 0.3.0 candidate — unreleased
 
+- Add a validated, iterative evidence-tree API with explicit ordering and layout semantics.
+- Separate manuscript authoring/output from explicit read-only evidence roots and preserve evidence during figure preparation.
+- Add shared authoring conventions and a code-derived retrieval/ownership figure; label the revised manuscript as a local draft.
+
 - Extract reusable projection custody, regex concordance, literal casefold search,
   counted statistics, sensitivity, configurable proximity and search-study models
   into `blake.methods`, with explicit bundle/projection conversion.

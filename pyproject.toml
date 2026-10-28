@@ -121,7 +121,7 @@ path = "blake/version.py"
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
     "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
-    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 

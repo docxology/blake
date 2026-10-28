@@ -12,6 +12,33 @@ the candidate source API and does not attest a published release.
 Private applications own vocabularies, research questions, review labels,
 branding and interpretation. Federalism and Entomology use those boundaries;
 this package publishes neither their source corpora nor their research claims.
+Shared conventions live in the [style guide](style-guide.md).
+
+## Declared evidence hierarchies
+
+`blake.methods.hierarchy` exports frozen Pydantic `EvidenceTreeNode(node_id,
+label, parent_id=None)`, `EvidenceTree(nodes)`, `TreePlacement(node_id, depth,
+row)` and `layout_evidence_tree(tree)`. Use keyword arguments and a tuple of nodes.
+JSON admission uses `EvidenceTree.model_validate_json(...)`. IDs and labels must
+be nonblank strings and are preserved exactly; invalid scalar types, duplicate
+IDs, missing parents, self-edges, cycles and multiple roots are rejected.
+
+```python
+from blake.methods.hierarchy import EvidenceTree, EvidenceTreeNode, layout_evidence_tree
+
+tree = EvidenceTree(nodes=(
+    EvidenceTreeNode(node_id="root", label="Synthetic evidence"),
+    EvidenceTreeNode(node_id="a", label="Source A", parent_id="root"),
+    EvidenceTreeNode(node_id="b", label="Source B", parent_id="root"),
+))
+placements = layout_evidence_tree(tree)
+```
+
+Validation and layout are iterative. Output follows declared node order, even
+when parents occur after their children. Leaves receive consecutive rows in
+declared sibling traversal order; each parent receives the arithmetic mean of
+all descendant leaf rows. Depth counts edges. Applications supply tree membership,
+taxonomy, labels, interpretation and plotting; the core infers none of them.
 
 ## Choose a retrieval contract
 
