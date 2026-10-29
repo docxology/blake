@@ -27,6 +27,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from manuscript_tools.method_types import local_image_count
 from manuscript_tools.core_architecture import architecture_tokens
 from manuscript_tools.nlp_diagnostics import build_nlp_diagnostics, validate_membership
 from manuscript_tools.paths import manuscript_roots
@@ -611,18 +612,12 @@ def generate_variables(
         > 0
     ]
 
-    def local_depth_count(row: dict[str, object]) -> int:
-        value = row.get("local_image_count")
-        if value is None:
-            value = row.get("downloaded_image_count")
-        return int(value or 0)
-
     v["IMAGE_DEPTH_WORKS"] = str(len(depth_rows))
     v["IMAGE_DEPTH_RESOLVED_OBJECTS"] = str(
         sum(int(row.get("resolved_object_count") or 0) for row in depth_rows)
     )
     v["IMAGE_DEPTH_DOWNLOADED_IMAGES"] = str(
-        sum(local_depth_count(row) for row in depth_rows)
+        sum(local_image_count(row) for row in depth_rows)
     )
     v["IMAGE_DEPTH_COMPLETE_WORKS"] = str(
         sum(1 for row in depth_rows if row.get("image_depth_status") == "complete")
@@ -644,7 +639,7 @@ def generate_variables(
     v["FALLBACK_TEXT_VALIDATED_WORKS"] = str(
         int(authority_counts.get("fallback_text_validated") or 0)
     )
-    v["CORROBORATING_LEGACY_WORKS"] = str(
+    v["CORROBORATING_SOURCE_WORKS"] = str(
         int(authority_counts.get("corroborating_or_legacy") or 0)
     )
 

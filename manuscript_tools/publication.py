@@ -23,7 +23,7 @@ from blake.recovery_io import _atomic_write, _safe_path
 
 def verify_publication_recovery(project_root: Path) -> dict[str, Any]:
     """Verify existing captured bytes, backup and retained corruption controls."""
-    from blake.recovery import verify_recovery
+    from blake.recovery_integrity import verify_recovery
     from blake.recovery_backup import verify_backup
     from blake.text_search.recovered import open_recovered_search
 

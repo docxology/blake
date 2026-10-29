@@ -5,15 +5,19 @@ import math
 import sqlite3
 import textwrap
 from collections import Counter, defaultdict
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.axes import Axes  # noqa: E402
+from matplotlib.container import BarContainer  # noqa: E402
+from matplotlib.figure import Figure  # noqa: E402
+from matplotlib.patches import Rectangle  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from PIL import Image, ImageDraw, ImageFont, ImageOps  # noqa: E402
 
@@ -21,6 +25,11 @@ from manuscript_tools.core_architecture import (  # noqa: E402
     CORE_FIGURE_BRIEF,
     core_figure_statistics,
     fig_core_profile_ownership,
+)
+from manuscript_tools.method_types import (  # noqa: E402
+    CategoryCoverage,
+    authority_label,
+    local_image_count,
 )
 from manuscript_tools.nlp_diagnostics import (  # noqa: E402
     build_nlp_diagnostics,
@@ -256,7 +265,7 @@ FIGURE_BRIEFS: dict[str, dict[str, Any]] = {
         qa_check="Confirm grouped bars fit mobile width and every category denominator is visible.",
     ),
     "source_authority_tiers": _brief(
-        "Separate Archive-primary, validated fallback, and legacy/corroborating evidence.",
+        "Separate Archive-primary, validated fallback, and corroborating/unclassified evidence.",
         ["visualizations/source_authority_tiers.json", "corpus_manifest.json"],
         "The manuscript distinguishes material authority tiers instead of flattening all sources.",
         "Bars encode local work counts by recorded source-authority tier.",
@@ -429,7 +438,7 @@ def _pct(part: int | float, total: int | float) -> float:
     return round((float(part) / float(total) * 100.0), 1) if total else 0.0
 
 
-def _summary(values: list[int | float]) -> dict[str, int | float]:
+def _summary(values: Sequence[int | float]) -> dict[str, int | float]:
     clean = sorted(float(value) for value in values)
     if not clean:
         return {
@@ -472,7 +481,7 @@ def _summary(values: list[int | float]) -> dict[str, int | float]:
     }
 
 
-def _pearson(xs: list[int | float], ys: list[int | float]) -> float:
+def _pearson(xs: Sequence[int | float], ys: Sequence[int | float]) -> float:
     pairs = [(float(x), float(y)) for x, y in zip(xs, ys)]
     if len(pairs) < 2:
         return 0.0
@@ -520,7 +529,7 @@ def _configure() -> None:
     )
 
 
-def _style(ax: "plt.Axes", *, grid_axis: str = "y") -> None:
+def _style(ax: Axes, *, grid_axis: Literal["x", "y", "both", ""] = "y") -> None:
     ax.set_facecolor(BG)
     for spine in ("top", "right"):
         ax.spines[spine].set_visible(False)
@@ -531,7 +540,7 @@ def _style(ax: "plt.Axes", *, grid_axis: str = "y") -> None:
     ax.set_axisbelow(True)
 
 
-def _save(fig: "plt.Figure", out_dir: Path, name: str) -> Path:
+def _save(fig: Figure, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{name}.png"
     fig.savefig(path, dpi=190, bbox_inches="tight", facecolor=BG)
@@ -551,7 +560,7 @@ def _wrapped(title: str, width: int = 22) -> str:
 
 
 def _title_with_subtitle(
-    ax: "plt.Axes", title: str, subtitle: str, *, pad: int = 18
+    ax: Axes, title: str, subtitle: str, *, pad: int = 18
 ) -> None:
     ax.set_title(title, pad=pad)
     ax.text(
@@ -567,7 +576,7 @@ def _title_with_subtitle(
 
 
 def _note(
-    ax: "plt.Axes",
+    ax: Axes,
     text: str,
     *,
     xy: tuple[float, float] = (0.01, 0.02),
@@ -586,7 +595,7 @@ def _note(
     )
 
 
-def _pil_font(size: int, *, bold: bool = False) -> ImageFont.ImageFont:
+def _pil_font(size: int, *, bold: bool = False) -> ImageFont.ImageFont | ImageFont.FreeTypeFont:
     candidates = [
         "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "",
         "/System/Library/Fonts/Supplemental/Arial.ttf",
@@ -605,8 +614,8 @@ def _pil_font(size: int, *, bold: bool = False) -> ImageFont.ImageFont:
 
 
 def _text_size(
-    draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont
-) -> tuple[int, int]:
+    draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont | ImageFont.FreeTypeFont
+) -> tuple[float, float]:
     bbox = draw.textbbox((0, 0), text, font=font)
     return bbox[2] - bbox[0], bbox[3] - bbox[1]
 
@@ -615,7 +624,7 @@ def _draw_wrapped(
     draw: ImageDraw.ImageDraw,
     xy: tuple[int, int],
     text: str,
-    font: ImageFont.ImageFont,
+    font: ImageFont.ImageFont | ImageFont.FreeTypeFont,
     fill: str,
     width: int,
     *,
@@ -627,7 +636,14 @@ def _draw_wrapped(
     lines = textwrap.wrap(str(text), width=chars, break_long_words=False)[:max_lines]
     for index, line in enumerate(lines):
         draw.text(
-            (xy[0], xy[1] + index * (font.size + line_gap)), line, fill=fill, font=font
+            (
+                xy[0],
+                xy[1] + index * (
+                    (font.size if isinstance(font, ImageFont.FreeTypeFont)
+                     else _text_size(draw, "M", font)[1]) + line_gap
+                ),
+            ),
+            line, fill=fill, font=font
         )
 
 
@@ -862,7 +878,7 @@ def compute_figure_statistics(
         for row in target_rows:
             category = str(row.get("category") or "uncategorized").replace("_", " ")
             by_category[category][str(row.get("status") or "unknown")] += 1
-        categories = []
+        categories: list[CategoryCoverage] = []
         for category, counts in by_category.items():
             total = sum(counts.values())
             open_count = sum(
@@ -890,7 +906,7 @@ def compute_figure_statistics(
             "target_total": len(target_rows),
             "category_count": len(categories),
             "categories": categories,
-            "largest_open_category": categories[0] if categories else {},
+            "largest_open_category": dict(categories[0]) if categories else {},
         }
 
     if figure_name == "corpus_modalities":
@@ -1563,7 +1579,7 @@ def fig_chronology(ao: Path, out_dir: Path) -> Path:
     return _save(fig, out_dir, "chronology")
 
 
-def _record_bars(ax: Any, rows: list[dict[str, Any]], values: list[int], colors: Any):
+def _record_bars(ax: Axes, rows: list[dict[str, Any]], values: list[int], colors: Any) -> BarContainer:
     """Keep equally titled source/copy records on distinct numeric rows."""
     if len(rows) != len(values) or any(value < 0 for value in values):
         raise ValueError("Record bars require matching nonnegative counts")
@@ -1907,7 +1923,7 @@ def fig_text_image_linkage(ao: Path, out_dir: Path) -> Path:
 
 def fig_evidence_gaps(ao: Path, out_dir: Path) -> Path:
     rows = _read(ao, "visualizations/target_coverage_matrix.json")
-    counts = Counter()
+    counts: Counter[str] = Counter()
     for row in rows:
         status = row.get("status")
         notes = row.get("notes") or []
@@ -1994,7 +2010,7 @@ def fig_pipeline_dag(ao: Path, out_dir: Path) -> Path:
         color = class_colors.get(str(record["action_class"]), PALETTE["gray"])
         strip_label = _pipeline_strip_label(record)
         ax.add_patch(
-            plt.Rectangle(
+            Rectangle(
                 (x, 0),
                 card_w,
                 card_h,
@@ -2005,7 +2021,7 @@ def fig_pipeline_dag(ao: Path, out_dir: Path) -> Path:
             )
         )
         ax.add_patch(
-            plt.Rectangle(
+            Rectangle(
                 (x, card_h - 0.34),
                 card_w,
                 0.34,
@@ -2076,7 +2092,7 @@ def fig_pipeline_dag(ao: Path, out_dir: Path) -> Path:
     for index, (label, color) in enumerate(legend):
         x = 0.15 + index * 3.1
         ax.add_patch(
-            plt.Rectangle((x, -0.62), 0.22, 0.22, facecolor=color, edgecolor=INK, linewidth=0.4)
+            Rectangle((x, -0.62), 0.22, 0.22, facecolor=color, edgecolor=INK, linewidth=0.4)
         )
         ax.text(x + 0.31, -0.51, label, ha="left", va="center", fontsize=9.2, color=INK)
 
@@ -2310,17 +2326,11 @@ def fig_work_evidence_profile_grid(ao: Path, out_dir: Path) -> Path:
 def fig_image_depth_by_work(ao: Path, out_dir: Path) -> Path:
     rows = _read_optional(ao, "visualizations/image_depth.json", [])
 
-    def local_count(row: dict[str, object]) -> int:
-        value = row.get("local_image_count")
-        if value is None:
-            value = row.get("downloaded_image_count")
-        return int(value or 0)
-
-    rows = [row for row in rows if local_count(row) > 0]
+    rows = [row for row in rows if local_image_count(row) > 0]
     rows = sorted(
         rows,
         key=lambda row: (
-            local_count(row),
+            local_image_count(row),
             int(row.get("resolved_object_count") or 0),
         ),
         reverse=True,
@@ -2336,7 +2346,7 @@ def fig_image_depth_by_work(ao: Path, out_dir: Path) -> Path:
 
     labels = [f"{rank}. " + _short(row.get("title") or row.get("work_id"), 30)
               for rank, row in enumerate(rows, 1)]
-    downloaded = [local_count(row) for row in rows]
+    downloaded = [local_image_count(row) for row in rows]
     resolved = [int(row.get("resolved_object_count") or 0) for row in rows]
     total_downloaded = sum(downloaded)
     total_resolved = sum(resolved)
@@ -2379,16 +2389,10 @@ def fig_image_depth_by_area(ao: Path, out_dir: Path) -> Path:
     rows = _read_optional(ao, "visualizations/image_depth.json", [])
     grouped: dict[str, Counter[str]] = defaultdict(Counter)
 
-    def local_count(row: dict[str, object]) -> int:
-        value = row.get("local_image_count")
-        if value is None:
-            value = row.get("downloaded_image_count")
-        return int(value or 0)
-
     for row in rows:
         category = str(row.get("category") or "uncategorized").replace("_", " ")
         grouped[category]["resolved"] += int(row.get("resolved_object_count") or 0)
-        grouped[category]["downloaded"] += local_count(row)
+        grouped[category]["downloaded"] += local_image_count(row)
         grouped[category]["failures"] += int(row.get("failure_count") or 0)
     categories = sorted(
         grouped,
@@ -2448,18 +2452,19 @@ def fig_source_authority_tiers(ao: Path, out_dir: Path) -> Path:
     if not rows:
         rows = [{"authority_tier": "unrecorded", "work_count": 0}]
     labels = [
-        str(row.get("authority_tier") or "unrecorded").replace("_", " ") for row in rows
+        authority_label(str(row.get("authority_tier") or "unrecorded")) for row in rows
     ]
     values = [int(row.get("work_count") or 0) for row in rows]
     fig, ax = plt.subplots(figsize=(8.4, 5.0))
     _style(ax)
     bars = ax.bar(
-        labels,
+        range(len(labels)),
         values,
         color=[PALETTE["green"], PALETTE["blue"], PALETTE["gold"], PALETTE["gray"]][
             : len(labels)
         ],
     )
+    ax.set_xticks(range(len(labels)), labels)
     max_value = max(values + [1])
     total = sum(values) or 1
     for bar, value in zip(bars, values):

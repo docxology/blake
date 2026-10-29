@@ -398,7 +398,7 @@ def _analysis_payloads(
             for identity in sorted(work_ids & saved_results.keys())
             if isinstance(saved_results[identity].get(kind), dict)
         ]
-    # Compatibility for historical standalone diagnostics without a result ledger.
+    # Standalone diagnostics use only the explicitly selected per-record inputs.
     suffix = "_" + kind + ".json"
     paths = sorted(
         path

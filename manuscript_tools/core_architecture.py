@@ -80,7 +80,7 @@ _RESPONSIBILITIES: Final = (
         source_paths=(
             "blake/applications.py",
             "blake/methods/corpus.py",
-            "blake/methods/compatibility.py",
+            "blake/methods/schema_conversion.py",
         ),
     ),
     Responsibility(
@@ -90,6 +90,8 @@ _RESPONSIBILITIES: Final = (
             "manuscript_tools/paths.py",
             "manuscript_tools/publication.py",
             "manuscript_tools/variables.py",
+            "manuscript_tools/figures.py",
+            "manuscript_tools/method_types.py",
         ),
     ),
 )
