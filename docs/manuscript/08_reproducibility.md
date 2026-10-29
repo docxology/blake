@@ -1,6 +1,6 @@
 # Reproducibility: Source Snapshot, Analysis Epoch, and Publication {#sec:reproducibility}
 
-This is a local revised working draft. The earlier deposited working paper remains a separate archival record; no new deposit is claimed.
+This working-paper revision is identified by the DOI in the publishing information. Earlier deposited versions remain separate archival records.
 
 Reproduction requires the captured source inventory, its private local files, the recorded analysis producer, and a compatible environment. The public release supplies project-owned source, the manuscript, aggregate evidence, producer identities, and checksums; it does not supply the provider corpus. The preservation chain connects inputs, commands, derived results, figures, and rendered bytes [@peng2011reproducible; @sandve2013ten; @wilson2014best; @w3cprov2013overview; @owens2018digitalpreservation].
 
