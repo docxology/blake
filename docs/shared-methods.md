@@ -6,8 +6,9 @@ Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
 The complete test suite includes GUI tests and requires
 `uv sync --extra full --extra dev --extra gui`. GUI/API serving also needs `full`
 and its surface extra.
-Clean installed-package qualification is a separate gate; this document describes
-the candidate source API and does not attest a published release.
+Bounded source and installed-wheel qualification is recorded in
+[verification scope](verification.md). This document describes an unreleased
+candidate API; the recorded checks do not attest a published release.
 
 Private applications own vocabularies, research questions, review labels,
 branding and interpretation. Federalism and Entomology use those boundaries;

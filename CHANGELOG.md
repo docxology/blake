@@ -2,6 +2,9 @@
 
 ## 0.3.0 candidate — unreleased
 
+- Align contributor setup with the GUI dependencies used by the full tests,
+  record bounded qualification and distinguish local gates from hosted security checks.
+
 - Add generic grouped-category composition, finite profile distance, concentration and omission audits; keep category selection and interpretation in applications.
 
 - Add a validated, iterative evidence-tree API with explicit ordering and layout semantics.
@@ -20,8 +23,9 @@
   surfaces require `full` plus their own extras.
 - Retain existing `text_search` and `studies` implementations and historical
   producer identities. New delegated producers require new result epochs.
-- Document the dependency split as a candidate pending clean installed-package
-  qualification; this entry does not attest publication or scientific acceptance.
+- Qualify the dependency split with full Python 3.11 source tests and a normal
+  Python 3.9 installed-wheel methods suite; retain optional-stack, legacy typing
+  and scientific limits. This entry does not attest publication.
 
 - Define the shared corpus/methods versus application-paper boundary and document independent application pins.
 - Export portable private passage snapshots with caller-pinned manifests, complete membership and physical source-input verification.

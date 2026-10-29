@@ -1,7 +1,10 @@
 # Quick Start Guide
 
-Choose the methods-only install or the full corpus pipeline. The following
-0.3.0 candidate installation commands await clean installed-package qualification.
+Choose the methods-only install or the full corpus pipeline. The 0.3.0 source
+candidate has passed [bounded installed-package qualification](verification.md).
+Use the source checkout below for this unreleased candidate. Package-index
+commands apply to the version actually published there; they do not select the
+current Git source or guarantee its installation profiles.
 
 ## Installation
 
@@ -33,8 +36,8 @@ pip install "blake[full,gui,api,dev]"
 ```bash
 git clone https://github.com/docxology/blake.git
 cd blake
-uv sync --extra full --extra dev
-# Add --extra gui or --extra api for those surfaces; retain --extra full.
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui
+# The complete test suite includes GUI tests. Add --extra api for API serving.
 ```
 
 For methods-only work in a source checkout, use `uv sync`. See

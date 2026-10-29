@@ -1,4 +1,5 @@
-# Core dependencies (install with: uv sync --extra dev --extra api --extra gui)
+# Legacy dependency list; pyproject.toml and uv.lock are authoritative.
+# Full setup: uv sync --locked --python 3.11 --extra full --extra dev --extra api --extra gui
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 lxml>=4.9.0

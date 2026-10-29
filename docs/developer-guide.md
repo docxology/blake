@@ -28,7 +28,7 @@ git clone https://github.com/docxology/blake.git
 cd blake
 
 # Install with UV (recommended)
-uv sync --extra full --extra dev --extra api
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
 
 # Or with pip
 pip install -e ".[full,dev,gui,api]"
@@ -54,7 +54,7 @@ uv run flake8 blake tests
 uv run mypy blake
 ```
 
-Plain `uv sync` installs methods dependencies only. Use `uv sync --extra full --extra dev` for the offline quick corpus workflow and the full test suite. API and GUI serving need `full` plus `--extra api` or `--extra gui`, respectively. The 0.3.0 packaging change remains a candidate pending clean installed-package verification. Live acquisition and integration tests remain opt-in because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
+Plain `uv sync` installs methods dependencies only. Use `uv sync --locked --python 3.11 --extra full --extra dev --extra gui` for the complete test suite, including its GUI tests. API and GUI serving need `full` plus their surface extra. The 0.3.0 candidate has passed bounded source and installed-wheel checks; [verification scope](verification.md) records the environments and remaining typing and compatibility limits. Live acquisition remains separate because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
 
 ## Shared methods development
 
@@ -73,7 +73,7 @@ GUI inspection and scientific acceptance are separate checks.
 
 Shared source closure is explicit: include application wrappers, delegated
 methods, models and browser resources in new producer bindings. Full tests need
-`full` and `dev`; do not treat a minimal environment import check as a full
+`full`, `dev` and `gui`; do not treat a minimal environment import check as a full
 pipeline test.
 
 ## Project Structure
@@ -391,7 +391,7 @@ with patch('aiohttp.ClientSession') as mock_session:
 
 ### Code Review Process
 
-1. **Automated checks**: CI runs tests, linting, and type checking
+1. **Automated checks**: Inspect the actual PR checks. There is currently no hosted test, lint or type-check workflow; GitGuardian is a security check. Run the documented local gates and retain their results.
 2. **Manual review**: At least one maintainer reviews the code
 3. **Feedback**: Address any requested changes
 4. **Merge**: Once approved, maintainer merges the PR

@@ -32,8 +32,10 @@ verification. See the
 [shared methods API](docs/shared-methods.md) for explicit retrieval profiles,
 counted statistics, proximity, review custody and offline workspaces.
 
-The 0.3.0 dependency split is a candidate until clean installed-package checks
-are completed; these instructions do not attest a published release.
+The 0.3.0 dependency split has passed bounded source and installed-wheel
+qualification. See [verification scope and commands](docs/verification.md) for
+the tested environments and retained limitations. This remains an unreleased
+software candidate; merging source does not publish a package or paper.
 
 ## Primary Workflow
 
