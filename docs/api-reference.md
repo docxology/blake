@@ -17,9 +17,10 @@ The corpus API is source-governed and target-aware. A run is evaluated through g
 - `analysis_output/reports/private_release_preflight.*` and `analysis_output/reports/rights_gate_report.*`: local-only release/readiness checks; they do not publish, tag, deposit, or grant redistribution rights.
 - `analysis_output/reports/public_release_preflight.*` and `analysis_output/releases/public_release/` including `public_release_package.json`: public GitHub + Zenodo release staging outputs with bundle metadata, checksums, and citation files.
 
-The core package supports corpus and export workflows. Install `blake[api]` for
-FastAPI serving and `blake[gui]` for Streamlit/Gradio exploration; those serving
-packages are intentionally not required for the default quick corpus run.
+The default installation contains shared methods dependencies. Install
+`blake[full]` for acquisition, NLP, vision, corpus orchestration and exports.
+FastAPI serving needs `blake[full,api]`; Streamlit/Gradio exploration needs
+`blake[full,gui]`. Quick corpus runs also require the `full` extra.
 
 ### Constructor
 
@@ -332,18 +333,6 @@ Clear the works cache.
 ```python
 await blake.clear_cache()
 ```
-
-#### download_all_comprehensive()
-
-```python
-async def download_all_comprehensive() -> Dict[str, Any]
-```
-
-Source-provider discovery helper for provider discovery. Its report is useful for debugging older source adapters, but the target-ledger corpus contract is `BlakeCorpus.run(...)` plus `corpus_manifest.json`, source audit, evidence review, analysis diagnostics, and rights-gate reports.
-
-**Returns:**
-
-- `Dict[str, Any]`: Provider-discovery download report with statistics
 
 #### create_visualization()
 

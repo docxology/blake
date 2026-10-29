@@ -115,9 +115,10 @@ compare exported passages by ID and text hash against its historical import,
 then compare roles, authors, planes, editions and locators before considering new
 analysis. Keep historical figures and conclusions bound to their original inputs.
 
-The 0.4.0 source moves acquisition, NLP, vision and corpus orchestration
-requirements into `full`. Plain `uv sync` installs methods dependencies;
-`uv sync --extra full --extra dev` prepares the complete pipeline and tests.
+Acquisition, NLP, vision and corpus orchestration dependencies belong to
+`full`. Plain `uv sync` installs methods dependencies;
+`uv sync --locked --python 3.11 --extra full --extra dev --extra gui` prepares
+the qualified complete test environment, including GUI test collection.
 GUI/API surfaces need `full` together with their respective extras. Clean
 installed-package qualification is tracked separately from this documentation.
 
