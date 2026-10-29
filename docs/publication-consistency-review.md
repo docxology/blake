@@ -19,7 +19,7 @@ The diagnostics now restrict text, entity, and text-analysis inputs to the saved
 run’s text-bearing work IDs. `nlp_diagnostics.json` records the allowed IDs,
 embedded IDs, excluded cache IDs, missing transcriptions, token-empty members,
 and digests of the decoded embedded text. Missing saved membership admits no
-cached inputs. Legacy metric rows without `has_text` retain their recorded ID
+cached inputs. Saved metric rows without `has_text` retain their recorded ID
 membership; current pipeline rows explicitly include a boolean modality flag. A present non-boolean flag is not text-bearing evidence.
 
 The embedding denominator can still be smaller than coverage when a saved
@@ -44,8 +44,8 @@ Diagnostics now bind the exact saved-membership bytes, reject duplicate work
 identities, and partition eligible IDs into embedded, missing, and token-filtered
 sets. The partition must reconcile exactly; excluded cache IDs must be disjoint,
 and the embedding count must match its identified work set. Publication-mode coverage must also match the saved eligible text membership. Publication-mode
-variable generation refuses missing, legacy-implicit, or invalid modality
-evidence. Draft-mode diagnostics retain explicit legacy/invalid lists.
+variable generation refuses missing, implicit, or invalid modality
+evidence. Draft-mode diagnostics retain explicit implicit/invalid lists.
 
 The current manuscript reports each generated denominator and the membership
 digest. No historical replacement count is asserted. A revised numerical result

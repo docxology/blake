@@ -9,7 +9,7 @@ Reproduction requires the captured source inventory, its private local files, th
 Use a fresh reproduction checkout with the recorded dependency lock and the documented Python environment. Restore or acquire the local evidence under applicable provider terms, then run the integrity verifier:
 
 ```bash
-uv run python -m blake.recovery verify
+uv run python -m blake.recovery_commands verify
 ```
 
 The saved recovery-manifest digest is `{{RECOVERY_MANIFEST_SHA256}}`. A different capture defines a different input epoch. Source inventory recovery, unresolved images, and the historical restore drill are reported in [@sec:supp_recoverability]. Fresh remote acquisition can produce a different inventory and must not be substituted for the recorded capture without updating the evidence identities.
@@ -26,7 +26,7 @@ uv run python scripts/reproduce_manuscript_analysis.py \
   --seed {{ANALYSIS_SEED}}
 ```
 
-The driver uses the corpus API with offline reuse, no synthetic fixtures, the core visualization profile, Archive-inventory scope, and Archive-all image metadata. It seeds Python and NumPy and limits numerical-library and OpenCV threads. The analyzed publication epoch used software `{{ANALYSIS_PRODUCER_VERSION}}`, seed {{ANALYSIS_SEED}}, and run ID `{{ANALYSIS_RUN_ID}}`. The reproduction bundle records its exact producer-file digests separately from the final publication software. The original run saved its model payloads in JSON but omitted the SQLite handoff consumed by reports and the dashboard. A separately receipted derived refresh restored those exact payloads to the independent publication database and regenerated reports without repeating inference. The repair command, when needed for an already sealed legacy epoch, is:
+The driver uses the corpus API with offline reuse, no synthetic fixtures, the core visualization profile, Archive-inventory scope, and Archive-all image metadata. It seeds Python and NumPy and limits numerical-library and OpenCV threads. The analyzed publication epoch used software `{{ANALYSIS_PRODUCER_VERSION}}`, seed {{ANALYSIS_SEED}}, and run ID `{{ANALYSIS_RUN_ID}}`. The reproduction bundle records its exact producer-file digests separately from the final publication software. The original run saved its model payloads in JSON but omitted the SQLite handoff consumed by reports and the dashboard. A separately receipted derived refresh restored those exact payloads to the independent publication database and regenerated reports without repeating inference. The repair command, when needed for an already sealed previously saved epoch, is:
 
 ```bash
 uv run python scripts/refresh_manuscript_epoch.py

@@ -12,12 +12,19 @@ forms, scope, review labels and interpretation. This division permits selected
 corpus evidence to be reused without treating the applications' questions or
 conclusions as properties of the corpus itself.
 
+Recovery executes through `blake.recovery_commands` and the registered corpus
+commands. Explicit schema conversion belongs to
+`blake.methods.schema_conversion`; workspace serialization calls its public
+implementations directly. Source-authority classification is shared by manifests,
+provenance exports and analytical displays. These interfaces retain the distinct
+matching profiles and existing evidence boundaries.
+
 The current source declares {{CORE_RETRIEVAL_PROFILE_COUNT}} retrieval profiles.
 The profile and responsibility diagnostic binds
 {{CORE_ARCHITECTURE_SOURCE_FILES}} source files under SHA-256
 `{{CORE_ARCHITECTURE_SOURCE_SHA256}}`. [@fig:core_profile_ownership] is generated
 from those profile declarations and explicit public API responsibility references.
-It measures the source candidate, independently of the saved analytical producer
+It measures the current implementation, independently of the saved analytical producer
 `{{ANALYSIS_PRODUCER_VERSION}}`; it does not represent another NLP run.
 
 ![Source-derived retrieval contracts and declared responsibility boundaries. Profile normalization and boundary descriptions come from the executable registry; the companion artifact binds the referenced public source files. Application policy names required caller inputs, without measuring private application outcomes. This code diagnostic does not update the saved corpus analysis.](../../output/figures/core_profile_ownership.png){#fig:core_profile_ownership}

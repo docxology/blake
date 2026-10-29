@@ -9,7 +9,7 @@
     "name": "Mapping William Blake\u2019s Works (earlier working-paper PDF)"
   },
   "description": "Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports, with an auditable target ledger and a fail-closed rights gate separating open-source code and aggregate analytics from provider-supplied source files.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "https://spdx.org/licenses/MIT",
   "codeRepository": "https://github.com/docxology/blake",
   "programmingLanguage": "Python",
@@ -34,6 +34,6 @@
     }
   ],
   "identifier": "https://github.com/docxology/blake",
-  "dateModified": "2026-10-28",
-  "citation": "https://doi.org/10.5281/zenodo.23601681"
+  "dateModified": "2026-10-29",
+  "citation": "https://doi.org/10.5281/zenodo.23770249"
 }

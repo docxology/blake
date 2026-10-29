@@ -27,11 +27,10 @@ Core Python package for William Blake's works analysis platform.
 ## Quick Start
 
 ```python
-from blake import BlakeCorpus
+from blake import BlakeCorpus, CorpusConfig
 
 blake = BlakeCorpus()
-works = await blake.download_all()
-analysis = await blake.analyze_all()
+summary = await blake.run(CorpusConfig(quick=True))
 ```
 
 ## Entry Points
@@ -39,4 +38,4 @@ analysis = await blake.analyze_all()
 - `blake.cli:main` - CLI entrypoint
 - `blake.BlakeCorpus` - Programmatic API
 - `blake corpus run` - Target-aware corpus pipeline orchestrator
-- `run_all.py` - Compatibility wrapper for older local workflows
+- `run_all.py` - Corpus pipeline runner

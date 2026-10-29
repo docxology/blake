@@ -1,6 +1,6 @@
 # Local source evidence methods
 
-Software: **0.2.0**. Methods profile: `local-source-evidence-v2`.
+Software: **0.4.0**. Methods profile: `local-source-evidence-v2`.
 Dashboard schema: `2`. These labels describe software contracts. Captured source
 commits, manifest hashes, target-ledger versions and search normalization remain
 independently versioned evidence identities.
@@ -65,7 +65,7 @@ manifest, results, metadata databases, preparation receipt and transcriptions.
 A changed or malformed epoch is disclosed; it is not presented as current analysis.
 New analyses persist all component payloads to SQLite. The explicit
 `scripts/refresh_manuscript_epoch.py` repair command can restore an admitted
-legacy epoch from its exact identified JSON ledger. It refuses conflicts, backs
+previously saved epoch from its exact identified JSON ledger. It refuses conflicts, backs
 up the affected derived files, and regenerates reports without repeating model
 inference. Resealing binds the separate derived receipt and its artifact hashes.
 Record/theme/entity links deduplicate record pairs and retain metadata versus
@@ -88,7 +88,7 @@ Run from the repository with the supported environment:
 
 ```bash
 uv run --python 3.11 blake --version
-uv run --python 3.11 python -m blake.recovery verify
+uv run --python 3.11 python -m blake.recovery_commands verify
 uv run --python 3.11 blake-text build-recovered
 uv run --python 3.11 blake-text --recovered query eternity
 uv run --python 3.11 blake-text --recovered query state --scope exploratory --plane erdman
@@ -97,6 +97,6 @@ uv run --python 3.11 streamlit run blake/gui/gui.py
 
 Source and image terms still apply. Raw corpus data, private indexes, backups and
 provider text stay local. The current software assets accompany the versioned working paper at
-[10.5281/zenodo.23601681](https://doi.org/10.5281/zenodo.23601681). The earlier
+[10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249). The earlier
 record contains the earlier PDF. Saved record analyses retain their actual
 producer identity independently from the current package and manuscript diagnostics.

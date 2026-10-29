@@ -77,7 +77,7 @@ CorpusConfig(
 async def download_all(force: bool = False) -> List[BlakeWork]
 ```
 
-Fetch currently discoverable source-provider records through the compatibility downloader facade. For docs/manuscript/release validation, prefer `blake corpus run` so target coverage, source audit, provider health, and rights-gate artifacts are regenerated together.
+Fetch currently discoverable source-provider records through the source-provider download coordinator. For docs/manuscript/release validation, prefer `blake corpus run` so target coverage, source audit, provider health, and rights-gate artifacts are regenerated together.
 
 **Parameters:**
 
@@ -90,7 +90,7 @@ Fetch currently discoverable source-provider records through the compatibility d
 **Example:**
 
 ```python
-# Fetch provider-discovered records through the compatibility facade
+# Fetch provider-discovered records through the source-provider coordinator
 works = await blake.download_all()
 
 # Force re-download
@@ -339,7 +339,7 @@ await blake.clear_cache()
 async def download_all_comprehensive() -> Dict[str, Any]
 ```
 
-Compatibility/exploratory acquisition helper for provider discovery. Its report is useful for debugging older source adapters, but the target-ledger corpus contract is `BlakeCorpus.run(...)` plus `corpus_manifest.json`, source audit, evidence review, analysis diagnostics, and rights-gate reports.
+Source-provider discovery helper for provider discovery. Its report is useful for debugging older source adapters, but the target-ledger corpus contract is `BlakeCorpus.run(...)` plus `corpus_manifest.json`, source audit, evidence review, analysis diagnostics, and rights-gate reports.
 
 **Returns:**
 

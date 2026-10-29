@@ -60,9 +60,15 @@ def test_source_metadata_cites_current_software_and_preserves_archived_identity(
     )
     assert not re.search(r"^doi:", citation, re.M)
     assert metadata["identifier"] == "https://github.com/docxology/blake"
-    assert metadata["citation"] == "https://doi.org/10.5281/zenodo.23601681"
-    assert '  version: "0.2.0"' in citation
-    assert '  doi: "10.5281/zenodo.23601681"' in citation
+    deposit = json.loads((root / ".zenodo.json").read_text())
+    assert deposit["version"] == blake.__version__
+    assert deposit["upload_type"] == "publication"
+    assert deposit["publication_type"] == "workingpaper"
+    assert metadata["citation"] == "https://doi.org/" + deposit["doi"]
+    preferred = citation.split("preferred-citation:", 1)[1]
+    assert '  version: "' + blake.__version__ + '"' in preferred
+    assert '  doi: "' + deposit["doi"] + '"' in preferred
+    assert '    doi: "10.5281/zenodo.23601681"' in citation
     assert '    version: "0.1.0"' in citation
     assert '    doi: "10.5281/zenodo.21047574"' in citation
 

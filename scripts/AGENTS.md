@@ -25,7 +25,6 @@ Technical specification for the blake repo's maintenance scripts.
 |--------|---------|--------------|
 | `run_pipeline.sh` | Shell wrapper | `run_all.py` |
 | `download_complete_corpus.py` | Thin orchestrator (network) | `blake.downloader.target_corpus.download_target_corpus` |
-| `download_complete_archive.py` | Thin orchestrator (network) | `blake.downloader.blake_archive_scraper.BlakeArchiveScraper` |
 | `acquire_missing_texts.py` | Thin-ish orchestrator (network) — Wikisource fetch logic still inline, targeted by a future pass | `blake.metadata` persistence |
 | `redownload_texts.py` | Thin orchestrator (network) | `blake.downloader.gutenberg_redownload.redownload_texts` |
 | `fix_text_files.py` | Thin orchestrator | `blake.corpus.text_repair.fix_text_files` |

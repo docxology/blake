@@ -40,7 +40,7 @@ recovery = [
     "pillow>=10.0.0",
     "truststore>=0.10; python_version >= '3.10'",
 ]
-# Acquisition, NLP, vision and legacy orchestration are explicit capabilities.
+# Acquisition, NLP, vision and corpus orchestration are explicit capabilities.
 full = [
     "requests>=2.31.0",
     "beautifulsoup4>=4.12.0",
@@ -121,7 +121,7 @@ path = "blake/version.py"
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
     "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
-    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md", "/docs/methods/composition.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md", "/docs/verification.md", "/docs/methods/composition.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 

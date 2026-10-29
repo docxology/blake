@@ -9,7 +9,6 @@ delegate to a single package entrypoint.
 |--------|---------|--------------|---------|
 | `run_pipeline.sh` | Shell wrapper for the canonical pipeline (syncs uv env, forwards options) | `run_all.py` | `./scripts/run_pipeline.sh [--quick]` |
 | `download_complete_corpus.py` | Target-aware corpus download (Gutenberg + Blake Archive TEI), writes `MANIFEST.json` | `blake.downloader.target_corpus` | `uv run python scripts/download_complete_corpus.py` |
-| `download_complete_archive.py` | Complete Blake Archive catalog download with resume | `blake.downloader.blake_archive_scraper.BlakeArchiveScraper` | `uv run python scripts/download_complete_archive.py` |
 | `acquire_missing_texts.py` | Fill ledger gaps from Wikisource | `blake.metadata` (persistence; fetch logic still inline — see AGENTS.md) | `uv run python scripts/acquire_missing_texts.py` |
 | `redownload_texts.py` | Re-pull Gutenberg texts, replacing corrupted EPUB-mislabeled files | `blake.downloader.gutenberg_redownload` | `uv run python scripts/redownload_texts.py` |
 | `fix_text_files.py` | Repair `.txt` files that are actually EPUBs (rename + extract real text) | `blake.corpus.text_repair` | `uv run python scripts/fix_text_files.py` |

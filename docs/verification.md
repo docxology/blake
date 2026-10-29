@@ -1,24 +1,19 @@
 # Verification scope
 
-The 0.3.0 implementation at
-[`d020f47767996a061b6f60e93a82da9386a7926c`](https://github.com/docxology/blake/commit/d020f47767996a061b6f60e93a82da9386a7926c)
-was qualified on 2026-10-29. Subsequent setup-documentation corrections do not
-change that implementation. These are recorded local results, not hosted test
-CI or a package-index release.
+The current 0.4.0 source removes obsolete interface paths while retaining the
+acquisition, NLP, vision, GUI and recovery capabilities. [publication.json](../publication.json)
+binds the final source commit, installed artifacts, rendered PDF and deposit.
+Results below are local qualification; there is no hosted test/lint/type workflow.
 
 | Surface | Actual qualification | Result |
 |---|---|---|
-| Full source workflow | CPython 3.11.17, full/development/GUI dependencies | 1,155 tests passed; 83.30% branch-aware coverage against the 80% repository floor |
-| Dependency-light methods and studies | Normal wheel installed on CPython 3.9.25; isolated tests without source-package shadowing | 278 tests passed; 99.01% branch-aware coverage against the 90% methods/studies floor |
-| Normal minimal installation | CPython 3.9.25 | Eight installed distributions; package code and resources verified |
-| New composition arithmetic | Independent numerical oracle and invalid-input controls | Positive cases and deliberate refusals passed |
+| Integrated source | CPython 3.11.17; locked full/dev/GUI/API installation | 1,171 tests passed; 83.34% branch-aware coverage against the 80% floor |
+| Interface migration | Recovery, method contracts, installed-layout fixtures and real CLI refusals | 403 tests passed; six new controls first reproduced the obsolete-interface failures |
+| Manuscript typing | Actual pinned template source supplied through MYPYPATH | Five source files pass strict mypy; 29 code errors repaired |
+| Numerical preservation | Offline fixture and nonzero display controls | 149 variable values and 20 statistical payloads unchanged |
+| Installed SDK | Separate normal wheel environment, outside the source checkout | Exact wheel digest, test count and coverage recorded in the publication manifest |
 
-The independent software review covered exact source bytes, installed resources,
-arithmetic, input refusals and reproducibility. The complete full suite above is
-an owner-run regression; the reviewer independently ran a bounded selection.
-These are distinct evidence scopes.
-
-## Reproduce the full source gate
+## Reproduce the source and authoring gates
 
 Use Python 3.11 for the qualified optional full stack:
 
@@ -27,29 +22,33 @@ uv sync --locked --python 3.11 --extra full --extra dev --extra gui
 uv run --locked pytest tests/ -q --cov=blake --cov-branch --cov-fail-under=80
 ```
 
-The suite uses local fixtures and local HTTP controls. It does not establish live
-provider availability or a complete acquired corpus. The GUI extra is needed at
-test collection, even when no interactive server is started.
+The suite uses fixed local fixtures and local HTTP controls. It does not establish
+live provider availability or a complete acquired corpus. The GUI extra is needed
+at test collection even when no interactive server is started.
 
-Methods-only consumers can use `uv sync --locked` in a source checkout.
-Installing only the methods dependencies does not make the legacy full-suite
-fixtures or acquisition/NLP/GUI imports available. For installed-wheel checks,
-build with `uv build`, install the wheel into a separate environment, and run the
-dependency-light `test_methods_*.py` and `test_studies.py` modules from an isolated
-copy without the legacy `tests/conftest.py`. Run from outside the source checkout
-so coverage does not also discover an unexecuted second copy of the package.
-Confirm that `blake.__file__` resolves inside the installed environment. The Python 3.9
-qualification used pytest 8 and pytest-cov 6.
+The authoring type gate uses the actual renderer source, independently of the
+methods-only environment:
 
-## Remaining boundaries
+```bash
+MYPYPATH="$TEMPLATE_REPO_ROOT" uv run --no-sync mypy --strict --follow-imports=silent   manuscript_tools/variables.py manuscript_tools/figures.py   manuscript_tools/method_types.py scripts/generate_manuscript_figures.py   scripts/z_generate_manuscript_variables.py
+```
 
-- Thirty existing legacy core typing diagnostics remain. A full-package typing
-  pass is not claimed.
-- Python 3.9 methods qualification does not qualify the optional legacy full stack
-  on Python 3.9; that stack was exercised separately on Python 3.11.
-- Historical producer identities and recovery/publication holds are preserved.
-  Moving methods does not retroactively change an earlier analytical run.
-- Browser interaction, accessibility, specialist scientific acceptance, complete
-  oeuvre coverage and source redistribution rights require their own evidence.
-- There is currently no GitHub test/lint/type workflow. A passing GitGuardian
-  check is security evidence and does not represent a test-suite run.
+The template is a separate project. Without its declared source path, the same
+isolated authoring check reports the missing renderer import. No local stub or
+import suppression substitutes for that dependency. A whole-package strict typing
+pass is not claimed; unchanged diagnostics elsewhere remain separate.
+
+## Installed artifact checks
+
+Build with `uv build`, install the wheel into a separate external environment,
+and run dependency-light `test_methods_*.py` and `test_studies.py` copies without
+the full-stack `tests/conftest.py`. Run outside the source checkout so coverage
+does not discover an unexecuted second package copy. Confirm that `blake.__file__`
+resolves inside the installed environment. The Python 3.9 SDK gate uses pytest 8,
+pytest-cov 6 and a 90% branch-aware methods/studies floor.
+
+The optional full stack is qualified separately on Python 3.11. Python 3.9 methods
+qualification does not qualify that optional stack. Historical analysis producers,
+source roles and evidence hashes remain unchanged by interface removal. Browser
+interaction, accessibility, specialist scientific acceptance, complete oeuvre
+coverage and redistribution rights require their own evidence.

@@ -53,7 +53,7 @@ blake-text --index blake_data/search/demo.sqlite suite
 
 The same CLI is available as `python -m blake.text_search`; the lightweight
 profile needs only the existing Click and Pydantic dependencies plus SQLite with
-FTS5. Importing this search surface defers the legacy NLP stack. The legacy `blake`
+FTS5. Importing this search surface defers the optional NLP stack. The full `blake`
 CLI and `BlakeCorpus` public names remain available in their full environment.
 
 `word` searches whole normalized tokens, including stopwords; `phrase` requires
@@ -183,7 +183,7 @@ reading has `plough`, `measured`, `wholesome`, and unbroken `wisdom`, with
 punctuation differences. These are editorial/spelling/lineation differences,
 not automatically Blake-authored substantive revisions. Full copy collation is open.
 
-Two legacy extraction routes now share a reading-layer parser. It selects BAD
+Two source extraction routes now share a reading-layer parser. It selects BAD
 `phystext` or TEI `body`, avoids overlapping parent/child duplication, excludes
 notes/descriptive annotations and deletions, selects original `choice` readings,
 and exposes existing block `n`/XML identifiers. Corrected/expanded alternatives
@@ -191,7 +191,7 @@ remain in source XML; they are not concatenated into the primary reading. This
 is not a diplomatic manuscript/variant apparatus. Raw source XML must be retained
 privately to recover additions/deletions, layout, variants and editorial decisions.
 Existing flattened caches are not repaired automatically; re-extract and review
-them before comparing counts. The legacy metadata browser remains discovery
+them before comparing counts. The metadata browser remains discovery
 search, with substring relevance and metadata fields; use passage search for
 literal occurrence evidence.
 
@@ -252,6 +252,6 @@ uv run --python 3.11 pytest tests/test_passage_search.py tests/test_search_scope
 
 The focused suite exercises real SQLite, primary/edition/author boundaries,
 normalization, original spans, fixtures, cache membership, atomic failure and the
-actual CLI. This minimal profile does not qualify the complete legacy NLP,
+actual CLI. This minimal profile does not qualify the complete optional NLP,
 GUI, downloader network, visualization, or manuscript pipeline. Run the existing
 full tests in a separately qualified full environment before making those claims.

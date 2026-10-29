@@ -115,7 +115,7 @@ compare exported passages by ID and text hash against its historical import,
 then compare roles, authors, planes, editions and locators before considering new
 analysis. Keep historical figures and conclusions bound to their original inputs.
 
-The 0.3.0 candidate moves acquisition, NLP, vision and legacy orchestration
+The 0.4.0 source moves acquisition, NLP, vision and corpus orchestration
 requirements into `full`. Plain `uv sync` installs methods dependencies;
 `uv sync --extra full --extra dev` prepares the complete pipeline and tests.
 GUI/API surfaces need `full` together with their respective extras. Clean
@@ -132,7 +132,7 @@ source-hashed identities remain unchanged by this extraction.
 
 Portable bundle and historical projection passage models are distinct contracts.
 Use `bundle_to_projection` or `projection_to_bundle` from
-`blake.methods.compatibility` when crossing that boundary. Conversion validates
+`blake.methods.schema_conversion` when crossing that boundary. Conversion validates
 existing fields; it cannot invent provenance or promote a source role. A bundle
 manifest digest is not interchangeable with a projection pin.
 

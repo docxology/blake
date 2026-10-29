@@ -1,6 +1,6 @@
 # Shared research methods
 
-The 0.3.0 candidate separates reusable evidence methods from application policy.
+The 0.4.0 source separates reusable evidence methods from application policy.
 Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
 `uv sync --extra full` for acquisition, NLP, vision and the corpus pipeline.
 The complete test suite includes GUI tests and requires
@@ -57,7 +57,7 @@ Profile metadata does not enter historical query fingerprints.
 These contracts intentionally disagree on some Unicode and phrase inputs.
 Literal `ss` can match an entire `ß`; regex IGNORECASE does not make that expansion.
 A literal phrase preserves whitespace, whereas a normalized token phrase may
-cross punctuation. Concordance sorts variants by length only; the legacy
+cross punctuation. Concordance sorts variants by length only; the retained
 statistics matcher has a distinct length-then-lexical tie order. Preserve each
 contract's own oracle. The existing `blake.text_search` and `blake.studies` code
 and source-hashed producer identities are unchanged by the extraction.
@@ -68,7 +68,7 @@ and source-hashed producer identities are unchanged by the extraction.
 `BundlePassage` and `BundleCorpusPin`. Historical projection schemas retain their
 validation boundaries. Portable bundle schemas have stricter source bindings.
 Use `bundle_to_projection(passages)` or `projection_to_bundle(passages)` from
-`blake.methods.compatibility` explicitly. Conversion validates existing fields;
+`blake.methods.schema_conversion` explicitly. Conversion validates existing fields;
 it does not supply missing provenance, change roles or convert pin meanings.
 
 `blake.applications.load_bundle` remains the portable-bundle reader described in
@@ -85,6 +85,12 @@ Platforms without the required descriptor operations fail explicitly.
 Keep failed partial runs for inspection and choose a fresh output for a rerun.
 
 ## Literal search and concordance
+
+`search.literal_spans(text, terms, *, whole_words)` is the direct shared span
+implementation used by search and application adapters. It returns complete
+Unicode casefold matches with original offsets and rejects empty terms rather
+than admitting a non-advancing search. Empty term inventories return no spans.
+
 
 This synthetic example requires no corpus download:
 
@@ -222,7 +228,7 @@ uses eight distributions and supports portable-bundle reading and these methods.
 Use `uv sync --extra recovery` for source recovery and recovered-projection export;
 this adds HTML parsing, image verification and platform certificate support.
 Use `uv sync --extra full --extra dev --extra gui` for the complete test suite,
-including its Streamlit native tests. The full legacy workflow is qualified
+including its Streamlit native tests. The full workflow is qualified
 separately on Python 3.11;
 the core's Python 3.9 result does not qualify that optional stack.
 

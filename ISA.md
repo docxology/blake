@@ -24,7 +24,7 @@ The publication object is local source-owned readiness: regenerated corpus artif
 - ArXiv scholarship may support related work and future method paths only. It must not imply current LLM OCR, NER extraction, restoration, or knowledge-graph completion.
 - Generated cover art is a manuscript design asset with provenance, not corpus evidence.
 - Open-source distribution applies to the project code and project-authored outputs, not automatically to provider-supplied Blake Archive images, TEI, transcriptions, or local evidence caches.
-- Figures are generated from `analysis_output/` JSON and local corpus metadata, retain existing filenames and labels, and may add only backward-compatible registry metadata.
+- Figures are generated from `analysis_output/` JSON and local corpus metadata, retain existing filenames and labels, and may add only additional registry metadata.
 - Public UI and script copy must use target-aware language while preserving command names such as "download all" when they describe an operation.
 - Reproducibility instructions must use the real sibling-template gate: `uv run python scripts/04_validate_output.py --project working/blake`.
 - TODO tracking is forward-only: no completed fixture-era checklist items, no stale past gates, and every upcoming item must be scoped.
@@ -33,7 +33,7 @@ The publication object is local source-owned readiness: regenerated corpus artif
 
 1. Scholarship: selected arXiv entries are integrated only in related-work, discussion, or limitation contexts that match their actual claims.
 2. Claim hygiene: release-facing complete-corpus overclaims are removed and corpus claims remain tied to the tokenized target ledger.
-3. Visualization strategy: manuscript figures have mini-brief metadata and the figure registry carries backward-compatible story/caveat/QA fields, including supplemental image/work-profile mosaics.
+3. Visualization strategy: manuscript figures have mini-brief metadata and the figure registry carries story, caveat and QA fields, including supplemental image/work-profile mosaics.
 4. Reproducibility: corpus outputs, bounded source audit, figures, variables, PDF, and validation output have been regenerated with the current commands.
 5. Release readiness: focused manuscript tests, rendered PDF/web QA, and forward-only TODO cleanup have been completed for local initial publication readiness.
 

@@ -1,8 +1,8 @@
 # Quick Start Guide
 
-Choose the methods-only install or the full corpus pipeline. The 0.3.0 source
-candidate has passed [bounded installed-package qualification](verification.md).
-Use the source checkout below for this unreleased candidate. Package-index
+Choose the methods-only install or the full corpus pipeline. The 0.4.0 source
+revision has passed [bounded installed-package qualification](verification.md).
+Use the source checkout below for the current source revision. Package-index
 commands apply to the version actually published there; they do not select the
 current Git source or guarantee its installation profiles.
 

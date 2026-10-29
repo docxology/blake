@@ -2,6 +2,10 @@
 
 Blake is organized around a canonical `BlakeCorpus` workflow. A run plans and executes discovery, acquisition, metadata ingestion, analysis, visualization, export, and reporting into reproducible artifacts under `analysis_output/`. Raw and cached content remains under `blake_data/`.
 
+## Current interfaces
+
+Recovery runs through `blake.recovery_commands` and the registered `blake corpus` commands. Schema conversion lives in `blake.methods.schema_conversion`. Workspace serialization uses its public implementations directly. The distinct NFKC, literal-casefold and regex retrieval profiles retain their own contracts.
+
 ## Core Architecture
 
 ### 1. Corpus Layer
@@ -23,7 +27,7 @@ Blake is organized around a canonical `BlakeCorpus` workflow. A run plans and ex
 
 **Components**:
 
-- `BlakeDownloader` - Legacy download facade
+- `BlakeDownloader` - Source-provider download coordinator
 - `SourceProvider` adapters - Normalized source discovery/fetch contract
 - `DownloadManager` - Session management and coordination
 - `MetadataManager` - Metadata storage and retrieval
@@ -82,7 +86,7 @@ Blake is organized around a canonical `BlakeCorpus` workflow. A run plans and ex
 - `BlakeGUI` - Graphical user interface
 - `InteractiveOrchestrator` - Terminal interface
 - `blake corpus run`
-- Compatibility CLI commands (`download`, `analyze`, `export`, `stats`)
+- Current commands: `blake corpus`, `blake info`, `blake search` and `blake-text`
 - API endpoints
 
 **Key Features**:
@@ -112,7 +116,7 @@ blake/
 
 The system is designed for easy extension:
 
-- **New Sources**: Add `SourceProvider` adapters or wrap legacy sources through the registry
+- **New Sources**: Add `SourceProvider` adapters or wrap source-specific clients through the registry
 - **New Analysis**: Extend analysis modules with new algorithms
 - **New Visualizations**: Add renderer modules for new visualization types
 - **New Interfaces**: Add new UI components or API endpoints
@@ -187,7 +191,7 @@ class BlakeCorpus:
         self.source_registry = SourceRegistry()
 ```
 
-`BlakeCorpus` subclasses `BlakeCorpus` for one compatibility release.
+`BlakeCorpus` is defined in `blake/corpus/pipeline.py` and re-exported from `blake`; there is one corpus orchestrator.
 
 ### Corpus Target Coverage
 

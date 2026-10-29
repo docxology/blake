@@ -54,7 +54,7 @@ uv run flake8 blake tests
 uv run mypy blake
 ```
 
-Plain `uv sync` installs methods dependencies only. Use `uv sync --locked --python 3.11 --extra full --extra dev --extra gui` for the complete test suite, including its GUI tests. API and GUI serving need `full` plus their surface extra. The 0.3.0 candidate has passed bounded source and installed-wheel checks; [verification scope](verification.md) records the environments and remaining typing and compatibility limits. Live acquisition remains separate because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
+Plain `uv sync` installs methods dependencies only. Use `uv sync --locked --python 3.11 --extra full --extra dev --extra gui` for the complete test suite, including its GUI tests. API and GUI serving need `full` plus their surface extra. The current source has passed bounded source and installed-wheel checks; [verification scope](verification.md) records the environments and remaining typing and environment limits. Live acquisition remains separate because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
 
 ## Shared methods development
 

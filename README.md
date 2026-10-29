@@ -1,12 +1,12 @@
 # Blake Corpus Analysis Platform
 
-Software candidate: **0.3.0**. See [release changes](CHANGELOG.md) and the
+Software: **0.4.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23601681-blue.svg)](https://doi.org/10.5281/zenodo.23601681)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23770249-blue.svg)](https://doi.org/10.5281/zenodo.23770249)
 
 Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
@@ -24,18 +24,23 @@ portable snapshots and uncapped lexical studies. An application supplies explici
 search forms and receives every category/source-span match, all zero cells and
 source denominators. Source roles and authorship labels survive the transfer.
 Applications do not need to read an internal SQLite schema or copy search code.
-The package imports this surface without loading the legacy NLP/vision stack;
+The package imports this surface without loading the optional NLP/vision stack;
 the default installation contains only the methods dependencies. Install the `full`
-extra for acquisition, NLP, vision and the legacy corpus pipeline. The narrower
+extra for acquisition, NLP, vision and the corpus pipeline. The narrower
 `recovery` extra supports recovered-source export with HTML parsing and image
 verification. See the
 [shared methods API](docs/shared-methods.md) for explicit retrieval profiles,
 counted statistics, proximity, review custody and offline workspaces.
 
-The 0.3.0 dependency split has passed bounded source and installed-wheel
-qualification. See [verification scope and commands](docs/verification.md) for
-the tested environments and retained limitations. This remains an unreleased
-software candidate; merging source does not publish a package or paper.
+The shared methods have passed bounded source and installed-wheel
+qualification; the current revision removes obsolete interface paths. See [verification scope and commands](docs/verification.md) for
+the tested environments and retained limitations. The package-index distribution is independent of the current Git source.
+The working-paper DOI identifies the deposited manuscript and its exact assets.
+
+The current paper is [Blake.pdf](Blake.pdf). Its publication manifest records
+the reviewed PDF hash, source commit and Zenodo record. Archived papers remain
+accessible at [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
+[0.1.0](https://doi.org/10.5281/zenodo.21047574).
 
 ## Primary Workflow
 
@@ -55,7 +60,7 @@ The second command refreshes the existing pipeline store. Publication analysis i
 
 ## Publication analysis and rendered paper
 
-The [versioned working paper](https://doi.org/10.5281/zenodo.23601681) accompanies
+The [versioned working paper](https://doi.org/10.5281/zenodo.23770249) accompanies
 the software assets. Its source/copy records, target-ledger entries, image
 associations and distinct files are separate denominators. Exploratory NLP
 retains unverified authorship labels. Recoverability of captured bytes does not
@@ -137,9 +142,9 @@ Raw downloads, SQLite metadata, cached texts, and images live under `blake_data/
 
 ```bash
 uv sync --python 3.11 --extra full --extra dev --extra api --extra gui
-uv run --python 3.11 python -m blake.recovery recover --full
-uv run --python 3.11 python -m blake.recovery verify
-uv run --python 3.11 python -m blake.recovery register
+uv run --python 3.11 python -m blake.recovery_commands recover --full
+uv run --python 3.11 python -m blake.recovery_commands verify
+uv run --python 3.11 python -m blake.recovery_commands register
 uv run --python 3.11 blake-text build-recovered
 uv run --python 3.11 blake-text --recovered query eternity
 uv run --python 3.11 blake-text --recovered query state --scope exploratory --plane erdman
@@ -162,9 +167,8 @@ verify-recovery`, and `blake corpus import-recovery`.
 Reruns reuse saved sources and verify the prior manifest before updating it.
 Use `recover --offline --no-images` to rebuild from those sources without network
 access. Keep each Archive commit in a separate data directory; `--commit` accepts
-only a full commit SHA. The compatibility script
-`scripts/download_complete_archive.py` delegates to this workflow and propagates
-errors to its exit status.
+only a full commit SHA. The recovery command is executed directly through
+`blake.recovery_commands`; operational failures propagate to its exit status.
 
 `--full` also retains the complete work, copy, and object API responses and a
 pinned snapshot of the full Erdman source edition, including its four XML parts.
@@ -187,9 +191,9 @@ are bound to exact source hashes; other ambiguous readings remain explicit error
 Create a portable local backup after recovery:
 
 ```bash
-uv run --python 3.11 python -m blake.recovery backup --destination blake_data/backups/full-corpus.tar
-uv run --python 3.11 python -m blake.recovery verify-backup blake_data/backups/full-corpus.tar
-uv run --python 3.11 python -m blake.recovery restore-drill blake_data/backups/full-corpus.tar --destination blake_data/restore-check
+uv run --python 3.11 python -m blake.recovery_commands backup --destination blake_data/backups/full-corpus.tar
+uv run --python 3.11 python -m blake.recovery_commands verify-backup blake_data/backups/full-corpus.tar
+uv run --python 3.11 python -m blake.recovery_commands restore-drill blake_data/backups/full-corpus.tar --destination blake_data/restore-check
 ```
 
 The bundle includes every inventoried source, text, image and index, plus the
@@ -263,7 +267,7 @@ The corpus workflow lives under `blake corpus`; `search`, `info`, and `explore` 
 
 - `blake.corpus` owns `CorpusConfig`, `CorpusManifest`, `CorpusRunSummary`, `PhaseResult`, source registry, and `BlakeCorpus`.
 - The corpus manifest compares local works against a versioned canonical target ledger and reports `present`, `partial`, `missing`, `duplicate`, and `unverified` coverage.
-- `blake.downloader` keeps legacy adapters while corpus acquisition normalizes source records through `SourceProvider` wrappers.
+- `blake.downloader` keeps source adapters while corpus acquisition normalizes source records through `SourceProvider` wrappers.
 - `blake.metadata` stores and searches local work metadata.
 - `blake.analysis` writes typed analysis records through the corpus pipeline.
 - `blake.viz` exposes one Pydantic visualization configuration model.
@@ -290,7 +294,7 @@ python -m blake.text_search --index blake_data/search/demo.sqlite suite
 ## Development
 
 ```bash
-uv sync --extra full --extra dev --extra api --extra gui
+uv sync --locked --python 3.11 --extra full --extra dev --extra api --extra gui
 uv run pytest tests/ -q
 uv run pytest tests/ -q -m "not slow and not integration"
 uv run blake corpus run --quick --output-dir analysis_output
@@ -301,7 +305,7 @@ uv run blake corpus public-release-package --output-dir analysis_output --data-d
 ```
 
 Plain `uv sync` installs the methods-only dependency set: packaging, Click,
-Pydantic and typing extensions. Use `uv sync --extra full` for the legacy
+Pydantic and typing extensions. Use `uv sync --extra full` for the corpus
 pipeline. The complete test suite includes GUI tests: install its dependencies
 with `uv sync --extra full --extra dev --extra gui`. GUI/API serving needs its
 surface extra (`gui` or `api`) together with `full`.
@@ -322,7 +326,7 @@ The manuscript's legal distribution section and rights-matrix supplement are the
 
 This project is archived on Zenodo with a DOI, cross-linked to this repository:
 
-- **DOI:** [10.5281/zenodo.23601681](https://doi.org/10.5281/zenodo.23601681)
+- **DOI:** [10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249)
 - **Zenodo record:** working-paper PDF, wheel, source distribution, allowlisted reproduction archive, release manifest and SHA-256 checksums. Provider image mosaics are omitted.
 - **Earlier paper:** [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574), whose published record contains the earlier PDF.
 - See [`CITATION.cff`](CITATION.cff) for citation metadata.

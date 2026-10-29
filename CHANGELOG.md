@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — 2026-10-29
+
+- Remove the recovery re-export module and duplicate archive command wrapper; use implementation owners and the executable recovery command module.
+- Give schema conversion, literal spans and workspace serialization direct current interfaces; preserve distinct retrieval and validation contracts. Reject empty literal terms after reproducing a non-advancing cursor loop.
+- Repair manuscript figure/variable typing and source-derived display labels without rerunning or relabeling saved analyses.
+- Delegate optional requirements to the canonical manifest; update current setup, architecture, citation and working-paper identities.
+- Publish the reviewed paper and its source-bound assets under a new Zenodo version, with the exact PDF at the repository root.
+
 ## 0.3.0 candidate — unreleased
 
 - Align contributor setup with the GUI dependencies used by the full tests,
@@ -19,12 +27,12 @@
 - Add a neutral offline workspace with caller-supplied branding and private-output
   policy, Python Unicode tables, complete pre-cap counts and one browser matcher.
 - Make packaging, Click, Pydantic and typing extensions the mandatory dependencies;
-  move acquisition, NLP, vision and legacy orchestration into `full`. GUI/API
+  move acquisition, NLP, vision and corpus orchestration into `full`. GUI/API
   surfaces require `full` plus their own extras.
 - Retain existing `text_search` and `studies` implementations and historical
   producer identities. New delegated producers require new result epochs.
 - Qualify the dependency split with full Python 3.11 source tests and a normal
-  Python 3.9 installed-wheel methods suite; retain optional-stack, legacy typing
+  Python 3.9 installed-wheel methods suite; retain optional-stack, existing typing
   and scientific limits. This entry does not attest publication.
 
 - Define the shared corpus/methods versus application-paper boundary and document independent application pins.
@@ -39,7 +47,7 @@
 - Preserve the captured corpus while analyzing a fresh metadata and transcription store.
 - Reconcile manuscript inputs with the saved manifest and identified result ledger.
 - Fix rank-deficient covariance projection and verify it against an independent numerical oracle.
-- Persist all analysis components through database reloads and restore missing legacy payloads without repeating inference.
+- Persist all analysis components through database reloads and restore missing saved payloads without repeating inference.
 - Count nested component unavailability separately from top-level analysis completion; honor canonical error fields in the workbench.
 - Bind publication claims to verified source, backup, search and retained restore-control evidence.
 - Load qualified saved analysis epochs in the dashboard; disclose changed evidence and explicit record/image units.

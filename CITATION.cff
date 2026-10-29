@@ -7,12 +7,19 @@ abstract: >-
   with an auditable target ledger and a fail-closed rights gate that separates
   open-source code and aggregate analytics from provider-supplied source files.
 type: software
-version: "0.3.0"
-date-released: "2026-10-28"
+version: "0.4.0"
+date-released: "2026-10-29"
 license: MIT
 url: "https://github.com/docxology/blake"
 repository-code: "https://github.com/docxology/blake"
 references:
+  - type: report
+    title: "Mapping William Blake’s Works"
+    version: "0.2.0"
+    doi: "10.5281/zenodo.23601681"
+    authors:
+      - family-names: Friedman
+        given-names: Daniel Ari
   - type: report
     title: "Mapping William Blake’s Works"
     version: "0.1.0"
@@ -36,9 +43,9 @@ authors:
 preferred-citation:
   type: report
   title: "Mapping William Blake’s Works: Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
-  version: "0.2.0"
+  version: "0.4.0"
   year: 2026
-  doi: "10.5281/zenodo.23601681"
+  doi: "10.5281/zenodo.23770249"
   authors:
     - family-names: Friedman
       given-names: Daniel Ari

@@ -1,6 +1,6 @@
 """Software and interface identities, independent of captured corpus evidence."""
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 METHODS_PROFILE = "local-source-evidence-v2"
 DASHBOARD_SCHEMA_VERSION = 2
 
