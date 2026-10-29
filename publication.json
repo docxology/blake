@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "title": "Mapping William Blake’s Works",
+  "version": "0.4.0",
+  "publication_date": "2026-10-29",
+  "repository": "https://github.com/docxology/blake",
+  "repository_branch": "main",
+  "source_commit": "0dbeb16fe8c1e4caea1e1532e7eea6bfab10e667",
+  "manuscript_source_commit": "c2c27901c62954766c1f789cb0fe254c8d2b3359",
+  "wheel_build_source_commit": "e8c038ec6152261517211ee7fa878dead7bf1d2b",
+  "sdist_build_source_commit": "0dbeb16fe8c1e4caea1e1532e7eea6bfab10e667",
+  "identity_note": "The wheel code/resources are byte-identical to the final source. Later source commits change only manuscript status and API/setup guides. The manuscript render precedes only the two API/setup guide corrections.",
+  "zenodo": {
+    "record_id": 23770249,
+    "doi": "10.5281/zenodo.23770249",
+    "url": "https://zenodo.org/records/23770249",
+    "concept_doi": "10.5281/zenodo.21047573",
+    "resource_type": "publication/workingpaper"
+  },
+  "pdf": {
+    "repository_path": "Blake.pdf",
+    "sha256": "fd7274c0df56356c2ed03fd7debe976dc34b7ac390e69618ae4c6fc42da9ee4f",
+    "bytes": 11576082,
+    "pages": 92
+  },
+  "assets": {
+    "Blake-0.4.0-reproduction.zip": {
+      "sha256": "88bda9ca4632bda74740efa582ae03ee9049d5b9e193682f3f54527fe427bd3f",
+      "bytes": 21326552
+    },
+    "Blake.pdf": {
+      "sha256": "fd7274c0df56356c2ed03fd7debe976dc34b7ac390e69618ae4c6fc42da9ee4f",
+      "bytes": 11576082
+    },
+    "blake-0.4.0-py3-none-any.whl": {
+      "sha256": "b93aefaa2d93e97b50d52712f1e913af67ce7644cbf01a1a5cc65ee1c67bf629",
+      "bytes": 761481
+    },
+    "blake-0.4.0.tar.gz": {
+      "sha256": "592bcbc01ccda6bb4d0b6e59ab750e672070fb358c16bf5a355948c9f3ab2fc7",
+      "bytes": 716745
+    }
+  },
+  "native_render": {
+    "template_repository": "https://github.com/docxology/template",
+    "template_commit": "efce6d6f5b3c4e8e2bbf92d8250855a0a9389ae8",
+    "writers": [
+      "PDFRenderer.render_combined",
+      "WebRenderer.render_combined"
+    ],
+    "resolved_variables": 195,
+    "public_archive_replay_pdf_byte_identical": true,
+    "archive_entries_verified": 469,
+    "traversal_control": "unsafe_path",
+    "final_latex_warning_lines": []
+  },
+  "qualification": {
+    "full_stack": {
+      "python": "3.11.17",
+      "tests_passed": 1171,
+      "failures": 0,
+      "errors": 0,
+      "branch_aware_coverage_percent": 83.34118879287772,
+      "coverage_floor": 80
+    },
+    "methods_sdk": {
+      "python": "3.9.25",
+      "installation": "normal wheel, outside source checkout",
+      "tests_passed": 280,
+      "recovery_tests_deselected_for_separate_gate": 2,
+      "branch_aware_coverage_percent": 99.00938477580813,
+      "coverage_floor": 90,
+      "installed_distributions": 8
+    },
+    "installed_recovery": {
+      "python": "3.11.17",
+      "real_cli_tests_passed": 2,
+      "resource_capture": [
+        "LICENSE",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "missing_resource_refusal_controls": 3
+    },
+    "authoring_typing": {
+      "strict_source_files": 5,
+      "actual_pinned_template_source_required": true,
+      "whole_package_strict_pass_claimed": false
+    }
+  },
+  "visual_inspection": {
+    "scope": "Bounded working-paper layout, figures, tables and rendered content; specialist scientific and accessibility acceptance excluded",
+    "physical_pages_viewed": 92,
+    "full_page_enlargements": 35,
+    "resolved_internal_goto_links": 534,
+    "nonblocking_note": "Figure 12 uses color for text availability without a local legend; nearby Table 6 supplies explicit yes/no values."
+  },
+  "saved_analytical_producer": "0.2.0rc1",
+  "distribution_policy": {
+    "project_license": "MIT",
+    "font_notices": "FONT-NOTICES/ in the reproduction archive; embedded Latin Modern subsets retain GUST/LPPL notices",
+    "cover": "Generated visual interpretation, not a Blake original or corpus evidence",
+    "excluded": [
+      "provider corpus and source images",
+      "TEI/XML and transcriptions",
+      "private indexes and backups",
+      "source-image mosaics",
+      "private application repositories",
+      "credentials and local coordination evidence"
+    ]
+  },
+  "limits": [
+    "Working paper; publication does not establish peer review or specialist scientific acceptance.",
+    "Captured partial corpus, not complete-oeuvre coverage.",
+    "Historical analytical inputs and producer identities preserved; no new model inference claimed.",
+    "Full optional stack is not qualified on Python 3.9.",
+    "Whole-package strict typing, hosted test/lint/type CI, browser interaction and accessibility certification are not claimed."
+  ]
+}

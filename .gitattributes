@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Preserve the deposited PDF byte for byte.
+/Blake.pdf -text -diff
