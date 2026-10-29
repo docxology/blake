@@ -60,7 +60,15 @@ if _REPO_ROOT is not None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate manuscript variables for blake")
+    parser = argparse.ArgumentParser(
+        description="Generate manuscript variables for blake"
+    )
+    parser.add_argument(
+        "--evidence-root",
+        type=str,
+        default=os.environ.get("BLAKE_MANUSCRIPT_EVIDENCE_ROOT"),
+        help="Explicit read-only saved-evidence root; defaults to this authoring tree",
+    )
     parser.add_argument(
         "--allow-draft",
         action="store_true",
@@ -68,13 +76,17 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    from infrastructure.rendering.manuscript_injection import write_resolved_manuscript_tree
-    from manuscript_tools.variables import generate_variables, save_variables
+    from infrastructure.rendering.manuscript_injection import (
+        write_resolved_manuscript_tree,
+    )
+
     from manuscript_tools.publication import validate_manuscript_tokens
+    from manuscript_tools.variables import generate_variables, save_variables
 
     variables = generate_variables(
         _PROJECT_ROOT,
         require_analysis_outputs=not args.allow_draft,
+        evidence_root=args.evidence_root,
     )
     if not args.allow_draft:
         validate_manuscript_tokens(_PROJECT_ROOT / "docs/manuscript", variables)

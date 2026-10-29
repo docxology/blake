@@ -28,11 +28,10 @@ git clone https://github.com/docxology/blake.git
 cd blake
 
 # Install with UV (recommended)
-uv sync --all-extras
-uv sync --extra dev --extra api
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
 
 # Or with pip
-pip install -e ".[dev,gui,api]"
+pip install -e ".[full,dev,gui,api]"
 ```
 
 ### Development Environment
@@ -55,7 +54,27 @@ uv run flake8 blake tests
 uv run mypy blake
 ```
 
-Default `uv sync` is enough for the offline quick corpus workflow. API and GUI serving dependencies are optional extras; use `--extra api` for FastAPI routes and `--extra gui` for Streamlit/Gradio. Live acquisition and integration tests remain opt-in because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
+Plain `uv sync` installs methods dependencies only. Use `uv sync --locked --python 3.11 --extra full --extra dev --extra gui` for the complete test suite, including its GUI tests. API and GUI serving need `full` plus their surface extra. The 0.3.0 candidate has passed bounded source and installed-wheel checks; [verification scope](verification.md) records the environments and remaining typing and compatibility limits. Live acquisition remains separate because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
+
+## Shared methods development
+
+`blake.methods` must remain usable without acquisition, NLP or vision imports.
+Its Python floor is 3.9; evaluated Pydantic model fields use compatible typing.
+Read [the API contracts](shared-methods.md) before changing retrieval: regex
+IGNORECASE, literal casefold and NFKC token matching have different oracles.
+Keep `blake.text_search` and `blake.studies` source identities stable unless a
+deliberate producer change requires a new epoch.
+
+Use real temporary files, SQLite databases and subprocesses for custody controls.
+Exercise a failing checksum, altered candidate or changed expected span alongside
+the positive scenario. Node differential checks compare the shared browser engine
+against Python with producer Unicode tables. Source tests, installed-wheel tests,
+GUI inspection and scientific acceptance are separate checks.
+
+Shared source closure is explicit: include application wrappers, delegated
+methods, models and browser resources in new producer bindings. Full tests need
+`full`, `dev` and `gui`; do not treat a minimal environment import check as a full
+pipeline test.
 
 ## Project Structure
 
@@ -372,7 +391,7 @@ with patch('aiohttp.ClientSession') as mock_session:
 
 ### Code Review Process
 
-1. **Automated checks**: CI runs tests, linting, and type checking
+1. **Automated checks**: Inspect the actual PR checks. There is currently no hosted test, lint or type-check workflow; GitGuardian is a security check. Run the documented local gates and retain their results.
 2. **Manual review**: At least one maintainer reviews the code
 3. **Feedback**: Address any requested changes
 4. **Merge**: Once approved, maintainer merges the PR

@@ -1,5 +1,7 @@
 # Reproducibility: Source Snapshot, Analysis Epoch, and Publication {#sec:reproducibility}
 
+This is a local revised working draft. The earlier deposited working paper remains a separate archival record; no new deposit is claimed.
+
 Reproduction requires the captured source inventory, its private local files, the recorded analysis producer, and a compatible environment. The public release supplies project-owned source, the manuscript, aggregate evidence, producer identities, and checksums; it does not supply the provider corpus. The preservation chain connects inputs, commands, derived results, figures, and rendered bytes [@peng2011reproducible; @sandve2013ten; @wilson2014best; @w3cprov2013overview; @owens2018digitalpreservation].
 
 ## Verify Retained Inputs Before Analysis
@@ -35,6 +37,32 @@ Reseal after that command. New analyses persist each component directly. The ori
 The saved pipeline status is `{{RUN_STATUS}}`, with {{ANALYSIS_WORKS_ANALYZED}}/{{ANALYSIS_WORKS_TOTAL}} records analyzed and current-results status `{{ANALYSIS_RESULTS_CURRENT}}`. Its top-level ledger reports {{ANALYSIS_ERROR_COUNT}} errors; the recursive component census reports {{ANALYSIS_NESTED_ERROR_COUNT}} nested errors, including {{TOPIC_INSUFFICIENT_WORKS}} insufficient-text and {{TOPIC_PRUNED_WORKS}} pruned-vocabulary topic results. Successful pipeline completion does not erase component unavailability.
 
 ## Generate Figures and Hydrate the Manuscript
+
+### Authoring, Evidence and Output Roots
+
+Preparation normally reads evidence and writes derived outputs in the authoring
+project. A staged authoring candidate may instead name an explicit evidence read
+root with `--evidence-root` or `BLAKE_MANUSCRIPT_EVIDENCE_ROOT`. This changes the
+saved analysis and custody inputs while keeping manuscript prose, legal-claim
+ledger and executing producer code in the authoring tree. Generated figures and
+hydrated sources remain under its `output/` directory. No other checkout is
+searched and an invalid explicit read root fails even if authoring caches exist.
+
+```bash
+uv run python scripts/generate_manuscript_figures.py --public-only \
+  --evidence-root "$BLAKE_EVIDENCE_ROOT"
+TEMPLATE_REPO_ROOT=../template \
+  uv run python scripts/z_generate_manuscript_variables.py \
+  --evidence-root "$BLAKE_EVIDENCE_ROOT"
+```
+
+Figure preparation reads diagnostic inputs without rewriting their saved files.
+A bounded aggregate/text stage cannot satisfy full recovery verification merely
+by being selected as a read root. Strict publication-token admission retains its
+saved-epoch and input-binding checks; full recovery and backup verification still
+require their original complete local sources. Preserve existing output artifacts
+before producing a new display epoch. A source-code profile diagram has its own
+source digest and never changes the analytical producer identity.
 
 With the retained backup and historical restore-control files available locally,
 the publication seal freshly verifies the captured inventory, existing backup,

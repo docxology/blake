@@ -1,9 +1,14 @@
 # Blake manuscript
 
-The canonical sources live here. The paper reports a fresh local analysis epoch,
+The canonical sources live here. The paper reports a retained local analysis epoch,
 captured-source recoverability and explicit scholarly and distribution limits.
 Provider transcriptions, XML, images, indexes, backups and source-image mosaics
 remain local.
+
+The source candidate adds shared-core/application-policy methods and a
+source-derived profile/ownership figure. This is a code and publication-preparation
+advancement; the saved analytical producer remains unchanged. The common
+[style guide](../style-guide.md) governs syntax, units, source custody and claim limits.
 
 - [Authoring contract](AGENTS.md): quantitative claims use computed tokens.
 - [Reproduction workflow](08_reproducibility.md): prepare a new store, analyze,

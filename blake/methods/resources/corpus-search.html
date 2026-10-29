@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src 'none'; object-src 'none'; style-src 'sha256-@@STYLE_HASH@@'; script-src 'sha256-@@SCRIPT_HASH@@'">
+<title>@@TITLE@@</title>
+<style>@@STYLE@@</style>
+</head>
+<body>
+<a class="skip" href="#search-form">Skip to search</a>
+<header class="masthead"><p class="eyebrow">@@BRAND@@</p><h1>Words in their<br><em>source contexts.</em></h1><p class="deck">Search literal words and phrases across the pinned corpus projection. Compare occurrence counts, source-unit coverage and transcription roles; read every result against its source.</p><p id="corpus-summary" class="binding"></p></header>
+<main>
+<section class="search-panel" aria-labelledby="search-title"><div class="section-heading"><span class="section-number">01</span><h2 id="search-title">Find a passage</h2></div>
+<form id="search-form">
+<label for="terms">Words or phrases <span class="hint">One literal term per line; up to eight.</span></label><textarea id="terms" name="terms" rows="3" required placeholder="word&#10;phrase"></textarea>
+<div class="filters">
+<label>Term relation<select id="mode"><option value="any">ANY term in a source unit</option><option value="all">ALL terms in the same source unit</option></select></label>
+<label>Text role<select id="role"><option value="primary">Primary text</option><option value="editorial">Editorial text</option><option value="unverified">Unverified text</option><option value="">All roles</option></select></label>
+<label>Source plane<select id="plane"><option value="">All planes</option><option value="reading">Reading extract</option><option value="erdman">Erdman page</option><option value="xml">XML</option></select></label>
+<label>Source family<select id="work-id"><option value="">All source families</option></select></label>
+<label>Word window (optional, ALL only)<input id="window-words" type="number" min="1" max="200" step="1" placeholder="No window" aria-describedby="window-help"><span id="window-help" class="hint">1–200 original word tokens, including phrase tokens. Requires ALL and at least two distinct terms. Blank keeps document-level search.</span></label>
+<label>Returned-hit cap<select id="limit"><option value="100">100 hits</option><option value="500">500 hits</option><option value="1000">1,000 hits</option></select></label>
+<label class="checkbox"><input id="whole-words" type="checkbox" checked> Whole words</label>
+</div>
+<p class="hint">Case is folded with the recorded Python Unicode tables. Spaces and punctuation are literal. Without a word window, ALL tests the stored source unit. A window counts occurrences participating in a complete nearby combination.</p>
+<div class="actions"><button type="submit" id="submit-search">Search corpus</button><button type="button" id="clear-search" class="secondary">Clear</button><button type="button" id="download-results" class="secondary" disabled>Download result JSON</button></div>
+</form>
+<p id="search-status" role="status" aria-live="polite">Enter a term to search. No query has run.</p><p id="search-error" role="alert" hidden></p>
+</section>
+<section id="results-section" aria-labelledby="results-title" hidden><div class="section-heading"><span class="section-number">02</span><h2 id="results-title">Distribution before close reading</h2></div><div id="metrics" class="metrics"></div><p id="window-note" class="hint"></p>
+<p id="cap-note" class="hint"></p>
+<div class="charts"><figure><figcaption><strong>Source families.</strong> Red bars show occurrences. Labels retain matched/eligible source units and token-normalized rates. Repeated copies remain separate source units.</figcaption><div id="family-chart"></div></figure><figure><figcaption><strong>Plane × role.</strong> Counts use every match, including hits beyond the display cap. Zero matches and absent source units are distinct.</figcaption><div class="table-scroll"><table id="plane-role"><caption class="sr-only">All-match source-plane and text-role distribution</caption><thead><tr><th scope="col">Plane</th><th scope="col">Primary</th><th scope="col">Editorial</th><th scope="col">Unverified</th></tr></thead><tbody></tbody></table></div></figure></div>
+<div class="section-heading"><span class="section-number">03</span><h2>Passages and source bindings</h2></div><p id="page-status" role="status"></p><ol id="hits" class="hits"></ol><div class="pagination"><button id="previous-page" class="secondary" type="button">Previous 20</button><button id="next-page" class="secondary" type="button">Next 20</button></div>
+</section>
+<details class="custody"><summary>Source custody and search method</summary><p>This file contains local full texts. Keep it in ignored project output; it is separate from the aggregate research workbench and release assets. Source links open only when you choose them.</p><p id="method"></p><dl><dt>Imported index SHA-256</dt><dd id="index-hash"></dd><dt>Projection manifest SHA-256</dt><dd id="manifest-hash"></dd><dt>Producer / Unicode tables</dt><dd id="producer"></dd></dl></details>
+</main>
+<footer><p>@@FOOTER@@</p></footer>
+<script id="search-data" type="application/json">@@PAYLOAD@@</script>
+<script>@@SCRIPT@@</script>
+</body></html>

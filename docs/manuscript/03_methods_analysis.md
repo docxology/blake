@@ -1,5 +1,61 @@
 # Methods: Local Text, Image, Cross-Modal, and Theme Diagnostics {#sec:methods_analysis}
 
+## Shared Mechanisms and Application Policy {#sec:shared_methods}
+
+The public core separates reusable evidence mechanisms from caller-owned
+research decisions. Projection and portable-bundle adapters retain source/copy
+identity, edition, locator, rights, role and plane under caller-held pins. Explicit
+schema conversion validates those fields without supplying missing provenance or
+promoting unverified text. Shared methods perform retrieval, counted aggregation,
+artifact admission and review-queue membership checks. Applications supply query
+forms, scope, review labels and interpretation. This division permits selected
+corpus evidence to be reused without treating the applications' questions or
+conclusions as properties of the corpus itself.
+
+The current source declares {{CORE_RETRIEVAL_PROFILE_COUNT}} retrieval profiles.
+The profile and responsibility diagnostic binds
+{{CORE_ARCHITECTURE_SOURCE_FILES}} source files under SHA-256
+`{{CORE_ARCHITECTURE_SOURCE_SHA256}}`. [@fig:core_profile_ownership] is generated
+from those profile declarations and explicit public API responsibility references.
+It measures the source candidate, independently of the saved analytical producer
+`{{ANALYSIS_PRODUCER_VERSION}}`; it does not represent another NLP run.
+
+![Source-derived retrieval contracts and declared responsibility boundaries. Profile normalization and boundary descriptions come from the executable registry; the companion artifact binds the referenced public source files. Application policy names required caller inputs, without measuring private application outcomes. This code diagnostic does not update the saved corpus analysis.](../../output/figures/core_profile_ownership.png){#fig:core_profile_ownership}
+
+The generic evidence-tree API validates a connected rooted hierarchy and computes
+a deterministic layout without recursion. Sibling traversal follows declared
+order; placements return in declared node order. Leaves receive consecutive rows
+and an internal row is the arithmetic mean of all descendant leaf rows. Averaging
+only immediate child rows would over-weight small subtrees. Depth counts parent
+edges. Neither depth nor row represents elapsed time, evolutionary distance or
+confidence, and the API supplies no domain taxonomy or identity judgment.
+
+## Finite Grouped-Category Composition
+
+A separate composition API accepts explicit category identities and complete, disjoint group strata from the counted inventory. It checks category counts, matched-unit denominators and token totals before comparing the pooled category profile with the mean of within-group profiles. A group with no category mass has undefined composition and is omitted from this particular mean; it remains a zero in coverage and can retain a defined zero token rate. Composition and token frequency therefore answer different questions.
+
+Total variation is half the sum of absolute differences between corresponding category shares. Leave-one-group-out profiles expose dependence on supplied group identities. Rational mass thresholds and inverse concentration describe how category counts are distributed across those groups. Zero mass remains undefined, ties follow declared category order, and no procedure interprets overlapping categories as distinct organisms or groups as independent samples. These descriptive measures supply neither significance tests nor confidence intervals for a larger population.
+
+Applications select the categories and supply their literary or institutional meaning. The public implementation contains no animal vocabulary, taxonomic allocation or political scoring rule. Its contract is documented in `docs/methods/composition.md`. This source-method addition does not replace the retained exploratory NLP producer or reclassify historical source text.
+
+## Retrieval Profiles and Counting Units
+
+The regex profile uses Python IGNORECASE with explicit escaped alternatives and
+source word boundaries. Literal search uses Unicode casefold while retaining
+original-source spans and exact punctuation and whitespace. The normalized-token
+profile applies NFKC and casefold before contiguous-token matching; punctuation
+and line breaks separate tokens. These contracts can disagree, so a new profile
+is never substituted for an old query epoch. Runtime Python and Unicode versions
+are recorded separately from stable semantic identity.
+
+Counts name their units: occurrences, eligible stored source units, copy-retaining
+documents, exact-text groups or distinct work identifiers. Eligible zero-hit
+groups and token denominators precede display caps. A source unit without word
+tokens has an unavailable normalized rate. Exact-text grouping tests sensitivity
+to repetition while preserving the original source/copy identities. Proximity
+restricts retrieval within a declared source unit or complete word window; it
+does not establish semantic or historical relatedness.
+
 ## Source-Bound Occurrence Search
 
 The private search profile keeps reading passages, Erdman editorial pages, and raw XML in separate source planes. Primary scope requires identified authorship and primary reading text. Exploratory scope retains unverified and editorial labels. Normalized token and phrase matches preserve offsets into the original expression; exact matching is case-sensitive. Curated variants and concept vocabularies aid navigation without establishing semantic equivalence or whole-oeuvre occurrence claims. Source and index integrity failures refuse a query. Search counts name the selected indexed scope before display limits; the versioned contract is documented in `docs/methods.md`.

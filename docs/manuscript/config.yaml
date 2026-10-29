@@ -10,8 +10,8 @@
 paper:
   title: "Mapping William Blake’s Works"
   subtitle: "Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
-  version: "0.2.0"
-  date: "2026-10-23"
+  version: "0.3.0-local-draft"
+  date: "2026-10-28"
   cover:
     image: "output/cover/cover_blakean.png"
     usage_note: "Generative Blakean visual interpretation; not corpus evidence."
@@ -27,7 +27,7 @@ publication:
   github_repository: "docxology/blake"
   journal: "Independent working paper"
   year: "2026"
-  doi: "10.5281/zenodo.23601681"
+  doi_status: "Local revised draft; not deposited"
 
 keywords:
   - "William Blake"

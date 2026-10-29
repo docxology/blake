@@ -14,6 +14,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -27,13 +28,21 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--evidence-root",
+        type=str,
+        default=os.environ.get("BLAKE_MANUSCRIPT_EVIDENCE_ROOT"),
+        help="Explicit read-only saved-evidence root; defaults to this authoring tree",
+    )
+    parser.add_argument(
         "--public-only",
         action="store_true",
         help="Generate only the aggregate figures used by the public paper; exclude source-image mosaics.",
     )
     args = parser.parse_args()
     cover_paths = generate_cover(_PROJECT_ROOT)
-    written = generate_all_figures(_PROJECT_ROOT, public_only=args.public_only)
+    written = generate_all_figures(
+        _PROJECT_ROOT, public_only=args.public_only, evidence_root=args.evidence_root
+    )
     for path in cover_paths.values():
         print(str(path))
     for path in written:

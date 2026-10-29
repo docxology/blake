@@ -70,3 +70,26 @@ primary and exploratory states with real data; inspect narrow and wide renders.
 Native framework behavior is retained, not certified as a new application-wide
 accessibility or Lighthouse audit. Existing views are outside the visual redesign
 scope; findings in a changed flow must be fixed and rechecked before release.
+
+
+## 9. Shared offline search workspace
+
+The separate `blake.methods.workspace` HTML workspace is an offline artifact,
+not a replacement for the Streamlit interface above. Its shared CSS defines its
+own typography, colors, spacing, controls and responsive layout. Application
+adapters may supply HTML/CSS and explicit escaped title, brand and footer labels;
+the JavaScript matcher remains a single shared resource. The public template uses
+neutral corpus language, while private applications own their branding.
+
+Search submission shows busy, error, empty and populated states. Returned-hit
+caps and twenty-hit pages limit display only; distribution facets retain complete
+counts and eligible zero-hit groups. Every shown hit retains its source URL,
+rights, edition, locator, text hash and original-codepoint span. Full texts are
+embedded in the private artifact, so that artifact is not a public export.
+
+The renderer emits inert JSON and hash-bound script/style CSP declarations,
+with runtime network connections disabled. It carries Python-produced Unicode
+folding, whitespace and word-membership tables for browser parity. Native focus,
+labels, skip navigation, live status and pagination remain part of the template.
+These implementation contracts do not constitute an accessibility certification;
+installed-resource checks and rendered browser inspection remain separate gates.

@@ -58,8 +58,11 @@ def test_source_metadata_cites_current_software_and_preserves_archived_identity(
     assert re.search(
         r'^version: "' + re.escape(blake.__version__) + r'"$', citation, re.M
     )
-    assert re.search(r'^doi: "10.5281/zenodo.23601681"$', citation, re.M)
-    assert metadata["identifier"] == "https://doi.org/10.5281/zenodo.23601681"
+    assert not re.search(r"^doi:", citation, re.M)
+    assert metadata["identifier"] == "https://github.com/docxology/blake"
+    assert metadata["citation"] == "https://doi.org/10.5281/zenodo.23601681"
+    assert '  version: "0.2.0"' in citation
+    assert '  doi: "10.5281/zenodo.23601681"' in citation
     assert '    version: "0.1.0"' in citation
     assert '    doi: "10.5281/zenodo.21047574"' in citation
 

@@ -1,27 +1,34 @@
 # Quick Start Guide
 
-Get up and running with Blake in minutes!
+Choose the methods-only install or the full corpus pipeline. The 0.3.0 source
+candidate has passed [bounded installed-package qualification](verification.md).
+Use the source checkout below for this unreleased candidate. Package-index
+commands apply to the version actually published there; they do not select the
+current Git source or guarantee its installation profiles.
 
 ## Installation
 
 ### Using UV (Recommended)
 
 ```bash
-# Install with all features
+# Methods-only dependencies
 uv add blake
 
+# Acquisition, NLP, vision and corpus pipeline
+uv add "blake[full]"
+
 # Install with specific extras
-uv add "blake[gui,api,dev]"
+uv add "blake[full,gui,api,dev]"
 ```
 
 ### Using Pip
 
 ```bash
-# Basic installation
+# Methods-only installation
 pip install blake
 
 # With all extras
-pip install "blake[gui,api,dev]"
+pip install "blake[full,gui,api,dev]"
 ```
 
 ### From Source
@@ -29,8 +36,15 @@ pip install "blake[gui,api,dev]"
 ```bash
 git clone https://github.com/docxology/blake.git
 cd blake
-uv sync --all-extras
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui
+# The complete test suite includes GUI tests. Add --extra api for API serving.
 ```
+
+For methods-only work in a source checkout, use `uv sync`. See
+[shared methods](shared-methods.md) for explicit search profiles and a synthetic
+example, and [applications](applications.md) for private portable bundles.
+The corpus, analysis and interactive examples below require `full`; the web
+interface additionally requires `gui`.
 
 ## Basic Usage
 
