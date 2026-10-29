@@ -10,6 +10,23 @@ view exposes recorded recovery status and scoped, read-only corpus search.
 
 Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
+## Corpus, methods and application papers
+
+This is the shared **corpus and methods repository**. It owns acquisition,
+source custody, completeness accounting, passage identity, normalization and
+reusable analysis. Application projects own their questions, query vocabularies,
+contextual annotations, arguments and manuscripts. The corpus/methods paper here
+documents this infrastructure; an application's interpretation is not a property
+of the corpus.
+
+The [application contract](docs/applications.md) provides private, hash-bound
+portable snapshots and uncapped lexical studies. An application supplies explicit
+search forms and receives every category/source-span match, all zero cells and
+source denominators. Source roles and authorship labels survive the transfer.
+Applications do not need to read an internal SQLite schema or copy search code.
+The package imports this surface without loading the legacy NLP/vision stack;
+the full package installation still declares that stack.
+
 ## Primary Workflow
 
 ```bash

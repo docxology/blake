@@ -97,12 +97,15 @@ Issues = "https://github.com/docxology/blake/issues"
 [project.scripts]
 blake = "blake.cli:main"
 blake-text = "blake.text_search.cli:main"
+blake-application = "blake.applications:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["blake"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "uv.lock" = "blake/_resources/uv.lock"
+"pyproject.toml" = "blake/_resources/pyproject.toml"
+"LICENSE" = "blake/_resources/LICENSE"
 
 [tool.hatch.version]
 path = "blake/version.py"
@@ -111,7 +114,7 @@ path = "blake/version.py"
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
     "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
-    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 

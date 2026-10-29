@@ -143,16 +143,21 @@ def _derive(
 def retain_recipe(root: Path) -> FileReceipt:
     package = Path(__file__).parent
     project = package.parent
-    paths = sorted(
-        set(package.rglob("*.py"))
-        | set(package.rglob("*.json"))
-        | {project / "pyproject.toml", project / "uv.lock", project / "LICENSE"}
+    metadata = package / "_resources"
+    if not metadata.is_dir():
+        metadata = project
+    paths = {
+        str(path.relative_to(project)): path
+        for path in set(package.rglob("*.py")) | set(package.rglob("*.json"))
+    }
+    paths.update(
+        {name: metadata / name for name in ("pyproject.toml", "uv.lock", "LICENSE")}
     )
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode="w:") as archive:
-        for path in paths:
+        for name, path in sorted(paths.items()):
             content = path.read_bytes()
-            info = tarfile.TarInfo(str(path.relative_to(project)))
+            info = tarfile.TarInfo(name)
             info.mode = 0o644
             info.size = len(content)
             archive.addfile(info, io.BytesIO(content))
