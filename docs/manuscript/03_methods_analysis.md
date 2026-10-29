@@ -30,6 +30,14 @@ only immediate child rows would over-weight small subtrees. Depth counts parent
 edges. Neither depth nor row represents elapsed time, evolutionary distance or
 confidence, and the API supplies no domain taxonomy or identity judgment.
 
+## Finite Grouped-Category Composition
+
+A separate composition API accepts explicit category identities and complete, disjoint group strata from the counted inventory. It checks category counts, matched-unit denominators and token totals before comparing the pooled category profile with the mean of within-group profiles. A group with no category mass has undefined composition and is omitted from this particular mean; it remains a zero in coverage and can retain a defined zero token rate. Composition and token frequency therefore answer different questions.
+
+Total variation is half the sum of absolute differences between corresponding category shares. Leave-one-group-out profiles expose dependence on supplied group identities. Rational mass thresholds and inverse concentration describe how category counts are distributed across those groups. Zero mass remains undefined, ties follow declared category order, and no procedure interprets overlapping categories as distinct organisms or groups as independent samples. These descriptive measures supply neither significance tests nor confidence intervals for a larger population.
+
+Applications select the categories and supply their literary or institutional meaning. The public implementation contains no animal vocabulary, taxonomic allocation or political scoring rule. Its contract is documented in `docs/methods/composition.md`. This source-method addition does not replace the retained exploratory NLP producer or reclassify historical source text.
+
 ## Retrieval Profiles and Counting Units
 
 The regex profile uses Python IGNORECASE with explicit escaped alternatives and

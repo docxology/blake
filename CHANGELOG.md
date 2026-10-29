@@ -2,6 +2,8 @@
 
 ## 0.3.0 candidate — unreleased
 
+- Add generic grouped-category composition, finite profile distance, concentration and omission audits; keep category selection and interpretation in applications.
+
 - Add a validated, iterative evidence-tree API with explicit ordering and layout semantics.
 - Separate manuscript authoring/output from explicit read-only evidence roots and preserve evidence during figure preparation.
 - Add shared authoring conventions and a code-derived retrieval/ownership figure; label the revised manuscript as a local draft.
