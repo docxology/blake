@@ -194,7 +194,7 @@ def analyze_inventory(
     """Aggregate an explicit counted inventory without rerunning a different matcher.
 
     The caller supplies counts for every declared category, including zeros, and
-    tokens computed by the declared profile. No legacy regex label is attached.
+    tokens computed by the declared profile. No regex label is attached.
     """
     if (
         not units

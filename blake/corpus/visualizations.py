@@ -9,6 +9,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from ..models import BlakeWork
+from ..provenance import source_authority_tier
 from ..version import version_info
 from .models import CorpusManifest
 from .network import build_theme_entity_network
@@ -126,19 +127,6 @@ def _top_bigrams(tokens: List[str], limit: int = 8) -> List[Dict[str, Any]]:
         {"phrase": phrase, "count": count}
         for phrase, count in counts.most_common(limit)
     ]
-
-
-def _authority_tier(work: BlakeWork) -> str:
-    analysis = work.metadata.analysis_results or {}
-    tier = analysis.get("source_authority_tier")
-    if tier:
-        return str(tier)
-    source_value = getattr(work.metadata.source, "value", work.metadata.source)
-    if str(source_value) == "blake_archive":
-        return "archive_primary"
-    if analysis.get("validated_fallback_text"):
-        return "fallback_text_validated"
-    return "corroborating_or_legacy"
 
 
 def _image_depth_payload(work: BlakeWork) -> Dict[str, Any]:
@@ -1045,7 +1033,7 @@ class CorpusVisualizationBuilder:
                 "title": work.metadata.title,
                 "has_text": bool(work.text_content),
                 "image_count": len(work.images),
-                "source_authority_tier": _authority_tier(work),
+                "source_authority_tier": source_authority_tier(work),
                 "image_depth_status": _image_depth_payload(work).get(
                     "image_depth_status"
                 ),
@@ -1087,7 +1075,7 @@ class CorpusVisualizationBuilder:
                         else str(work.metadata.work_type)
                     ),
                     "source": str(work.metadata.source),
-                    "source_authority_tier": _authority_tier(work),
+                    "source_authority_tier": source_authority_tier(work),
                     "image_mode": depth.get("image_mode", "representative"),
                     "preferred_dpi": depth.get("preferred_dpi"),
                     "expected_object_count": expected,
@@ -1104,7 +1092,7 @@ class CorpusVisualizationBuilder:
         return rows
 
     def _source_authority_tiers(self, works: List[BlakeWork]) -> List[Dict[str, Any]]:
-        counts = Counter(_authority_tier(work) for work in works)
+        counts = Counter(source_authority_tier(work) for work in works)
         return [
             {"authority_tier": tier, "work_count": count}
             for tier, count in sorted(counts.items())
@@ -1121,7 +1109,7 @@ class CorpusVisualizationBuilder:
                     "work_type": str(work.metadata.work_type),
                     "date": date_value.isoformat() if date_value else None,
                     "source": str(work.metadata.source),
-                    "source_authority_tier": _authority_tier(work),
+                    "source_authority_tier": source_authority_tier(work),
                     "image_depth_status": _image_depth_payload(work).get(
                         "image_depth_status"
                     ),

@@ -68,7 +68,8 @@ def test_manuscript_token_gate_rejects_unknown_or_empty_values(tmp_path):
 @pytest.fixture
 def sealed_fixture(tmp_path):
     """A tiny real offline recovery, backup and corruption drill, never corpus evidence."""
-    from blake.recovery import recover_corpus, register_recovery
+    from blake.recovery_pipeline import recover_corpus
+    from blake.recovery_registration import register_recovery
     from blake.recovery_backup import backup_recovery, restore_drill
     from blake.text_search.recovered import build_recovered_search
     from blake.metadata.database import MetadataDatabase

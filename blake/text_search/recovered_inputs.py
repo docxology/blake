@@ -8,7 +8,8 @@ from pathlib import Path
 
 from pydantic import HttpUrl, TypeAdapter
 
-from ..recovery import ErdmanPage, FileReceipt, RecoveryManifest, _safe_path
+from ..recovery_models import ErdmanPage, FileReceipt, RecoveryManifest
+from ..recovery_io import _safe_path
 from .models import Passage, SearchError
 
 RIGHTS = (

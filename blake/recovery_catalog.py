@@ -10,15 +10,8 @@ from typing import Final
 
 from pydantic import BaseModel, ConfigDict
 
-from .recovery import (
-    CatalogRecovery,
-    CopyRecord,
-    FileReceipt,
-    RecoveryError,
-    _retain,
-    _safe_path,
-    fetch_file,
-)
+from .recovery_models import CatalogRecovery, CopyRecord, FileReceipt, RecoveryError
+from .recovery_io import _retain, _safe_path, fetch_file
 
 ERDMAN_COMMIT: Final = "c12d8657788523550794c8765f1199adf76efa1b"
 

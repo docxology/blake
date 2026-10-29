@@ -9,7 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from blake.recovery import RecoveryError, recover_corpus
+from blake.recovery_models import RecoveryError
+from blake.recovery_pipeline import recover_corpus
 from blake.recovery_catalog import ERDMAN_COMMIT, recover_catalog
 from .recovery_fixtures import COMMIT, seed_sources
 
@@ -81,7 +82,7 @@ def test_real_cli_when_full_profile_is_requested_persists_it_for_offline_resume(
     command = [
         sys.executable,
         "-m",
-        "blake.recovery",
+        "blake.recovery_commands",
         "recover",
         "--data-dir",
         str(data),

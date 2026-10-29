@@ -17,7 +17,8 @@ from typing import Literal
 import pydantic
 from pydantic import BaseModel, ConfigDict
 
-from ..recovery import FileReceipt, RecoveryManifest, _atomic_write, _safe_path
+from ..recovery_models import FileReceipt, RecoveryManifest
+from ..recovery_io import _atomic_write, _safe_path
 from .index import PassageIndex
 from .models import SearchError
 from .normalize import NORMALIZATION

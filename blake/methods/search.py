@@ -74,9 +74,12 @@ def _word(character: str) -> bool:
     return character.isalnum() or character == "_"
 
 
-def _spans(
+def literal_spans(
     text: str, terms: tuple[str, ...], *, whole_words: bool
 ) -> tuple[tuple[str, int, int], ...]:
+    """Match complete casefold spans while preserving original Unicode offsets."""
+    if any(not term for term in terms):
+        raise ResearchError("empty_term", "Literal terms must be nonempty")
     folded, expansions = _fold_text(text)
     starts = tuple(expansion.folded_start for expansion in expansions)
     result: list[tuple[str, int, int]] = []
@@ -152,7 +155,7 @@ def matching_spans(text: str, request: SearchRequest) -> tuple[tuple[str, int, i
     distinct term in this source unit; an optional word window retains only
     occurrences participating in at least one complete qualifying window.
     """
-    spans = _spans(text, request.terms, whole_words=request.whole_words)
+    spans = literal_spans(text, request.terms, whole_words=request.whole_words)
     if request.mode == "all" and len({term for term, _, _ in spans}) != len(request.terms):
         return ()
     return _window_spans(text, spans, request)
@@ -242,7 +245,3 @@ def search_corpus(directory: Path, expected_pin: CorpusPin, request: SearchReque
     _, passages = load_import(directory, expected_pin)
     result = search_passages(passages, request)
     return result.model_copy(update={"corpus_pin": expected_pin})
-
-
-# Public compatibility seam for historical literal-span consumers.
-literal_spans = _spans

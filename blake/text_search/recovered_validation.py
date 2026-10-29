@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import HttpUrl, TypeAdapter
 
-from ..recovery import ErdmanPage
+from ..recovery_models import ErdmanPage
 from .index import PassageIndex
 from .models import SearchError
 from .recovered_inputs import CapturedInputs

@@ -25,7 +25,7 @@ def render_evidence_panel(data_dir: Path) -> None:
     except FileNotFoundError:
         st.info("No captured recovery manifest is available in this data directory.")
         st.code(
-            "uv run --python 3.11 python -m blake.recovery recover --help",
+            "uv run --python 3.11 python -m blake.recovery_commands recover --help",
             language="bash",
         )
         return
@@ -60,7 +60,7 @@ def render_evidence_panel(data_dir: Path) -> None:
         st.text("Manifest SHA-256: " + evidence.manifest_sha256)
         st.text("Archive commit: " + evidence.archive_commit)
         st.json({"reading_roles": evidence.roles})
-        st.code("uv run --python 3.11 python -m blake.recovery verify", language="bash")
+        st.code("uv run --python 3.11 python -m blake.recovery_commands verify", language="bash")
     try:
         projection = read_projection_summary(data_dir, evidence)
     except (OSError, ValueError) as exc:

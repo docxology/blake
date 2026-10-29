@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def __getattr__(name: str) -> type:
-    """Load legacy public classes on demand, keeping text search free of NLP imports."""
+    """Load optional public classes on demand, keeping text search free of NLP imports."""
     modules = {
         "BlakeCorpus": ".corpus", "CorpusConfig": ".corpus",
         "CorpusManifest": ".corpus", "CorpusRunSummary": ".corpus",

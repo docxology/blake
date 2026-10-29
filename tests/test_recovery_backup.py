@@ -9,7 +9,10 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from blake.recovery import RecoveryError, main, recover_corpus, verify_recovery
+from blake.recovery_models import RecoveryError
+from blake.recovery_commands import main
+from blake.recovery_pipeline import recover_corpus
+from blake.recovery_integrity import verify_recovery
 from blake.recovery_backup import (
     backup_recovery,
     restore_backup,

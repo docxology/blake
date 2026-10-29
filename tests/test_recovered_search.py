@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from blake.recovery import recover_corpus
+from blake.recovery_pipeline import recover_corpus
 from blake.recovery_catalog import ERDMAN_COMMIT
 from blake.text_search import Query
 from blake.text_search.cli import main

@@ -4,11 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from blake.recovery import (
-    RecoveryError,
-    recover_corpus,
-    register_recovery,
-)
+from blake.recovery_models import RecoveryError
+from blake.recovery_pipeline import recover_corpus
+from blake.recovery_registration import register_recovery
 
 from .recovery_fixtures import COMMIT
 from tests import recovery_fixtures

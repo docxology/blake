@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from blake.methods.compatibility import bundle_to_projection, projection_to_bundle
+from blake.methods.schema_conversion import bundle_to_projection, projection_to_bundle
 from blake.methods.models import (
     Artifact,
     BundleCorpusPin,

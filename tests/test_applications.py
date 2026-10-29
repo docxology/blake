@@ -13,7 +13,7 @@ import pytest
 from click.testing import CliRunner
 
 from blake.applications import ApplicationError, export_recovered, load_bundle, main
-from blake.recovery import recover_corpus
+from blake.recovery_pipeline import recover_corpus
 from blake.text_search.models import SearchError
 from blake.text_search.recovered import build_recovered_search
 from tests.recovery_fixtures import COMMIT, seed_sources

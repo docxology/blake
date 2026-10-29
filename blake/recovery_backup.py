@@ -11,15 +11,9 @@ import tempfile
 from pathlib import Path, PurePosixPath
 from uuid import uuid4
 
-from .recovery import (
-    RecoveryError,
-    RecoveryManifest,
-    RecoveryModel,
-    _atomic_write,
-    _digest,
-    _safe_path,
-    verify_recovery,
-)
+from .recovery_models import RecoveryError, RecoveryManifest, RecoveryModel
+from .recovery_io import _atomic_write, _digest, _safe_path
+from .recovery_integrity import verify_recovery
 
 
 class BackupReceipt(RecoveryModel):

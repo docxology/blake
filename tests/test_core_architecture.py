@@ -9,7 +9,7 @@ import pytest
 from PIL import Image
 
 from blake.methods.common import EvidenceError
-from blake.methods.compatibility import projection_to_bundle
+from blake.methods.schema_conversion import projection_to_bundle
 from blake.methods.concordance import concordance_passages
 from blake.methods.models import ProjectionPassage, QuerySpec
 from blake.methods.profiles import RetrievalProfile

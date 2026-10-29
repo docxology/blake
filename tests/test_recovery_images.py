@@ -6,10 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from blake.recovery import (
-    CopyRecord,
-    recover_images,
-)
+from blake.recovery_models import CopyRecord
+from blake.recovery_images import recover_images
 
 from .recovery_fixtures import local_http
 from tests import recovery_fixtures

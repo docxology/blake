@@ -12,7 +12,7 @@ NORMALIZATION: Final = 'nfkc-casefold-source-spans-v2'
 TOKEN: Final = re.compile(r'\w+', re.UNICODE)
 
 
-@dataclass(frozen=True)  # Python 3.9 compatibility: dataclass slots require 3.10.
+@dataclass(frozen=True)  # dataclass slots require Python 3.10; this profile supports 3.9.
 class SearchText:
     """One normalized token stream bound to its original expression."""
     original: str

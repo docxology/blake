@@ -14,8 +14,8 @@ import pytest
 from blake.methods.corpus import import_corpus
 from blake.methods.models import ResearchError
 from blake.methods.workspace import (
-    _csp_hash,
-    _json_script,
+    csp_hash,
+    json_script,
     build_search_workspace as _build_search_workspace,
     build_search_workspace_passages,
     WorkspaceBranding,
@@ -63,13 +63,13 @@ def test_unicode_tables_match_python_boundaries_and_expansions():
 
 def test_script_serialization_is_inert_and_lossless():
     unsafe = {"text": '</script><script>alert("x")</script>\u2028\u2029 @@SCRIPT@@'}
-    encoded = _json_script(unsafe)
+    encoded = json_script(unsafe)
     assert "</script>" not in encoded
     assert "\u2028" not in encoded
     assert "\u2029" not in encoded
     assert json.loads(encoded) == unsafe
-    assert len(_csp_hash("source")) == 44
-    assert _csp_hash("source") != _csp_hash("changed")
+    assert len(csp_hash("source")) == 44
+    assert csp_hash("source") != csp_hash("changed")
 
 
 def test_workspace_has_complete_bound_fulltexts_and_no_runtime_network(captured):

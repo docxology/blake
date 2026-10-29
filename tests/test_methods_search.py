@@ -10,7 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 from blake.methods.models import ProjectionPassage as Passage, Plane, ResearchError, Role
-from blake.methods.search import _spans, search_passages
+from blake.methods.search import literal_spans, search_passages
 from blake.methods.search_models import SearchRequest, SearchResult
 
 
@@ -376,7 +376,7 @@ def test_sweep_matches_independent_cartesian_oracle():
         text = "".join(rng.choice(("a", "b", " ", "!", "_", "𐐀", "ß")) for _ in range(18))
         terms = rng.choice((("a", "b"), ("a", "ab", "b"), ("!", "a"), ("ss", "𐐨")))
         width = rng.randint(1, 4)
-        spans = _spans(text, terms, whole_words=False)
+        spans = literal_spans(text, terms, whole_words=False)
         tokens = list(re.finditer(r"\w+", text))
         expected = set()
         for group in itertools.product(

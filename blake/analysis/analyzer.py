@@ -38,7 +38,7 @@ class BlakeAnalyzer:
         self.cross_analyzer = CrossAnalyzer()
         self.ontology_manager = OntologyManager(data_dir)
         
-        # Mock metadata manager for testing compatibility
+        # Optional metadata coordination is supplied by the caller.
         self.metadata_manager = None
         
         logger.info(f"Initialized BlakeAnalyzer with data directory: {data_dir}")

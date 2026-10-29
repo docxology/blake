@@ -7,12 +7,9 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from blake.recovery import (
-    RecoveryError,
-    extract_erdman,
-    fetch_file,
-    unpack_snapshot,
-)
+from blake.recovery_models import RecoveryError
+from blake.recovery_text import extract_erdman
+from blake.recovery_io import fetch_file, unpack_snapshot
 
 from .recovery_fixtures import COMMIT, snapshot, local_http
 from tests import recovery_fixtures

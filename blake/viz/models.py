@@ -115,7 +115,7 @@ class VisualizationConfig(BaseModel):
     model_config = ConfigDict(use_enum_values=True, arbitrary_types_allowed=True)
     
     def get(self, key: str, default: Any = None) -> Any:
-        """Dict-like get method for compatibility with renderer code."""
+        """Read a renderer field with a caller-supplied default."""
         return getattr(self, key, default)
 
 

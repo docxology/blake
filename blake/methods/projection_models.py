@@ -1,5 +1,5 @@
 # Copyright (c) 2026 Daniel Ari Friedman
-"""Historical projection schemas, retaining their exact validation boundaries."""
+"""Retained-source projection schemas with explicit validation boundaries."""
 
 from typing import ClassVar, Literal, Optional
 
@@ -9,7 +9,7 @@ from .common import Digest, FrozenModel, Plane, ResearchError, Role
 
 
 class Passage(FrozenModel):
-    """Legacy reading/source unit; conversion to the stricter bundle is explicit."""
+    """Retained reading/source unit; conversion to the stricter bundle is explicit."""
 
     passage_id: str
     work_id: str

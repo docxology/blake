@@ -17,10 +17,7 @@ from .corpus.public_release import (
 )
 from .corpus.release_preflight import write_private_release_preflight
 from .corpus.source_audit import provider_reason_code
-from .recovery import (
-    backup_command, recover_command, register_command, restore_command,
-    verify_backup_command, verify_command,
-)
+from .recovery_commands import backup_command, recover_command, register_command, restore_command, verify_backup_command, verify_command
 
 # Configure logging
 logging.basicConfig(

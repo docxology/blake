@@ -160,3 +160,7 @@ def restore_drill_command(bundle: Path, destination: Path) -> None:
     except (OSError, ValueError, tarfile.TarError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(result.model_dump_json(indent=2))
+
+
+if __name__ == "__main__":
+    main()

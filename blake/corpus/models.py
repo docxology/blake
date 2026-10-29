@@ -8,6 +8,7 @@ from uuid import uuid4
 from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 from ..models import BlakeWork, LicenseType, SourceType, WorkType
+from ..provenance import source_authority_tier
 
 
 class CorpusConfig(BaseModel):
@@ -148,17 +149,7 @@ class CorpusWorkRecord(BaseModel):
         metadata = work.metadata
         analysis = metadata.analysis_results or {}
         image_depth = analysis.get("image_depth") or {}
-        authority_tier = analysis.get("source_authority_tier")
-        if not authority_tier:
-            authority_tier = (
-                "archive_primary"
-                if str(metadata.source) == SourceType.BLAKE_ARCHIVE.value
-                else (
-                    "fallback_text_validated"
-                    if analysis.get("validated_fallback_text")
-                    else "corroborating_or_legacy"
-                )
-            )
+        authority_tier = source_authority_tier(work)
         return cls(
             id=work.id,
             target_id=target_id,

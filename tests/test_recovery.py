@@ -8,12 +8,10 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from blake.recovery import (
-    RecoveryError,
-    recover_corpus,
-    main,
-    verify_recovery,
-)
+from blake.recovery_models import RecoveryError
+from blake.recovery_pipeline import recover_corpus
+from blake.recovery_commands import main
+from blake.recovery_integrity import verify_recovery
 from blake.text_search import PassageIndex, Query
 
 from .recovery_fixtures import COMMIT
@@ -88,7 +86,7 @@ def test_recover_when_revision_is_not_immutable_rejects(tmp_path: Path) -> None:
 def test_cli_when_saved_sources_exist_recovers_and_verifies(
     saved_sources: Path,
 ) -> None:
-    prefix = [sys.executable, "-m", "blake.recovery"]
+    prefix = [sys.executable, "-m", "blake.recovery_commands"]
     process = subprocess.run(
         [
             *prefix,

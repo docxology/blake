@@ -2,7 +2,7 @@
 
 import pytest
 
-from blake.recovery import recover_corpus
+from blake.recovery_pipeline import recover_corpus
 from tests.recovery_fixtures import COMMIT, seed_sources
 
 

@@ -60,7 +60,7 @@ def unicode_search_tables() -> tuple[dict[str, str], tuple[tuple[int, int], ...]
     return folding, tuple(ranges)
 
 
-def _json_script(value: object) -> str:
+def json_script(value: object) -> str:
     """Keep source strings inert inside an HTML script data block."""
     return (
         json.dumps(value, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
@@ -80,7 +80,7 @@ def _source_data(passages: tuple[Passage, ...]) -> list[dict[str, object]]:
     return result
 
 
-def _csp_hash(value: str) -> str:
+def csp_hash(value: str) -> str:
     return base64.b64encode(hashlib.sha256(value.encode()).digest()).decode()
 
 
@@ -146,13 +146,13 @@ def build_search_workspace_passages(  # noqa: PLR0913 - explicit application cus
         "whitespace": [chr(code) for code in range(sys.maxunicode + 1) if chr(code).isspace()],
         "units": _source_data(passages),
     }
-    payload = _json_script(data)
+    payload = json_script(data)
     replacements = {
         "@@TITLE@@": escape(branding.title),
         "@@BRAND@@": escape(branding.brand),
         "@@FOOTER@@": escape(branding.footer),
-        "@@STYLE_HASH@@": _csp_hash(css),
-        "@@SCRIPT_HASH@@": _csp_hash(script),
+        "@@STYLE_HASH@@": csp_hash(css),
+        "@@SCRIPT_HASH@@": csp_hash(script),
         "@@STYLE@@": css,
         "@@PAYLOAD@@": payload,
         "@@SCRIPT@@": script,
@@ -216,8 +216,3 @@ def build_search_workspace(  # noqa: PLR0913 - explicit application custody poli
         revalidate=revalidate,
         resource_directory=resource_directory,
     )
-
-
-# Shared serialization seams for application compatibility tests.
-csp_hash = _csp_hash
-json_script = _json_script

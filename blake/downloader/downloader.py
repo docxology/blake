@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class BlakeDownloader:
     """
-    Compatibility downloader facade for configured source providers.
+    Download coordination for configured source providers.
 
     The target-ledger corpus contract lives in ``BlakeCorpus.run`` and the
     generated manifest/audit artifacts. This facade remains useful for direct
