@@ -1,70 +1,53 @@
-# Blake Project Agent Guidelines
+# Blake corpus and methods guidance
 
-## Repository Overview
+This repository owns reusable corpus acquisition, source custody, recovery,
+portable schemas, retrieval, statistics and evidence methods. Applications own
+their vocabularies, contextual judgments, domain models and manuscripts. Keep
+new generic logic here and qualify the exact source adopted by each application.
 
-Blake is a platform for downloading, analyzing, and exploring William Blake's works. Built with Python 3.9+, it integrates NLP analysis, visualization, and data export.
+## Choose the contract before editing
 
-## Entry Points
+| Change | Read |
+|---|---|
+| Current status or next work | [Project status](docs/PROJECT_STATUS.md) and [verification scope](docs/verification.md) |
+| Portable corpus, application integration or migration | [Application contract](docs/applications.md) and [shared methods](docs/shared-methods.md) |
+| Matching, schemas, statistics, proximity, composition or hierarchy | [Shared methods](docs/shared-methods.md), the relevant module tests and [style guide](docs/style-guide.md) |
+| Acquisition, recovery, NLP, vision or GUI | [README workflows](README.md), [method profiles](docs/methods.md) and the declared extras in `pyproject.toml` |
+| Paper, figures, rendering or publication | [Reproducibility](docs/manuscript/08_reproducibility.md), [style guide](docs/style-guide.md) and the exact deposited identities in `publication.json` |
 
-- **`run_all.py`** - Complete analysis pipeline (recommended)
-- **`blake` CLI** - Command-line interface
-- **`blake.BlakeCorpus`** - Python API
+The default dependency-light installation serves portable methods. The active
+corpus pipeline and NLP/vision capabilities use `full`; GUI/API and complete
+test collection require their documented extras. Preserve those capabilities
+when removing obsolete duplication. `BlakeCorpus` remains the corpus API; use
+explicit `blake.applications`, `blake.studies` and `blake.methods` interfaces for
+application evidence instead of an internal SQLite layout.
 
-## Architecture
+## Preserve evidence and working custody
 
-```
-blake/                  # Main package
-├── analysis/           # NLP and visual analysis
-├── corpus/             # Target-aware corpus pipeline, ledger, sources, release
-├── downloader/         # Multi-source data acquisition
-├── export/             # Export formats and API
-├── gui/                # Streamlit interface
-├── metadata/           # SQLite metadata management
-├── ontology/           # Blake concepts, themes, symbols + exporters
-├── utils/              # Logging and error handling
-└── viz/                # Visualization system (dashboards/engines/renderers/reports)
-```
+- Follow the mounted GitVault contract and supported repository/common-store
+  lease. Keep source, environments, caches and temporary files external; verify
+  both Python prefixes. Preserve peer work and existing output epochs.
+- Use caller-held pins and explicit schema conversion. Retain original source
+  roles, authorship, copies, locators and offsets. A retrieval candidate is not
+  an adjudicated literary mention; a zero is scoped to declared inputs.
+- Give changed inputs, methods, selections and outputs new epochs. Keep each
+  historical producer, failed attempt and reading ceiling attached to its bytes.
+- Keep raw provider expression, full corpus bundles, search indexes and private
+  application material in their authorized ignored custody. `publication.json`
+  identifies the deposited paper; a later documentation commit does not create
+  a new software, manuscript or Zenodo release.
 
-## Key Patterns
+## Qualify and deliver
 
-- **Orchestrator**: `BlakeCorpus` defined in `blake/corpus/pipeline.py`, re-exported from `blake`
-- **Async-first**: Download and analysis operations are async
-- **Pydantic models**: All data structures in `models.py`
-- **Click CLI**: Commands defined in `cli.py`
+Use `uv` and the pinned project toolchain. Follow [the verification guide](docs/verification.md)
+for the Python 3.9 methods and Python 3.11 optional-stack gates, real local
+fixtures/HTTP controls, installed-wheel checks and their distinct coverage
+floors. Reproduce the failure and exercise a refusing control before declaring
+a repair complete. Documentation changes need link/command/claim checks, not
+tests that pin prose or a replay of unrelated heavy workloads.
 
-## Development
-
-```bash
-# Environment setup
-uv sync
-
-# Run complete pipeline
-uv run python run_all.py
-
-# Run tests
-uv run pytest tests/ -v
-
-# Quick mode (use existing data)
-uv run python run_all.py --quick
-```
-
-## Output Directory
-
-All outputs go to `analysis_output/`:
-- `data/` - Downloaded works
-- `analysis/` - Analysis results  
-- `visualizations/` - Generated images
-- `exports/` - JSON, CSV exports
-- `reports/` - Generated reports
-
-## Testing Standards
-
-- Unit tests: Fast, isolated, mock external services
-- Integration tests: End-to-end flows with real data
-- Performance tests: Benchmark download and analysis speeds
-
-## Data Directories
-
-- `blake_data/`: Local storage for downloaded works
-- `docs/`: Project documentation
-- `examples/`: Usage demonstrations
+For changed manuscripts, run the actual pinned template workflow, inspect the
+physical output and bind source, native and publication evidence separately.
+Before an authorized push, check staged scope, preserve private content, use an
+ordinary non-force push and verify the remote head. Record unresolved scholarly,
+image, browser/accessibility, hosted-CI and rights gates explicitly.

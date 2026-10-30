@@ -1,5 +1,7 @@
 # Blake Corpus Analysis Platform
 
+Start with [current status and scoped next work](docs/PROJECT_STATUS.md).
+
 Software: **0.4.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
