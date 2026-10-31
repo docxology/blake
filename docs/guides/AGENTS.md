@@ -1,5 +1,3 @@
-# `docs/guides/` — Agent Notes
+# Workflow guide maintenance
 
-Two guides, listed exhaustively above (no undocumented children). When a new
-workflow becomes non-obvious, add a guide here and add a row to both files in
-this directory. Parent index: `../AGENTS.md`. Repo-wide policy: See the lane-level policy at `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md` (local-only tree, symlinked into the template checkout; never commit).
+Read [root guidance](../../AGENTS.md), the [documentation contract](../AGENTS.md) and [guide index](README.md). Acquisition, local regeneration and terminal use have distinct input/resource effects. Keep install profiles, command names and explicit source/output custody accurate. Route native paper work to [reproducibility](../manuscript/08_reproducibility.md), preserving prior grants/epochs. No external template-lane policy replaces this repository's current contract.

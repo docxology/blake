@@ -1,188 +1,76 @@
-# Blake Package Documentation
+# Blake documentation
 
-## Overview
+Start with [project status](PROJECT_STATUS.md) for the qualified software and
+retained paper, [quick start](quickstart.md) for installation, and
+[verification](verification.md) for the actual check profiles. This is the
+documentation map; [index.md](index.md) is a short entry point.
 
-The Blake package is a reproducible corpus workflow for William Blake's works. It provides tools for discovering, acquiring, verifying, analyzing, visualizing, exporting, and reporting on Blake's poetry, paintings, and other creative works from multiple digital archives and sources. Completeness is measured against a versioned target ledger rather than assumed from local files.
+## Choose a workflow
 
-The current reproducibility contract is artifact-first: `corpus_manifest.json` records target coverage; `source_audit.json` and `source_discovery_health.json` record provider/source health; `evidence_acquisition_review.json` records unresolved evidence review; `analysis_summary.json` and `analysis_diagnostics.json` record the current analysis run; and private preflight/rights-gate reports record local-only release constraints.
+| Need | Contract |
+|---|---|
+| Portable corpus and an independent research application | [Application contract](applications.md) and [shared methods](shared-methods.md) |
+| Matching profiles, statistics, proximity, annotations, hierarchy or review planning | [Shared APIs](shared-methods.md), [composition](methods/composition.md) and [review planning](methods/review-planning.md) |
+| Source acquisition, local corpus analysis, GUI or API | [User guide](user-guide.md), [configuration](configuration.md) and [API reference](api-reference.md) |
+| Recovery, source-bound search and an offline workspace | [Local evidence methods](methods.md) and [text search](text-search.md) |
+| Extend the implementation | [Developer guide](developer-guide.md), [architecture](ARCHITECTURE.md) and [technical specification](spec.md) |
+| Diagnose a failed operation | [Troubleshooting](troubleshooting.md) |
+| Author or reproduce the retained paper | [Manuscript guide](manuscript/README.md), [reproducibility](manuscript/08_reproducibility.md) and [style guide](style-guide.md) |
 
-See the [publication consistency review](publication-consistency-review.md) for
-the saved-run membership boundary of text coverage and NLP diagnostics.
+## Installation profiles
 
-## Core Functionality
+The default package installs portable methods dependencies. Acquisition, NLP,
+vision and the `BlakeCorpus` workflow require `full`. The GUI and HTTP API add
+their surface extra to `full`; recovery has its own smaller profile. From an
+existing checkout, choose the needed locked environment:
 
-### Data Acquisition
+~~~sh
+# Portable methods
+uv sync --locked
 
-- **Corpus Workflow**: `BlakeCorpus` coordinates discovery, acquisition, metadata, analysis, export, and reports
-- **Target Coverage**: `corpus_manifest.json` reports present, partial, missing, duplicate, and unverified target entries
-- **Multi-Source Downloads**: Blake Archive, Project Gutenberg, Internet Archive
-- **Asynchronous Processing**: High-performance async downloads with retry logic
-- **Incremental Updates**: Skip existing files and resume interrupted downloads
-- **Format Support**: Text, images, metadata, and structured data
+# Corpus pipeline
+uv sync --locked --python 3.11 --extra full
 
-### Analysis Pipeline
+# Complete test collection, including GUI/API dependencies
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
+~~~
 
-- **Text Analysis**: NLP processing with NLTK, spaCy, and transformers
-- **Visual Analysis**: Image processing with PIL and OpenCV
-- **Cross-Analysis**: Intertextual and intermedial relationships
-- **Batch Processing**: Efficient analysis of large collections
+Methods support Python 3.9; the optional-stack qualification uses Python 3.11.
+See [verification](verification.md) before broadening a gate. In managed
+GitVault work, use supported admission, external caches/TMP and both external
+Python prefixes. A package-index installation selects the version available
+there; it does not select the current Git source.
 
-### Data Management
+## Documentation and source ownership
 
-- **SQLite Database**: Persistent metadata storage
-- **File Organization**: Structured directory tree for all data types
-- **Search & Filtering**: Advanced query capabilities
-- **Export Options**: Multiple formats (JSON, CSV, PDF, Parquet)
+Blake owns acquisition, source custody, portable schemas, retrieval and reusable
+evidence/statistical methods. Applications own vocabulary, contextual decisions,
+domain models, figures and manuscripts. The native document framework lives in
+the separately pinned [docxology/template](https://github.com/docxology/template).
+An installation or checksum supplies no new literary reading, image inventory,
+scientific acceptance or redistribution clearance.
 
-### User Interface
+The [capability summary](COMPREHENSIVE_SYSTEM_SUMMARY.md) links each implemented
+surface to its owner. [Architecture](ARCHITECTURE.md) explains the data flow;
+operating instructions belong in the workflow guides above.
 
-- **Streamlit GUI**: Interactive exploration interface
-- **REST API**: Programmatic access endpoints
-- **CLI Tools**: Command-line interface for automation
-- **Jupyter Integration**: Notebook-friendly analysis tools
+## Guides and research records
 
-## Technical Architecture
+| Page or directory | Role |
+|---|---|
+| [Workflow guides](guides/README.md) | Acquisition and terminal interface |
+| [Method notes](methods/README.md) | Focused reusable-method contracts |
+| [Visualization brief](visualization-publication-brief.md) | Figure registry, intended encodings and QA requirements |
+| [Source leads](source-leads.json) | Manual-review candidates, with no acquired-evidence credit |
+| [Scholarship gap review](online-scholarship-gap-review.md) | Dated discovery and evidence-gaps note |
+| [Publication consistency review](publication-consistency-review.md) | Dated publication observations |
+| [Manuscript sources and status](manuscript/README.md) | Retained paper inputs, generated assets and reproduction scope |
+| [Agent guidance](AGENTS.md) | Where to read before changing these documents |
 
-### Core Components
+Dated research and publication observations retain their original identities.
+Current work is tracked in [PROJECT_STATUS.md](PROJECT_STATUS.md) and the
+[scoped backlog](../TODO.md), rather than inferred from an old proposal.
 
-```
-blake/
-├── corpus/              # BlakeCorpus workflow, manifests, source registry
-├── models.py            # Data models and schemas
-├── exceptions.py        # Custom exception handling
-├── downloader/          # Download management
-├── metadata/            # Metadata processing
-├── analysis/            # Analysis pipeline
-├── gui/                 # User interface
-└── export/              # Export and API
-```
-
-### Dependencies
-
-- **Core**: Python 3.9+, asyncio, aiohttp, aiofiles
-- **Analysis**: NLTK, spaCy, scikit-learn, transformers
-- **Visualization**: matplotlib, seaborn, plotly, streamlit
-- **Data**: pandas, numpy, pyarrow, sqlalchemy
-- **Web**: requests, beautifulsoup4, scrapy, selenium
-
-## Quick Start
-
-```python
-import asyncio
-from blake import BlakeCorpus, CorpusConfig
-
-async def main():
-    # Initialize workspace
-    corpus = BlakeCorpus("./blake_data", output_dir="./analysis_output")
-
-    # Run deterministic quick workflow
-    summary = await corpus.run(CorpusConfig(quick=True))
-    print(summary.status)
-
-    # Search for specific content
-    results = await corpus.search_works("innocence")
-    for work in results:
-        print(f"- {work.metadata.title}")
-
-# Run the example
-asyncio.run(main())
-```
-
-## Installation
-
-### Using UV (Recommended)
-
-```bash
-# Install with all dependencies
-uv add blake
-
-# Install with specific extras
-uv add "blake[gui,api,dev]"
-```
-
-### Using Pip
-
-```bash
-# Basic installation
-pip install blake
-
-# With all extras
-pip install "blake[gui,api,dev]"
-```
-
-### Development Installation
-
-```bash
-git clone https://github.com/docxology/blake.git
-cd blake
-uv sync --all-extras
-uv run python -m pytest
-```
-
-## Performance Characteristics
-
-### Run Modes
-
-- **Quick mode**: Offline, deterministic, and fixture-backed when `blake_data/` is empty
-- **Live mode**: Uses registered source providers and records source-backed coverage in the manifest
-- **Coverage reports**: Explain why a run is complete, partial, empty, or unscoped
-- **Local regeneration**: `blake corpus run --skip-download ...` reuses `blake_data/` while regenerating analysis, visualizations, exports, and reports
-
-### Analysis Performance
-
-- **Text Analysis**: ~1 second per work
-- **Visual Analysis**: ~2-3 seconds per image
-- **Batch Processing**: Parallel analysis with concurrency limits
-- **Memory Usage**: Efficient streaming for large files
-
-### Storage Requirements
-
-- **Text Files**: ~25KB per work average
-- **Images**: Variable, typically 100KB-2MB per image
-- **Database**: ~1KB metadata per work
-- **Total**: ~1-5MB per work depending on content
-
-## Security & Privacy
-
-### Data Handling
-
-- **Local Storage**: All data stored locally, no cloud dependencies
-- **Source Attribution**: Proper attribution and licensing tracking
-- **Privacy**: No personal data collection or transmission
-- **Integrity**: Checksum verification for downloaded files
-
-### Network Security
-
-- **HTTPS Only**: All downloads use secure connections
-- **User Agent**: Proper identification for web requests
-- **Rate Limiting**: Respectful request patterns
-- **Error Handling**: Graceful failure without data loss
-
-## Documentation Structure
-
-- [Quick Start Guide](quickstart.md) - Get up and running quickly
-- [API Reference](api-reference.md) - Complete API documentation
-- [User Guide](user-guide.md) - Comprehensive user documentation
-- [Developer Guide](developer-guide.md) - Development and contribution guidelines
-- [Configuration Guide](configuration.md) - Advanced configuration options
-- [Troubleshooting](troubleshooting.md) - Common issues and solutions
-
-## Contributing
-
-We welcome contributions! See [Developer Guide](developer-guide.md) for:
-
-- Code style guidelines
-- Testing requirements
-- Pull request process
-- Issue reporting
-
-## License
-
-MIT License - see LICENSE file for details.
-
-## Support
-
-- **Issues**: GitHub Issues for bug reports and feature requests
-- **Discussions**: GitHub Discussions for questions and community
-- **Documentation**: Comprehensive guides and examples
-- **Examples**: Working code examples in `/examples` directory
+These Markdown files are readable in the repository. No MkDocs configuration
+or declared MkDocs build is shipped. The paper uses its recorded native template
+workflow; it is a separate artifact from this documentation tree.

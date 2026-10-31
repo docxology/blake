@@ -7,8 +7,7 @@ The complete test suite includes GUI tests and requires
 `uv sync --extra full --extra dev --extra gui`. GUI/API serving also needs `full`
 and its surface extra.
 Bounded source and installed-wheel qualification is recorded in
-[verification scope](verification.md). This document describes an unreleased
-candidate API; the recorded checks do not attest a published release.
+[verification scope](verification.md). These are the current Git source contracts; the recorded checks do not establish a package-index release or a new paper/deposit.
 
 Private applications own vocabularies, research questions, review labels,
 branding and interpretation. Federalism and Entomology use those boundaries;
@@ -210,6 +209,8 @@ make earlier runs appear to have used the extracted implementation.
 
 ## Offline workspace
 
+The generated offline workspace HTML and its text payload are private full-text artifacts. Keep them out of public source/release archives; public matcher/template code supplies no provider rights or contextual-review clearance.
+
 `workspace.build_search_workspace(directory, pin, output, *, branding,
 producer_version, private_output_root, resource_directory=None)` verifies a local
 projection and publishes an offline HTML workspace and manifest. `branding` is a
@@ -233,15 +234,10 @@ Node differential tests compare the same shared engine against Python.
 
 ## Installation profiles
 
-The core is qualified on actual Python 3.9 and 3.11. A normal wheel installation
-uses eight distributions and supports portable-bundle reading and these methods.
+The core is qualified on actual Python 3.9 and 3.11. The default wheel supports portable-bundle reading and these methods through its declared dependency closure; exact resolved distribution inventories belong to each installation receipt.
 Use `uv sync --extra recovery` for source recovery and recovered-projection export;
 this adds HTML parsing, image verification and platform certificate support.
 Use `uv sync --extra full --extra dev --extra gui` for the complete test suite,
 including its Streamlit native tests. The full workflow is qualified
 separately on Python 3.11;
 the core's Python 3.9 result does not qualify that optional stack.
-
-This is a private full-text artifact. Do not put its HTML or payload into a public
-source or release archive merely because the template and matcher are public.
-Provider rights and application review remain separate from byte verification.

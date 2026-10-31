@@ -1,4 +1,7 @@
-# Interactive Terminal Orchestrator - Implementation Summary
+# Interactive terminal interface
+
+Use the `full` install profile and the current [CLI reference](../api-reference.md). The description below records the implemented terminal interface; its feature list is not a new production, browser, performance or scientific acceptance gate. Use the actual `blake interactive` command or `uv run python examples/blake_interactive.py` from the repository root. Native/model/acquisition effects retain their own supported admission and source/output epochs.
+
 
 ## 🎯 Overview
 
@@ -63,7 +66,7 @@ examples/interactive_demo.py        # Demo script
 blake interactive
 
 # Standalone script
-python examples/blake_interactive.py
+uv run python examples/blake_interactive.py
 
 # Installed CLI group
 blake interactive
@@ -129,13 +132,13 @@ blake interactive
 #### **Usage Examples**
 ```bash
 # Launch interactive orchestrator
-python examples/blake_interactive.py
+uv run python examples/blake_interactive.py
 
 # Use CLI command
 blake interactive
 
 # Run demo
-python examples/interactive_demo.py
+uv run python examples/interactive_demo.py
 ```
 
 ## 🚀 Key Benefits
@@ -179,4 +182,4 @@ The Interactive Terminal Orchestrator successfully provides a comprehensive, use
 
 **Status: ✅ COMPLETE AND READY FOR USE**
 
-The orchestrator is fully functional and ready for production use, providing a complete solution for interactive management of William Blake's works analysis and exploration.
+Current behavior is defined by [interactive_orchestrator.py](../../blake/interactive_orchestrator.py) and the registered CLI. [Verification scope](../verification.md) separates source/software checks from interface and research acceptance.

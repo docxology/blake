@@ -292,50 +292,38 @@ corpus = BlakeCorpus(Path("/path/to/your/data"), output_dir=Path("/path/to/outpu
 summary = await corpus.run(CorpusConfig(quick=True))
 ```
 
+This configuration fragment assumes an async function or a notebook supporting
+top-level await, as in the complete examples above.
+
 Run settings live in `CorpusConfig` (fixture mode, visualization profile, export
 formats, archive scope, image depth) or in the corresponding `blake corpus run`
-options. No separate configuration file or environment override is read.
+options. Corpus run settings do not use an automatic environment/config-file loader. Manuscript metadata, explicit evidence/template bindings and storage environment settings are separate; see [configuration](configuration.md).
 
 ## Troubleshooting
 
-### Common Issues
-
-- **Installation Problems**: Make sure you have Python 3.9+ and try using UV
-- **Download Failures**: Check your internet connection and try reducing concurrent downloads
-- **Analysis Errors**: Ensure spaCy model is installed: `python -m spacy download en_core_web_sm`
-- **GUI Issues**: Try using a different port: `blake.explore(port=8502)`
-- **Memory Issues**: Clear cache regularly: `blake.clear_cache()`
-
-### Debug Mode
+Use [the troubleshooting guide](troubleshooting.md) for the selected install
+profile, preserved failures, read-only diagnostics and actual async APIs.
+The following is a complete inspection example over an existing local corpus;
+optional components still need their configured resources:
 
 ```python
-import logging
+import asyncio
+from pathlib import Path
+from blake import BlakeCorpus
 
-# Enable debug logging
-logging.basicConfig(level=logging.DEBUG)
+async def inspect_local():
+    corpus = BlakeCorpus(Path("blake_data"), output_dir=Path("analysis_output"))
+    works = await corpus.get_all_works()
+    print(f"Works in collection: {len(works)}")
+    print(await corpus.get_statistics())
+    await corpus.clear_cache()
 
-# Run with debug information
-works = await blake.download_all()
+asyncio.run(inspect_local())
 ```
 
-### Check System Status
-
-```python
-# Check if everything is working
-works = await blake.get_all_works()
-print(f"Works in collection: {len(works)}")
-
-stats = await blake.get_statistics()
-print(f"Collection stats: {stats}")
-
-# Check specific work
-work = await blake.get_work("21160")
-if work:
-    print(f"Work found: {work.metadata.title}")
-    print(f"Processing status: {work.fully_processed}")
-else:
-    print("Work not found")
-```
+Source acquisition is a separate explicit operation: inside an async function,
+`await corpus.download_all()` uses the active downloader. It is not an inventory
+check. The GUI uses the instance's synchronous `corpus.explore(port=8502)`.
 
 ## Web Interface
 

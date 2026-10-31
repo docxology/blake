@@ -1,31 +1,22 @@
-# docs/ Directory
+# Documentation maintenance
 
-Project documentation for the Blake package.
+Read the repository [agent contract](../AGENTS.md), [documentation map](README.md),
+[project status](PROJECT_STATUS.md) and [verification scope](verification.md).
 
-## Documents
+Keep workflow instructions here consistent with owning source definitions.
+`shared-methods.md` and `applications.md` define reusable/application boundaries;
+the [style guide](style-guide.md) defines evidence and authoring conventions.
+Use source-linked schemas and API owners rather than copying incomplete class
+definitions into several guides. Current examples must identify their install
+profile, async context and input/output custody.
 
-| File | Description |
-|------|-------------|
-| `README.md` | Documentation overview |
-| `index.md` | Main documentation index |
-| `quickstart.md` | Getting started guide |
-| `user-guide.md` | User documentation |
-| `developer-guide.md` | Development guide |
-| `api-reference.md` | API documentation |
-| `configuration.md` | Configuration options |
-| `troubleshooting.md` | Common issues |
-| `spec.md` | Technical specification |
-| `ARCHITECTURE.md` | System architecture |
-| `COMPREHENSIVE_SYSTEM_SUMMARY.md` | Comprehensive system summary |
+The files under [manuscript](manuscript/README.md) include retained paper inputs.
+Read their [authoring contract](manuscript/AGENTS.md) before editing. A guidance
+correction is a new documentation observation, not a rerun of its paper or corpus.
+Preserve historical source copies, receipts, failed attempts and reading ceilings.
 
-## Building Docs
-
-Documentation is Markdown-based, compatible with MkDocs or similar tools.
-
-```bash
-# Build with MkDocs (if configured)
-mkdocs build
-
-# Serve locally
-mkdocs serve
-```
+For a documentation-only change, check links/anchors/case, command names,
+signatures, example inputs and exact evidence claims. Exercise a refusing
+control for a validator; do not replay unrelated heavy suites or model/native
+campaigns to qualify prose. Keep raw task receipts on GitVault outside the
+tracked source tree. No MkDocs build is configured in this repository.

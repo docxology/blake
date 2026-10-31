@@ -1,554 +1,120 @@
-# Troubleshooting Guide
-
-## Common Issues and Solutions
-
-### Installation Issues
-
-#### Issue: Package Installation Fails
-**Symptoms:**
-- `pip install blake` fails with dependency errors
-- `uv add blake` fails with resolution errors
-
-**Solutions:**
-```bash
-# Update pip and setuptools
-pip install --upgrade pip setuptools wheel
-
-# Install with UV (recommended)
-uv add blake
-
-# Or install with pip and specific Python version
-python3.11 -m pip install blake
-
-# Install with all extras
-uv add "blake[gui,api,dev]"
-```
-
-#### Issue: Missing Dependencies
-**Symptoms:**
-- `ModuleNotFoundError` for specific packages
-- Import errors when running blake
-
-**Solutions:**
-```bash
-# Install missing dependencies
-uv add aiohttp aiofiles beautifulsoup4 lxml pandas numpy
-
-# Install analysis dependencies
-uv add nltk spacy scikit-learn transformers torch
-
-# Install visualization dependencies
-uv add matplotlib seaborn plotly streamlit
-
-# Download spaCy model
-python -m spacy download en_core_web_sm
-```
-
-### Download Issues
-
-#### Issue: No Works Downloaded
-**Symptoms:**
-- `download_all()` returns empty list
-- No files in data directory
-
-**Solutions:**
-```python
-# Check internet connection
-import aiohttp
-async with aiohttp.ClientSession() as session:
-    async with session.get('https://www.gutenberg.org') as response:
-        print(f"Gutenberg accessible: {response.status}")
-
-# Check source availability
-from blake import BlakeCorpus
-blake = BlakeCorpus("./blake_data", output_dir="./analysis_output")
-works = await blake.download_all()
-print(f"Downloaded {len(works)} works")
-
-# Check specific source
-from blake.models import SourceType
-works = await blake.downloader.download_from_source(SourceType.PROJECT_GUTENBERG)
-```
-
-#### Issue: Download Failures
-**Symptoms:**
-- `DownloadError` exceptions
-- Partial downloads
-- Timeout errors
-
-**Solutions:**
-```python
-# Lower the pipeline's phase concurrency
-from blake import CorpusConfig
-
-config = CorpusConfig(max_workers=2)
-
-# Enable debug logging
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-# Check specific error
-try:
-    works = await blake.download_all()
-except Exception as e:
-    print(f"Error: {e}")
-    print(f"Error type: {type(e)}")
-```
-
-#### Issue: Slow Downloads
-**Symptoms:**
-- Downloads take very long time
-- System becomes unresponsive
-
-**Solutions:**
-```python
-# Reduce concurrent downloads
-blake = BlakeCorpus("./blake_data", output_dir="./analysis_output")
-blake.downloader.max_concurrent = 3
-
-# Increase timeout
-blake.downloader.timeout = 60
-
-# Check network speed
-import time
-start = time.time()
-# Run download
-end = time.time()
-print(f"Download time: {end - start} seconds")
-```
-
-### Analysis Issues
-
-#### Issue: Analysis Fails
-**Symptoms:**
-- `AnalysisError` exceptions
-- Works not marked as processed
-- Empty analysis results
-
-**Solutions:**
-```python
-# Check if work has content
-work = await blake.get_work("21160")
-print(f"Has text: {work.text_content is not None}")
-print(f"Has images: {len(work.images) > 0}")
-
-# Check analysis errors
-print(f"Processing errors: {work.processing_errors}")
-
-# Run analysis manually
-try:
-    results = await blake.analyze_work("21160")
-    print(f"Analysis results: {results}")
-except Exception as e:
-    print(f"Analysis error: {e}")
-```
-
-#### Issue: spaCy Model Not Found
-**Symptoms:**
-- Warning: "spaCy English model not found"
-- Text analysis fails
-
-**Solutions:**
-```bash
-# Reinstall the model wheel pinned by the project (en-core-web-sm in pyproject.toml)
-uv sync
-
-# Verify installation
-uv run python -c "import spacy; nlp = spacy.load('en_core_web_sm'); print('Model loaded successfully')"
-```
-
-#### Issue: Memory Issues During Analysis
-**Symptoms:**
-- `MemoryError` exceptions
-- System becomes slow
-- Analysis stops unexpectedly
-
-**Solutions:**
-```python
-# Clear cache
-blake.clear_cache()
-
-# Process works in smaller batches
-works = await blake.get_all_works()
-batch_size = 3
-for i in range(0, len(works), batch_size):
-    batch = works[i:i + batch_size]
-    for work in batch:
-        await blake.analyze_work(work.id)
-    blake.clear_cache()
-
-# Check memory usage
-import psutil
-print(f"Memory usage: {psutil.virtual_memory().percent}%")
-```
-
-### GUI Issues
-
-#### Issue: GUI Won't Start
-**Symptoms:**
-- `blake.explore()` fails
-- Port already in use error
-- Streamlit errors
-
-**Solutions:**
-```python
-# Check if port is available
-import socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-result = sock.connect_ex(('localhost', 8501))
-if result == 0:
-    print("Port 8501 is in use")
-    sock.close()
-else:
-    print("Port 8501 is available")
-    sock.close()
-
-# Use different port
-blake.explore(port=8502)
-
-# Check Streamlit installation
-import streamlit as st
-print(f"Streamlit version: {st.__version__}")
-```
-
-#### Issue: GUI Loads But No Data
-**Symptoms:**
-- GUI opens but shows no works
-- Empty interface
-- Loading errors
-
-**Solutions:**
-```python
-# Check if data exists
-works = await blake.get_all_works()
-print(f"Works in database: {len(works)}")
-
-# Check data directory
-import os
-data_dir = Path("./blake_data")
-print(f"Data directory exists: {data_dir.exists()}")
-print(f"Contents: {list(data_dir.iterdir())}")
-
-# Refresh GUI data
-blake.clear_cache()
-# Restart GUI
-```
-
-### Database Issues
-
-#### Issue: Database Errors
-**Symptoms:**
-- `DatabaseError` exceptions
-- Works not saved
-- Search returns empty results
-
-**Solutions:**
-```python
-# Check database file
-import sqlite3
-db_path = Path("./blake_data/metadata/blake.db")
-if db_path.exists():
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM works")
-    count = cursor.fetchone()[0]
-    print(f"Works in database: {count}")
-    conn.close()
-else:
-    print("Database file not found")
-
-# Recreate database
-blake.metadata_manager.recreate_database()
-```
-
-#### Issue: Search Not Working
-**Symptoms:**
-- Search returns no results
-- Search errors
-- Slow search performance
-
-**Solutions:**
-```python
-# Check search functionality
-results = await blake.search_works("innocence")
-print(f"Search results: {len(results)}")
-
-# Check database indexes
-import sqlite3
-conn = sqlite3.connect("./blake_data/metadata/blake.db")
-cursor = conn.cursor()
-cursor.execute("SELECT name FROM sqlite_master WHERE type='index';")
-indexes = cursor.fetchall()
-print(f"Database indexes: {indexes}")
-conn.close()
-
-# Rebuild search index
-blake.metadata_manager.rebuild_search_index()
-```
-
-### Performance Issues
-
-#### Issue: Slow Performance
-**Symptoms:**
-- Operations take very long
-- System becomes unresponsive
-- High memory usage
-
-**Solutions:**
-```python
-# Check system resources
-import psutil
-print(f"CPU usage: {psutil.cpu_percent()}%")
-print(f"Memory usage: {psutil.virtual_memory().percent}%")
-print(f"Disk usage: {psutil.disk_usage('/').percent}%")
-
-# Optimize configuration
-from blake import CorpusConfig
-
-config = CorpusConfig(max_workers=2)
-
-# Clear caches
-blake.clear_cache()
-import gc
-gc.collect()
-```
-
-#### Issue: High Memory Usage
-**Symptoms:**
-- Memory usage keeps growing
-- System becomes slow
-- Out of memory errors
-
-**Solutions:**
-```python
-# Monitor memory usage
-import psutil
-import gc
-
-def check_memory():
-    return psutil.virtual_memory().percent
-
-print(f"Memory before: {check_memory()}%")
-
-# Process works in batches
-works = await blake.get_all_works()
-batch_size = 5
-for i in range(0, len(works), batch_size):
-    batch = works[i:i + batch_size]
-    for work in batch:
-        await blake.analyze_work(work.id)
-    
-    # Clear cache and garbage collect
-    blake.clear_cache()
-    gc.collect()
-    print(f"Memory after batch {i//batch_size + 1}: {check_memory()}%")
-```
-
-### File System Issues
-
-#### Issue: Permission Errors
-**Symptoms:**
-- `PermissionError` when creating files
-- Cannot write to data directory
-- Access denied errors
-
-**Solutions:**
-```python
-# Check directory permissions
-import os
-data_dir = Path("./blake_data")
-print(f"Directory exists: {data_dir.exists()}")
-print(f"Directory writable: {os.access(data_dir, os.W_OK)}")
-
-# Create directory with proper permissions
-data_dir.mkdir(parents=True, exist_ok=True)
-os.chmod(data_dir, 0o755)
-
-# Use different directory
-blake = BlakeCorpus(Path.home() / "blake_data", output_dir=Path.home() / "analysis_output")
-```
-
-#### Issue: Disk Space Issues
-**Symptoms:**
-- `No space left on device` errors
-- Downloads fail
-- Database errors
-
-**Solutions:**
-```python
-# Check disk space
-import shutil
-total, used, free = shutil.disk_usage("./blake_data")
-print(f"Total: {total // (1024**3)} GB")
-print(f"Used: {used // (1024**3)} GB")
-print(f"Free: {free // (1024**3)} GB")
-
-# Clean up old files
-import os
-for root, dirs, files in os.walk("./blake_data"):
-    for file in files:
-        if file.endswith('.tmp'):
-            os.remove(os.path.join(root, file))
-
-# Use different location
-blake = BlakeCorpus(Path("/path/to/larger/disk/blake_data"), output_dir=Path("/path/to/larger/disk/analysis_output"))
-```
-
-### Network Issues
-
-#### Issue: Network Timeouts
-**Symptoms:**
-- `asyncio.TimeoutError` exceptions
-- Downloads fail with timeout
-- Slow network operations
-
-**Solutions:**
-```python
-# Reuse already captured local sources instead of re-downloading
-# uv run blake corpus run --skip-download --output-dir analysis_output
-
-# Check network connectivity
-import aiohttp
-async def test_connectivity():
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with session.get('https://www.gutenberg.org', timeout=30) as response:
-                print(f"Gutenberg: {response.status}")
-        except Exception as e:
-            print(f"Gutenberg error: {e}")
-
-# Run connectivity test
+# Troubleshooting
+
+Start with the failed command, interpreter identity, source/input pins, output
+epoch and complete error. Keep the original files and logs. Select the profile
+from [verification](verification.md); an import failure in a methods-only
+environment does not diagnose the full optional stack.
+
+## Installation and imports
+
+| Operation | Required profile |
+|---|---|
+| Portable methods/studies/applications | Default dependencies |
+| Recovery module commands | `recovery` |
+| Corpus pipeline, NLP, vision and `blake` CLI | `full` |
+| GUI | `full` plus `gui` |
+| HTTP API | `full` plus `api` |
+| Complete test collection | `full`, `dev`, `gui` (and declared API dependencies) |
+
+In the managed checkout, use its pinned toolchain and external environment:
+
+~~~sh
+uv run --locked python -c 'import sys; print(sys.version); print(sys.prefix); print(sys.base_prefix)'
+# Provision the complete profile only when this is the selected environment.
+uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
+~~~
+
+Verify both prefixes, not just the `.venv` pathname. Preserve old qualified
+environments; do not repair one by installing into its site-packages manually.
+All task-specific TMP, caches and outputs stay on the mounted external workspace.
+
+Python import names may differ from distribution names: BeautifulSoup is
+`bs4`, Pillow is `PIL`, scikit-learn is `sklearn`, and OpenCV is `cv2`.
+Diagnose the selected environment with real imports and dependency metadata.
+Optional model/data availability is a separate check; installation success
+does not prove that a model was run or that an offline resource is present.
+
+## Async API and cache behavior
+
+Keep one explicit corpus instance in the async context. Methods such as
+`download_all`, `search_works`, `analyze_work` and `clear_cache` must be awaited.
+
+~~~python
 import asyncio
-asyncio.run(test_connectivity())
-```
+from pathlib import Path
+from blake import BlakeCorpus
 
-#### Issue: Rate Limiting
-**Symptoms:**
-- HTTP 429 errors
-- Downloads blocked
-- IP banned
+async def main():
+    corpus = BlakeCorpus(Path("blake_data"), output_dir=Path("analysis_output"))
+    print(await corpus.get_statistics())
+    await corpus.clear_cache()
 
-**Solutions:**
-```python
-# Reduce concurrency for acquisition and image recovery
-from blake import CorpusConfig
+asyncio.run(main())
+~~~
 
-config = CorpusConfig(max_workers=1)
-# Image recovery: uv run blake corpus recover --image-workers 1
+`clear_cache()` clears in-memory work objects. It does not delete stored corpus,
+images, metadata or retained analyses. See the [actual API](api-reference.md).
+If analyzing a selected batch, await `analyze_work(work.id)` for each selected
+work; `analyze_all()` always traverses the whole loaded collection.
 
-# Wait and retry
-import time
-time.sleep(60)  # Wait 1 minute
-```
+## Data and database inspection
 
-### Debugging Tools
+The active implementation stores metadata at `metadata/metadata.db` under
+the configured corpus data directory. This is an implementation detail, not a
+portable application API. Prefer corpus status/statistics and the
+[source-bound search contracts](text-search.md).
 
-#### Enable Debug Logging
-```python
-import logging
+For a specific SQLite diagnostic, select the existing exact path and open it
+read-only so a typo cannot create another database:
 
-# Enable debug logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('blake_debug.log'),
-        logging.StreamHandler()
-    ]
-)
+~~~python
+import sqlite3
+from pathlib import Path
 
-# Run with debug logging
-works = await blake.download_all()
-```
+database = Path("blake_data/metadata/metadata.db").resolve(strict=True)
+with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as connection:
+    print(connection.execute("PRAGMA quick_check").fetchall())
+~~~
 
-#### Check System Information
-```python
-import sys
-import platform
-import psutil
+Database readability is not source/corpus integrity. Use the appropriate
+captured manifest and caller-held pin for that verification. The metadata API
+does not offer `recreate_database` or `rebuild_search_index`. Discovery search
+computes relevance over loaded records; the source-bound search projection has
+its own explicit build/verification workflow.
 
-print(f"Python version: {sys.version}")
-print(f"Platform: {platform.platform()}")
-print(f"CPU count: {psutil.cpu_count()}")
-print(f"Memory: {psutil.virtual_memory().total // (1024**3)} GB")
-print(f"Disk space: {psutil.disk_usage('/').free // (1024**3)} GB")
-```
+## Pins, occupied destinations and failed runs
 
-#### Verify Installation
-```python
-# Check package installation
-try:
-    import blake
-    print(f"Blake package version: {blake.__version__}")
-except ImportError as e:
-    print(f"Blake package not found: {e}")
+Wrong source hashes, altered spans/membership, symlinks and occupied artifact
+destinations should refuse. Retain the exact error and original epoch. Choose a
+new destination after accounting for the failed command; do not delete a marker,
+lock or partial run to bypass the refusal. Recovery/restore needs its recorded
+source, supported admission and independently held pins; see [methods](methods.md).
 
-# Check dependencies
-dependencies = [
-    'aiohttp', 'aiofiles', 'beautifulsoup4', 'lxml',
-    'pandas', 'numpy', 'nltk', 'spacy', 'streamlit'
-]
+Before disk-space work, inspect ownership and sizes read-only and coordinate
+with the active job owner. Keep generated runs, caches and temporary roots on
+external storage. Broad `.tmp` deletion or recursive cleanup can destroy active
+custody and retained failures; it is not a troubleshooting recipe.
 
-for dep in dependencies:
-    try:
-        __import__(dep)
-        print(f"✓ {dep}")
-    except ImportError:
-        print(f"✗ {dep} - not installed")
-```
+## Empty results and analysis limits
 
-### Getting Help
+Check the declared query profile, source role/plane, author, vocabulary and
+denominator. A paginated display is not the total match count; a zero is scoped
+to admitted inputs. Verify whether fixture mode, skipped phases, missing local
+files or component errors explain an empty result. Source acquisition, model
+availability and interpretation are separate outcomes.
 
-#### Check Logs
-```python
-# Check log files
-import os
-log_dir = Path("./blake_data/logs")
-if log_dir.exists():
-    for log_file in log_dir.glob("*.log"):
-        print(f"Log file: {log_file}")
-        with open(log_file, 'r') as f:
-            lines = f.readlines()
-            print(f"Last 10 lines:")
-            for line in lines[-10:]:
-                print(line.strip())
-```
+## Manuscripts and optional interfaces
 
-#### Create Bug Report
-```python
-# Generate system information for bug report
-import sys
-import platform
-import blake
+Use the [native reproduction guide](manuscript/08_reproducibility.md) for a
+changed manuscript. A missing render-time figure in a clean clone is different
+from a missing qualified output; check the staged input and its receipt before
+editing authored paths. Inspect physical pages and browser behavior in the
+proper new epoch. A valid PDF header is not output acceptance.
 
-bug_report = {
-    "python_version": sys.version,
-    "platform": platform.platform(),
-    "blake_version": blake.__version__,
-    "data_directory": str(blake.data_dir),
-    "works_count": len(await blake.get_all_works()),
-    "error_log": "Check blake_data/logs/ for error logs"
-}
+GUI and HTTP serving require their declared extras and admitted local data.
+Check the actual registered command/options and owning source. Authentication,
+hosted deployment and accessibility require their own qualification; a local
+functional test supplies no blanket acceptance.
 
-print("Bug Report Information:")
-for key, value in bug_report.items():
-    print(f"{key}: {value}")
-```
-
-#### Community Support
-- **GitHub Issues**: Report bugs and request features
-- **GitHub Discussions**: Ask questions and share ideas
-- **Documentation**: Check this guide and API reference
-- **Examples**: Look at example scripts in `/examples` directory
-
-### Prevention Tips
-
-1. **Regular Updates**: Keep the package and dependencies updated
-2. **Backup Data**: Regularly backup your data directory
-3. **Monitor Resources**: Keep an eye on disk space and memory usage
-4. **Test Changes**: Test configuration changes in a safe environment
-5. **Read Logs**: Regularly check log files for warnings and errors
-6. **Use Virtual Environments**: Isolate the package in a virtual environment
-7. **Document Issues**: Keep track of issues and their solutions
-
-This troubleshooting guide should help you resolve most common issues with the Blake package. If you encounter a problem not covered here, please create a GitHub issue with detailed information about your system and the error you're experiencing.
+For a report, retain the minimal reproducible input, exact command/error,
+selected source/runtime/dependency identities and all original failed evidence.

@@ -1,5 +1,8 @@
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
 
+**Design specification.** This page retains the proposed structure and future-tense requirements from its design epoch. Implemented owners and current qualifications are in [architecture](ARCHITECTURE.md), [API reference](api-reference.md) and [verification](verification.md). A design requirement is not evidence that the capability is deployed or scientifically accepted.
+
+
 # Comprehensive Specification for Project "Blake"
 
 **Main Takeaway:**

@@ -3,6 +3,8 @@
 Forward-only improvement backlog. Remove an item once its scope is delivered and
 verified; do not keep finished work here as project history.
 
+The first public destination/bundle decision is delivered in [publication.json](publication.json), including retained deposited assets and checksums. It was retired from this queue on 31 October 2026; those bounded publication receipts do not close the scientific/rights tasks below. [Project status](docs/PROJECT_STATUS.md) records completed units and [documentation](docs/README.md) routes current workflows.
+
 ## Scope Key
 
 - Minor: one focused code, documentation, test, or generated-artifact cleanup.
@@ -15,8 +17,7 @@ permission.
 
 ## Minor Improvements
 
-No open minor items are currently scoped. Add a new item here only when it is a
-focused cleanup with a concrete verification command.
+- [ ] Reconcile module agent guidance. The four named paths, 30–60 minute budget and acceptance are scoped in [project status](docs/PROJECT_STATUS.md#next-bounded-units). Compare the guidance with the actual [API/source contracts](docs/api-reference.md), check its links/claims and run `git diff --check`. No unrelated full-stack campaign is needed for this guide-only unit.
 
 ## Medium Improvements
 
@@ -49,17 +50,7 @@ focused cleanup with a concrete verification command.
 
 ## Major Improvements
 
-- [ ] Public release decision. Scope: choose whether the first public artifact is
-  GitHub-only, Zenodo, GitHub plus Zenodo, or another destination, then define
-  the exact release bundle and review authority. Acceptance: destination-specific
-  metadata, checksums, citation file, release notes, excluded-path proof, and
-  post-release verification are all generated before publishing.
-
-- [ ] Distribution rights gate. Scope: convert the current rights-gate report
-  into a release blocker that must be explicitly cleared, excluded, or waived by
-  venue-specific rationale before any public redistribution of source materials,
-  mosaics, raw transcriptions, TEI, or image caches. Acceptance: release-package
-  tooling fails closed when rights-gated artifacts are selected or referenced.
+- [ ] Extend distribution-rights reference policy. Included rights-gated assets already enter public-release `blocked_reasons` through `public_release.py`; gated/safe fixture controls exist. Remaining scope: decide and test how every referenced asset and any explicit venue-specific clearance or exclusion enters admission. References are currently advisory, so this stronger policy is not closed. Keep raw transcriptions, TEI, images and caches within their actual terms/custody.
 
 - [ ] Source-owned acquisition expansion. Scope: implement source-specific
   acquisition paths for high-value unresolved leads such as exact Wikisource
@@ -92,8 +83,4 @@ focused cleanup with a concrete verification command.
   report names added, removed, renamed, and materially changed targets and
   updates coverage interpretation accordingly.
 
-- [ ] End-to-end scholarly package audit. Scope: run an independent audit over
-  code, docs, generated artifacts, manuscript claim language, release package,
-  and rights exclusions before the first public release. Acceptance: every public
-  claim traces to a generated artifact or cited source, and every excluded asset
-  class has an explicit reason.
+- [ ] Next-edition scholarly/package review. Scope a new exact revision for independent source, generated-output, manuscript-claim and rights review before its publication. The retained first-release/deposit inspection keeps its recorded limits; it is not peer review or whole-corpus scientific acceptance. Acceptance: each changed claim traces to its own artifact/source, changed native outputs pass actual page/browser checks, and exclusions retain explicit reasons.

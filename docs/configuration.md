@@ -2,11 +2,7 @@
 
 ## Overview
 
-The package has no configuration file, no `BLAKE_*` environment variables, and no
-configuration-validation module. Every run setting is passed programmatically
-through `CorpusConfig` or through the `blake corpus` CLI options, and the data
-and output locations come from the `BlakeCorpus` constructor or the global
-`--data-dir` / `--output-dir` options.
+Corpus runtime settings are passed explicitly through `CorpusConfig`, the `BlakeCorpus` constructor or `blake corpus` options. This surface does not automatically load a global config file or arbitrary environment overrides. Manuscript authoring and workspace storage have separate explicit inputs, described below.
 
 ## Configuration Methods
 
@@ -58,7 +54,7 @@ output directories directly; either overrides the matching config field.
 | `image_mode` | `archive-all` | `representative` / `archive-all` image metadata depth |
 | `image_dpi` | `300` | Requested image resolution |
 | `max_images_per_work` | `None` (all) | Image cap per work |
-| `max_workers` | `4` | Phase concurrency |
+| `max_workers` | `4` | Declared run setting; actual concurrency is determined by the selected component |
 
 ### 3. Command Line Configuration
 
@@ -82,6 +78,22 @@ blake explore --host localhost --port 8501
 # Image recovery concurrency (1-8)
 blake corpus recover --image-workers 4
 ```
+
+## Manuscript and workspace settings
+
+The paper's YAML is [docs/manuscript/config.yaml](manuscript/config.yaml),
+interpreted by its separately pinned native framework. It is not a corpus-run
+configuration file. Project preparation tools accept
+`BLAKE_MANUSCRIPT_EVIDENCE_ROOT` for an explicit evidence epoch and
+`TEMPLATE_REPO_ROOT` for the selected template checkout. See the
+[style contract](style-guide.md) and [reproduction workflow](manuscript/08_reproducibility.md).
+Explicit evidence selection is recorded; it does not rename a historical producer.
+
+`TMPDIR`, outer-shell `TMPPREFIX`, `UV_CACHE_DIR`, `UV_PROJECT_ENVIRONMENT`,
+`UV_PYTHON` and `UV_LINK_MODE=copy` are storage/toolchain bindings. In managed
+GitVault work they must select the mounted external workspace and appropriate
+project interpreter. Verify both Python prefixes before source work. These
+bindings are not undocumented `CorpusConfig` fields.
 
 ## Notes
 

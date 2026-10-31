@@ -1,7 +1,13 @@
-# `docs/manuscript/assets/` — Agent Notes
+# Manuscript asset guidance
 
-Binary asset drop for the manuscript; the only file is
-`cover_blakean_source.png`, consumed by `manuscript_tools/cover.py` and
-configured in `../config.yaml` (`paper.cover.image`, output goes to
-`output/cover/cover_blakean.png`). Treat it as generated artwork, never as
-evidence in claims. Parent docs: `../AGENTS.md`. Repo-wide policy: See the lane-level policy at `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md` (local-only tree, symlinked into the template checkout; never commit).
+Read [root guidance](../../../AGENTS.md), [documentation guidance](../../AGENTS.md)
+and the [authoring contract](../AGENTS.md). The asset inventory is in
+[README.md](README.md).
+
+`cover_blakean_source.png` is the project-authored generative source for the cover
+produced by [cover.py](../../../manuscript_tools/cover.py), configured in
+[config.yaml](../config.yaml). Preserve its recorded provenance. It is a labelled
+visual interpretation, outside the corpus and source-image evidence ledger.
+Changes require their own asset/native-output inspection; a file hash alone is
+not a visual review. Keep provider originals and restricted caches in their
+authorized custody rather than adding them to this public directory.

@@ -240,8 +240,7 @@ annotations were incorporated into the sample or committed.
 
 Related publication metadata is maintained independently in
 [docxology/docxology's bibliography](https://github.com/docxology/docxology/blob/main/pages/BIBLIOGRAPHY.md).
-The *Mapping William Blake* artifact is [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574),
-whose concept DOI is [10.5281/zenodo.21047573](https://doi.org/10.5281/zenodo.21047573).
+The earlier 0.1.0 *Mapping William Blake* edition is [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574), within concept [10.5281/zenodo.21047573](https://doi.org/10.5281/zenodo.21047573). The retained 0.4.0 paper is [10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249); [publication.json](../publication.json) is authoritative for its exact deposited identities. Software and documentation updates do not create another paper edition.
 Publication full text is scholarship, not primary Blake corpus membership.
 
 ## Focused verification

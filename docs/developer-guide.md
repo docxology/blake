@@ -1,670 +1,110 @@
-# Developer Guide
+# Developer guide
 
-## Table of Contents
+Read the repository [agent contract](../AGENTS.md), [architecture](ARCHITECTURE.md),
+[style guide](style-guide.md) and the contract for the surface you are changing.
+Use [verification](verification.md) as the authoritative environment/check guide.
 
-1. [Development Setup](#development-setup)
-2. [Project Structure](#project-structure)
-3. [Code Standards](#code-standards)
-4. [Testing](#testing)
-5. [Contributing](#contributing)
-6. [Architecture Overview](#architecture-overview)
-7. [Extending the Package](#extending-the-package)
-8. [Performance Optimization](#performance-optimization)
+## Development setup
 
-## Development Setup
+Work from the mounted canonical checkout or a supported external worktree.
+Preserve peers, historical outputs and failed runs. Bind both Python prefixes,
+TMP and caches to external storage; use the supported repository/common-store
+lease for source integration and publication.
 
-### Prerequisites
-
-- Python 3.9 or higher
-- UV package manager (recommended) or pip
-- Git
-- Code editor with Python support
-
-### Clone and Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/docxology/blake.git
-cd blake
-
-# Install with UV (recommended)
+~~~sh
+# Full corpus stack and complete test collection
 uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
 
-# Or with pip
-pip install -e ".[full,dev,gui,api]"
-```
+# Read the actual interpreter identity
+uv run --locked python -c 'import sys; print(sys.prefix); print(sys.base_prefix)'
+~~~
 
-### Development Environment
+Dependency-light methods use a separate Python 3.9 qualification; do not import
+acquisition/NLP/GUI modules into those interfaces. Plain `uv sync --locked`
+installs the methods profile, not the full pipeline or complete test collection.
 
-```bash
-# Install pre-commit hooks
-pre-commit install
+## Project structure
 
-# Run tests
-uv run pytest tests/ -q
-uv run pytest tests/ -q -m "not slow and not integration"
-uv run pytest tests/test_cli.py tests/test_corpus.py tests/test_public_release.py tests/test_export.py tests/test_manuscript_tools.py -q
+| Source owner | Responsibility |
+|---|---|
+| [corpus](../blake/corpus/README.md) | `BlakeCorpus`, run/target models, source registry and pipeline artifacts |
+| [applications.py](../blake/applications.py) | Portable captured-bundle custody |
+| [studies.py](../blake/studies.py) | Application-supplied study forms and source-bound hits |
+| [methods](../blake/methods/) | Shared matching, schemas, statistics, annotations, hierarchy and review batches |
+| [text_search](../blake/text_search/cli.py) | NFKC search projection and local browser workspace |
+| [downloader](../blake/downloader/README.md) | Source clients and explicit acquisition |
+| [metadata](../blake/metadata/README.md) | Stored work/image metadata and discovery search |
+| [analysis](../blake/analysis/README.md) | Optional NLP, visual and cross-modal analysis |
+| [viz](../blake/viz/README.md) | Renderers, dashboards and reporting |
+| [export](../blake/export/README.md) | Format protocol, exporter and optional HTTP API |
+| [manuscript tools](../manuscript_tools/README.md) | Project-specific manuscript projection and figures |
 
-# Run linting
-uv run black blake tests
-uv run isort blake tests
-uv run flake8 blake tests
+The [API reference](api-reference.md) links actual public interfaces. Applications
+keep their vocabularies, source eligibility, judgments and manuscripts; shared
+algorithms belong upstream with exact producer/source binding.
 
-# Run type checking
-uv run mypy blake
-```
+## Code standards
 
-Plain `uv sync` installs methods dependencies only. Use `uv sync --locked --python 3.11 --extra full --extra dev --extra gui` for the complete test suite, including its GUI tests. API and GUI serving need `full` plus their surface extra. The current source has passed bounded source and installed-wheel checks; [verification scope](verification.md) records the environments and remaining typing and environment limits. Live acquisition remains separate because endpoint status and source terms can drift. Manuscript projection tests build a deterministic temporary fixture corpus and mark its manifest as fixture evidence; they do not verify a published acquisition run. Authored manuscript sources and legal claims are under `docs/manuscript/`, while `output/manuscript/` is generated render output.
+Use the declared Black/isort/flake8 and mypy configuration from
+[pyproject.toml](../pyproject.toml). New public boundaries need precise types,
+explicit schemas and meaningful failures. Prefer small modules, typed immutable
+requests and real file/HTTP/CLI controls. Preserve named evidence errors and
+source offsets rather than silently coercing another profile or swallowing an
+unavailable result.
 
-## Shared methods development
-
-`blake.methods` must remain usable without acquisition, NLP or vision imports.
-Its Python floor is 3.9; evaluated Pydantic model fields use compatible typing.
-Read [the API contracts](shared-methods.md) before changing retrieval: regex
-IGNORECASE, literal casefold and NFKC token matching have different oracles.
-Keep `blake.text_search` and `blake.studies` source identities stable unless a
-deliberate producer change requires a new epoch.
-
-Use real temporary files, SQLite databases and subprocesses for custody controls.
-Exercise a failing checksum, altered candidate or changed expected span alongside
-the positive scenario. Node differential checks compare the shared browser engine
-against Python with producer Unicode tables. Source tests, installed-wheel tests,
-GUI inspection and scientific acceptance are separate checks.
-
-Shared source closure is explicit: include application wrappers, delegated
-methods, models and browser resources in new producer bindings. Full tests need
-`full`, `dev` and `gui`; do not treat a minimal environment import check as a full
-pipeline test.
-
-## Project Structure
-
-```
-blake/
-├── blake/                    # Main package
-│   ├── __init__.py          # Package initialization
-│   ├── corpus/              # BlakeCorpus pipeline, manifests, source registry
-│   ├── models.py            # Data models and schemas
-│   ├── exceptions.py        # Custom exceptions
-│   ├── cli.py              # Command-line interface
-│   ├── downloader/         # Download management
-│   │   ├── __init__.py
-│   │   ├── downloader.py   # Main downloader
-│   │   ├── scraper.py      # Web scraping utilities
-│   │   ├── sources.py      # Source-specific implementations
-│   │   └── manager.py      # Download orchestration
-│   ├── metadata/           # Metadata management
-│   │   ├── __init__.py
-│   │   ├── database.py     # Database operations
-│   │   ├── processor.py    # Metadata processing
-│   │   ├── search.py       # Search functionality
-│   │   └── manager.py      # Metadata orchestration
-│   ├── analysis/           # Analysis pipeline
-│   │   ├── __init__.py
-│   │   ├── analyzer.py     # Main analyzer
-│   │   ├── text_analysis.py # Text analysis
-│   │   ├── visual_analysis.py # Visual analysis
-│   │   └── cross_analysis.py # Cross-analysis
-│   ├── gui/                # User interface
-│   │   ├── __init__.py
-│   │   ├── gui.py          # Streamlit GUI
-│   │   └── components.py   # Reusable components
-│   └── export/             # Export functionality
-│       ├── __init__.py
-│       ├── exporter.py     # Export logic
-│       ├── formats.py      # Format implementations
-│       └── api.py          # REST API
-├── tests/                   # Test suite
-│   ├── __init__.py
-│   ├── conftest.py         # Test configuration
-│   ├── test_models.py      # Model tests
-│   ├── test_corpus.py      # Corpus workflow tests
-│   ├── test_core.py        # BlakeCorpus orchestrator tests
-│   ├── test_downloader.py  # Downloader tests
-│   ├── test_analysis.py    # Analysis tests
-│   └── test_download_manager.py # Download manager tests
-├── examples/               # Example scripts
-├── docs/                   # Documentation
-├── pyproject.toml         # Project configuration
-├── pytest.ini            # Test configuration
-└── README.md              # Project overview
-```
-
-## Code Standards
-
-### Python Style
-
-We follow PEP 8 with some modifications:
-
-- **Line length**: 88 characters (Black default)
-- **Import sorting**: isort with Black profile
-- **Type hints**: Required for all public functions
-- **Docstrings**: Google style for all public functions
-
-### Code Formatting
-
-```bash
-# Format code
-uv run black blake tests
-
-# Sort imports
-uv run isort blake tests
-
-# Check formatting
-uv run black --check blake tests
-uv run isort --check-only blake tests
-```
-
-### Type Hints
-
-All public functions must have type hints:
-
-```python
-from typing import List, Optional, Dict, Any
-from pathlib import Path
-
-async def download_work(
-    self, 
-    work_id: str, 
-    force: bool = False
-) -> Optional[BlakeWork]:
-    """
-    Download a specific work by ID.
-    
-    Args:
-        work_id: Unique identifier for the work
-        force: Force re-download even if work exists
-        
-    Returns:
-        Downloaded work or None if not found
-    """
-    # Implementation here
-```
-
-### Docstrings
-
-Use Google-style docstrings:
-
-```python
-def analyze_work(
-    self, 
-    work: BlakeWork, 
-    analysis_types: Optional[List[str]] = None
-) -> Dict[str, Any]:
-    """
-    Perform comprehensive analysis on a work.
-    
-    Args:
-        work: BlakeWork to analyze
-        analysis_types: Types of analysis to perform. 
-                       If None, performs all analyses
-                       
-    Returns:
-        Dictionary of analysis results
-        
-    Raises:
-        AnalysisError: If analysis fails
-        
-    Example:
-        >>> analyzer = BlakeAnalyzer(Path("./data"))
-        >>> results = await analyzer.analyze_work(work)
-        >>> print(results['text_analysis'])
-    """
-```
-
-### Error Handling
-
-Use custom exceptions and proper error handling:
-
-```python
-from blake.exceptions import BlakeError, DownloadError
-
-async def download_file(self, url: str, file_path: Path) -> bool:
-    try:
-        # Download logic here
-        return True
-    except aiohttp.ClientError as e:
-        raise DownloadError(f"Network error downloading {url}: {e}")
-    except Exception as e:
-        raise BlakeError(f"Unexpected error: {e}")
-```
+Corpus APIs are asynchronous where documented. Use an explicit corpus instance
+and await its I/O methods. A local list slice does not constrain `analyze_all()`;
+call `analyze_work(work.id)` for each selected work. Generic methods must remain
+usable on Python 3.9 without optional model imports.
 
 ## Testing
 
-### Running Tests
-
-```bash
-# Run all tests
-uv run pytest tests/ -q
-
-# Run with coverage
-uv run pytest tests/ --cov=blake --cov-report=html
-
-# Run specific test file
-uv run pytest tests/test_models.py
-
-# Run specific test
-uv run pytest tests/test_models.py::TestBlakeMetadata::test_metadata_creation
-
-# Run with verbose output
-uv run pytest tests/ -v
-```
-
-### Corpus Verification Gates
-
-```bash
-uv run pytest tests/ -q
-uv run pytest tests/ -q -m "not slow and not integration"
-uv run blake corpus run --quick --output-dir analysis_output
-uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
-```
-
-Default tests and quick corpus runs must not require live external network access.
-
-### Test Structure
-
-Tests are organized by module:
-
-- `test_models.py` - Data model tests
-- `test_corpus.py` - Corpus pipeline, manifest, source registry, and quick-run tests
-- `test_core.py` - BlakeCorpus orchestrator tests
-- `test_downloader.py` - Download system tests
-- `test_analysis.py` - Analysis pipeline tests
-- `test_download_manager.py` - Download orchestration tests
-
-### Writing Tests
-
-```python
-import pytest
-from unittest.mock import Mock, AsyncMock, patch
-from blake.models import BlakeWork, BlakeMetadata, WorkType, SourceType
-
-class TestBlakeAnalyzer:
-    """Test cases for BlakeAnalyzer."""
-    
-    @pytest.fixture
-    def analyzer(self, tmp_path):
-        """Create analyzer instance for testing."""
-        return BlakeAnalyzer(tmp_path)
-    
-    @pytest.fixture
-    def sample_work(self):
-        """Create sample work for testing."""
-        metadata = BlakeMetadata(
-            id="test_work",
-            title="Test Work",
-            work_type=WorkType.POEM,
-            source=SourceType.PROJECT_GUTENBERG
-        )
-        return BlakeWork(
-            id="test_work",
-            metadata=metadata,
-            text_content="Test content"
-        )
-    
-    @pytest.mark.asyncio
-    async def test_analyze_work_text_only(self, analyzer, sample_work):
-        """Test analyzing a work with only text."""
-        with patch.object(analyzer.text_analyzer, 'analyze_work', 
-                         return_value={'sentiment': 'positive'}):
-            results = await analyzer.analyze_work(sample_work)
-            
-            assert 'text_analysis' in results
-            assert results['text_analysis']['sentiment'] == 'positive'
-    
-    def test_get_analysis_summary(self, analyzer):
-        """Test getting analysis summary."""
-        works = [self.sample_work()]
-        summary = analyzer.get_analysis_summary(works)
-        
-        assert summary['total_works'] == 1
-        assert summary['analyzed_works'] == 0  # Not processed yet
-```
-
-### Test Fixtures
-
-Use `conftest.py` for shared fixtures:
-
-```python
-import pytest
-from pathlib import Path
-from blake import BlakeCorpus
-
-@pytest.fixture
-def data_dir(tmp_path):
-    """Create temporary data directory."""
-    return tmp_path / "blake_data"
-
-@pytest.fixture
-def corpus(data_dir):
-    """Create BlakeCorpus instance."""
-    return BlakeCorpus(data_dir)
-
-@pytest.fixture
-def sample_metadata():
-    """Create sample metadata."""
-    return BlakeMetadata(
-        id="test_work",
-        title="Test Work",
-        work_type=WorkType.POEM,
-        source=SourceType.PROJECT_GUTENBERG
-    )
-```
-
-### Mocking
-
-Use mocks for external dependencies:
-
-```python
-from unittest.mock import Mock, AsyncMock, patch
-
-# Mock async functions
-mock_download = AsyncMock(return_value=BlakeWork(...))
-
-# Mock external services
-with patch('aiohttp.ClientSession') as mock_session:
-    mock_response = AsyncMock()
-    mock_response.text = AsyncMock(return_value="<html>...</html>")
-    mock_session.return_value.__aenter__.return_value.get.return_value = mock_response
-```
-
-## Contributing
-
-### Workflow
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/your-feature-name`
-3. **Make your changes**
-4. **Add tests** for new functionality
-5. **Run tests**: `uv run python -m pytest`
-6. **Format code**: `uv run black blake tests && uv run isort blake tests`
-7. **Commit changes**: `git commit -m "Add feature: description"`
-8. **Push to fork**: `git push origin feature/your-feature-name`
-9. **Create pull request**
-
-### Pull Request Guidelines
-
-- **Clear title**: Describe what the PR does
-- **Detailed description**: Explain changes and motivation
-- **Tests**: Include tests for new functionality
-- **Documentation**: Update docs if needed
-- **Breaking changes**: Clearly mark any breaking changes
-
-### Code Review Process
-
-1. **Automated checks**: Inspect the actual PR checks. There is currently no hosted test, lint or type-check workflow; GitGuardian is a security check. Run the documented local gates and retain their results.
-2. **Manual review**: At least one maintainer reviews the code
-3. **Feedback**: Address any requested changes
-4. **Merge**: Once approved, maintainer merges the PR
-
-## Architecture Overview
-
-### Core Components
-
-#### BlakeCorpus (corpus/)
-
-- Primary corpus orchestrator
-- Coordinates discovery, acquisition, metadata, analysis, export, and reports
-- Writes reproducible manifests and run summaries
-
-#### Download System (downloader/)
-
-- Asynchronous download management
-- Source-specific implementations
-- Retry logic and error handling
-
-#### Metadata System (metadata/)
-
-- Database operations
-- Search and filtering
-- Metadata processing
-
-#### Analysis System (analysis/)
-
-- Text, visual, and cross-analysis
-- Batch processing
-- Result caching
-
-#### GUI System (gui/)
-
-- Streamlit-based interface
-- Interactive exploration
-- Visualization components
-
-#### Export System (export/)
-
-- Multiple format support
-- REST API
-- Programmatic access
-
-### Data Flow
-
-```
-User Request → BlakeCorpus → SourceRegistry → SourceProvider
-                    ↓
-              Metadata Manager → CorpusManifest
-                    ↓
-              Analyzer → AnalysisResult Records
-                    ↓
-              Export/Reports → analysis_output/
-```
-
-### Async Architecture
-
-The package uses asyncio for I/O operations:
-
-```python
-# All I/O operations are async
-async def download_all(self) -> List[BlakeWork]:
-    tasks = []
-    for source in self.sources:
-        task = asyncio.create_task(source.download_works())
-        tasks.append(task)
-    
-    results = await asyncio.gather(*tasks)
-    return [work for result in results for work in result]
-```
-
-## Extending the Package
-
-### Adding New Sources
-
-1. **Create source class**:
-
-```python
-from blake.downloader.sources import BaseSource
-from blake.models import SourceType
-
-class NewSource(BaseSource):
-    def __init__(self, data_dir: Path):
-        super().__init__(data_dir, SourceType.NEW_SOURCE)
-    
-    async def get_work_list(self) -> List[Dict[str, Any]]:
-        # Implement work discovery
-        pass
-    
-    async def download_work(self, work_info: Dict[str, Any]) -> Optional[BlakeWork]:
-        # Implement work download
-        pass
-```
-
-1. **Register source**:
-
-```python
-# In downloader.py
-self.sources[SourceType.NEW_SOURCE] = NewSource(self.data_dir)
-```
-
-### Adding New Analysis Types
-
-1. **Create analyzer class**:
-
-```python
-from blake.analysis.analyzer import BlakeAnalyzer
-
-class CustomAnalyzer:
-    async def analyze_work(self, work: BlakeWork) -> Dict[str, Any]:
-        # Implement custom analysis
-        return {"custom_metric": value}
-```
-
-1. **Integrate with main analyzer**:
-
-```python
-# In analyzer.py
-class BlakeAnalyzer:
-    def __init__(self, data_dir: Path):
-        # ... existing code ...
-        self.custom_analyzer = CustomAnalyzer()
-    
-    async def analyze_work(self, work: BlakeWork, analysis_types: Optional[List[str]] = None):
-        # ... existing code ...
-        if 'custom' in analysis_types:
-            custom_results = await self.custom_analyzer.analyze_work(work)
-            results['custom_analysis'] = custom_results
-```
-
-### Adding New Export Formats
-
-1. **Create format handler**:
-
-```python
-from blake.export.formats import BaseFormat
-
-class CustomFormat(BaseFormat):
-    def export(self, works: List[BlakeWork], output_path: Path) -> Path:
-        # Implement custom export logic
-        pass
-```
-
-1. **Register format**:
-
-```python
-# In exporter.py
-self.formats['custom'] = CustomFormat()
-```
-
-## Performance Optimization
-
-### Async Best Practices
-
-```python
-# Use asyncio.gather for parallel operations
-async def download_multiple_works(self, work_ids: List[str]) -> List[BlakeWork]:
-    tasks = [self.download_work(work_id) for work_id in work_ids]
-    return await asyncio.gather(*tasks)
-
-# Use semaphores to limit concurrency
-async def process_works(self, works: List[BlakeWork]):
-    semaphore = asyncio.Semaphore(5)  # Max 5 concurrent
-    
-    async def process_work(work):
-        async with semaphore:
-            return await self.analyze_work(work)
-    
-    tasks = [process_work(work) for work in works]
-    return await asyncio.gather(*tasks)
-```
-
-### Memory Management
-
-```python
-# Clear caches regularly
-def clear_cache(self):
-    self._works_cache.clear()
-    gc.collect()
-
-# Use generators for large datasets
-def iterate_works(self):
-    for work_id in self.get_all_work_ids():
-        yield self.get_work(work_id)
-```
-
-### Database Optimization
-
-```python
-# Use batch operations
-async def save_multiple_works(self, works: List[BlakeWork]):
-    async with self.db.transaction():
-        for work in works:
-            await self.save_work(work)
-
-# Use indexes for common queries
-CREATE INDEX idx_work_type ON works(work_type);
-CREATE INDEX idx_source ON works(source);
-CREATE INDEX idx_creation_date ON works(creation_date);
-```
-
-### Caching
-
-```python
-from functools import lru_cache
-import asyncio
-
-class CachedAnalyzer:
-    @lru_cache(maxsize=100)
-    def _cached_analysis(self, work_id: str, analysis_type: str):
-        # Cache expensive operations
-        pass
-    
-    async def analyze_work(self, work: BlakeWork):
-        # Use cache when possible
-        cache_key = f"{work.id}_text"
-        if cache_key in self._cache:
-            return self._cache[cache_key]
-        
-        result = await self._perform_analysis(work)
-        self._cache[cache_key] = result
-        return result
-```
-
-## Debugging
-
-### Logging
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-async def download_work(self, work_id: str):
-    logger.info(f"Starting download for work: {work_id}")
-    try:
-        # Download logic
-        logger.info(f"Successfully downloaded work: {work_id}")
-    except Exception as e:
-        logger.error(f"Failed to download work {work_id}: {e}")
-        raise
-```
-
-### Debug Mode
-
-```python
-# Enable debug logging
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-# Use debug mode in tests
-@pytest.mark.asyncio
-async def test_download_debug():
-    with patch('logging.getLogger') as mock_logger:
-        # Test with debug logging
-        pass
-```
-
-### Profiling
-
-```python
-import cProfile
-import pstats
-
-# Profile specific functions
-profiler = cProfile.Profile()
-profiler.enable()
-
-# Run your code
-await blake.download_all()
-
-profiler.disable()
-stats = pstats.Stats(profiler)
-stats.sort_stats('cumulative').print_stats(10)
-```
+Choose the affected gate from [verification](verification.md). The full stack,
+installed dependency-light SDK, optional model availability, actual browser,
+native output and scientific interpretation are distinct checks.
+
+~~~sh
+# Example full collection in its correctly provisioned environment
+uv run --locked pytest tests/ -q
+
+# Formatting/lint checks for a deliberately selected changed Python file
+: "${OWNED_FILE:?Select the changed Python file}"
+uv run --locked black --check "$OWNED_FILE"
+uv run --locked isort --check-only "$OWNED_FILE"
+uv run --locked flake8 "$OWNED_FILE"
+~~~
+
+Whole-package typing has documented legacy holds; a focused passing type gate
+does not remove them. Use the exact current typing scope in the verification
+guide. Formatting/check commands are not a claim that every historical source
+file has just been reformatted or newly qualified.
+
+For a changed custody or matching boundary, retain both a real positive case and
+a refusing input: wrong caller pin, altered membership/span, occupied output or
+unsupported option. Use real temporary files and local HTTP/subprocesses where
+appropriate. Preserve every failed attempt and complete coverage denominator.
+Documentation-only changes need link/command/claim checks, not unrelated model
+campaigns or prose-pinning tests.
+
+## Extending the package
+
+| Extension | Owning protocol and acceptance |
+|---|---|
+| Source | Implement the actual [SourceProvider / SourceRegistry](../blake/corpus/sources.py) contract; keep direct text, catalog context, exclusions and provider terms distinct. Test against real local fixtures/HTTP. |
+| Analysis | Extend [BlakeAnalyzer](../blake/analysis/analyzer.py) and its actual async entry points. Retain model/version/missingness and component errors separately from pipeline completion. |
+| Export | Implement [BaseExporter](../blake/export/formats.py): async `export_works(works, output_dir, config)`, `export_work(work, output_path)` and `export_analysis_results(works, output_path)`. Register the class in `formats.EXPORTERS`, which the dispatcher copies into `self.exporters`. Test actual files and unsupported-format refusal. |
+| Visualization | Extend the [visualization owners](../blake/viz/README.md); bind inputs, denominator, scope and output. Inspect affected rendered output. |
+| Portable method | Keep domain-neutral mathematics/custody in [methods](shared-methods.md); retain distinct matching oracles and caller-held source identities. Qualify the exact SDK consumed by applications. |
+| Manuscript | Follow [reproducibility](manuscript/08_reproducibility.md) and [authoring](manuscript/AGENTS.md). A changed paper needs its own native/output qualification. |
+
+Source links define the complete protocols; this guide does not provide a
+pass-only subclass or a parallel schema/registry implementation.
+
+## Contributing and delivery
+
+Read status, origin, current branch, staged scope and remote state before an
+authorized commit. Preserve unrelated work; stage only owned paths and use an
+ordinary non-force push through the repository's required route. Verify the
+remote commit and retained artifact identities afterward. Hosted CI, package
+publication, a manuscript build and a Zenodo deposit require their own evidence;
+local test success supplies none of those claims automatically.

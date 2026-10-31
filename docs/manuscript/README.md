@@ -1,28 +1,46 @@
 # Blake manuscript
 
-The canonical sources live here. The paper reports a retained local analysis epoch,
-captured-source recoverability and explicit scholarly and distribution limits.
+The canonical sources live here. The paper reports a retained local analysis
+epoch, captured-source recoverability and explicit scholarly/distribution limits.
 Provider transcriptions, XML, images, indexes, backups and source-image mosaics
-remain local.
+remain local. [publication.json](../../publication.json) identifies the deposited
+0.4.0 paper separately from later software and documentation.
 
-The current source supplies shared-core/application-policy methods and a
-source-derived profile/ownership figure. This is a code and publication-preparation
-advancement; the saved analytical producer remains unchanged. The common
-[style guide](../style-guide.md) governs syntax, units, source custody and claim limits.
+## Authoring and reproduction
 
-- [Authoring contract](AGENTS.md): quantitative claims use computed tokens.
-- [Reproduction workflow](08_reproducibility.md): prepare a new store, analyze,
-  seal verified evidence, generate figures, hydrate, render and validate.
-- [Recovery supplement](14_supplement_recoverability.md): captured inventory and
-  the retained corruption-detection restore control.
-- [Distribution policy](06a_legal_distribution.md) and [rights matrix](13_supplement_rights_matrix.md).
-- [Variables](../../manuscript_tools/variables.py) and [publication evidence](../../manuscript_tools/publication.py)
-  produce the quantitative claims.
-- [Configuration](config.yaml), [bibliography](references.bib) and [preamble](preamble.md)
-  supply publication metadata and rendering inputs.
+- [Authoring contract](AGENTS.md): computed quantitative tokens, strict hydration,
+  actual figure paths and native admission.
+- [Style guide](../style-guide.md): syntax, units, source custody and claim limits.
+- [Reproducibility](08_reproducibility.md): new local epochs, explicit evidence
+  roots, sealing, figures, hydration and the recorded template workflow.
+- [Manuscript status](MANUSCRIPT_STATUS.md): retained output and scoped next work.
+- [Visualization brief](../visualization-publication-brief.md): registered figures
+  and their source/inspection requirements.
+- [Variables](../../manuscript_tools/variables.py) and
+  [publication evidence](../../manuscript_tools/publication.py): quantitative
+  claim owners.
 
-Strict hydration refuses unknown or empty quantitative tokens. Resolved sources
-and variables are generated under repository-root `output/manuscript/` and
-`output/data/`. The public reproduction archive includes reviewed hydrated
-sources and aggregate graphics for rendering; analytical regeneration requires
-the private retained source inventory.
+Strict hydration refuses unknown or empty used quantitative tokens. Generated
+sources/variables are under root `output/manuscript/` and `output/data/`. The
+public reproduction archive includes reviewed hydrated sources and aggregate
+graphics; analytical regeneration needs the private retained source inventory.
+The source-derived ownership diagram has its own digest and does not replace
+the saved analytical producer.
+
+## Complete source map
+
+| Part | Sources |
+|---|---|
+| Opening | [Abstract](00_abstract.md), [introduction](01_introduction.md) |
+| Methods | [Pipeline](02_methods_pipeline.md), [analysis](03_methods_analysis.md) |
+| Results | [Coverage](04_results_coverage.md), [text](05_results_text.md) |
+| Interpretation and terms | [Discussion](06_discussion.md), [legal/distribution policy](06a_legal_distribution.md), [limitations](07_limitations.md) |
+| Reproduction and conclusion | [Reproducibility](08_reproducibility.md), [conclusion](09_conclusion.md) |
+| Evidence supplements | [Gaps](10_supplement_evidence_gaps.md), [missing evidence](11_supplement_missing_evidence.md), [visual mosaics](12_supplement_visual_mosaics.md) |
+| Custody supplements | [Rights matrix](13_supplement_rights_matrix.md), [recoverability](14_supplement_recoverability.md) |
+| Citations and metadata | [Reference heading](99_references.md), [BibTeX](references.bib), [configuration](config.yaml), [preamble](preamble.md) |
+| Claim/asset records | [Legal-claim ledger](legal_claim_ledger.yaml), [asset inventory](assets/README.md), [asset guidance](assets/AGENTS.md), [generated cover source](assets/cover_blakean_source.png) |
+
+Raw body links can target generated local graphics. Their availability and
+rights follow the declared native/reproduction bundle, not the mere presence of
+a source link. A guide correction changes no paper, deposit or scientific gate.

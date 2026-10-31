@@ -1,642 +1,154 @@
-# API Reference
+# API reference
 
-## BlakeCorpus Class
+Use the default installation for [portable methods](shared-methods.md) and
+[application custody](applications.md). The corpus, NLP/vision and export classes
+below use the `full` profile. The GUI/API add their own extras; exact supported
+profiles and qualifications are in [verification](verification.md).
 
-The primary orchestrator for reproducible Blake corpus workflows. `BlakeCorpus` is defined in `blake.corpus.pipeline` and re-exported as `blake.BlakeCorpus`.
+## BlakeCorpus
 
-## Current Evidence Contract
+`BlakeCorpus` is defined in [corpus/pipeline.py](../blake/corpus/pipeline.py)
+and re-exported by [blake](../blake/__init__.py). Its constructor is:
 
-The corpus API is source-governed and target-aware. A run is evaluated through generated artifacts, not through an implicit claim that every Blake source has been mirrored:
+~~~text
+BlakeCorpus(data_dir=None, *, output_dir=None, config=None, source_registry=None)
+~~~
 
-- `analysis_output/corpus_manifest.json`: target-ledger coverage, fixture status, and source-backed work records.
-- `analysis_output/pipeline_summary.json`: phase status, including reused local acquisition and generated analysis.
-- `analysis_output/data/source_discovery_health.json`: per-provider discovery status.
-- `analysis_output/data/source_audit.json`: provider health, URL checks, Archive metadata enrichment, and missing-evidence candidates.
-- `analysis_output/data/evidence_acquisition_review.json`: reviewer-facing unresolved-target and manual-lead ledger.
-- `analysis_output/analysis/analysis_summary.json` and `analysis_output/analysis/analysis_diagnostics.json`: current analysis ledger and corpus-level diagnostics.
-- `analysis_output/reports/private_release_preflight.*` and `analysis_output/reports/rights_gate_report.*`: local-only release/readiness checks; they do not publish, tag, deposit, or grant redistribution rights.
-- `analysis_output/reports/public_release_preflight.*` and `analysis_output/releases/public_release/` including `public_release_package.json`: public GitHub + Zenodo release staging outputs with bundle metadata, checksums, and citation files.
+This is a signature, not an initialized global object. Explicit directories
+override the corresponding `CorpusConfig` fields. Constructing a corpus creates
+its local directories and initializes optional components; use admitted paths
+and the required environment before doing so.
 
-The default installation contains shared methods dependencies. Install
-`blake[full]` for acquisition, NLP, vision, corpus orchestration and exports.
-FastAPI serving needs `blake[full,api]`; Streamlit/Gradio exploration needs
-`blake[full,gui]`. Quick corpus runs also require the `full` extra.
+| Interface | Execution and result |
+|---|---|
+| `plan(config=None)` | Synchronous list of planned phases |
+| `run(config=None)` | Await; returns `CorpusRunSummary` for the declared pipeline |
+| `status()` / `coverage()` | Await; local inventory and target coverage dictionaries |
+| `initialize()` | Await; marks the orchestrator initialized |
+| `clear_cache()` | Await; clears the in-memory work cache, preserving stored source files |
+| `download_all(force=False)` | Await; explicit acquisition through the downloader |
+| `download_work(work_id, force=False)` | Await; a work or `None` |
+| `get_work(work_id)` / `get_all_works()` | Await; stored work object(s) |
+| `search_works(query, filters=None)` | Await; discovery results over loaded metadata/text |
+| `analyze_work(work_id, analysis_types=None)` | Await; analyzes only the named work and persists results |
+| `analyze_all(analysis_types=None)` | Await; analyzes every loaded work |
+| `export(formats=None)` | Await; format-to-export-path mapping |
+| `export_works(...)` | Await; delegates to `BlakeExporter`, returning a path |
+| `get_statistics()` | Await; local collection summary |
+| `explore(host="localhost", port=8501)` | Synchronous Streamlit launcher; requires GUI dependencies |
 
-### Constructor
+All calls in the following example share one explicit instance. The source
+already needs to be present; this example requests no new Blake-source
+acquisition. Optional component initialization still uses its configured model
+resources:
 
-```python
-BlakeCorpus(data_dir: Optional[Path] = None, output_dir: Optional[Path] = None)
-```
-
-**Parameters:**
-
-- `data_dir` (Optional[Path]): Directory for raw/cache data. Defaults to `./blake_data`
-- `output_dir` (Optional[Path]): Directory for pipeline artifacts. Defaults to `./analysis_output`
-
-**Example:**
-
-```python
-from blake import BlakeCorpus, CorpusConfig
+~~~python
+import asyncio
 from pathlib import Path
-
-# Initialize with default directory
-corpus = BlakeCorpus()
-
-# Initialize with custom directory
-corpus = BlakeCorpus(Path("./my_blake_data"), output_dir=Path("./analysis_output"))
-
-# Run an offline quick workflow
-summary = await corpus.run(CorpusConfig(quick=True))
-```
-
-### CorpusConfig
-
-```python
-CorpusConfig(
-    data_dir=Path("blake_data"),
-    output_dir=Path("analysis_output"),
-    quick=False,
-    target_profile="canonical",
-    fixture_mode="auto",
-    viz_profile="core",
-)
-```
-
-- `target_profile`: canonical corpus target ledger to measure coverage against
-- `fixture_mode`: `auto`, `always`, or `never` for quick-mode fixture seeding
-- `viz_profile`: `inventory`, `core`, or `full` visualization artifact generation
-
-### CorpusManifest Coverage Fields
-
-`corpus_manifest.json` includes `target_profile`, `target_version`, `target_total`, `coverage_status`, `coverage_counts`, `target_records`, `fixture_mode`, and `fixture_work_ids`. These fields are the public contract for deciding whether a run is complete, partial, empty, or fixture-backed.
-
-### Core Methods
-
-#### download_all()
-
-```python
-async def download_all(force: bool = False) -> List[BlakeWork]
-```
-
-Fetch currently discoverable source-provider records through the source-provider download coordinator. For docs/manuscript/release validation, prefer `blake corpus run` so target coverage, source audit, provider health, and rights-gate artifacts are regenerated together.
-
-**Parameters:**
-
-- `force` (bool): Force re-download even if works exist. Default: False
-
-**Returns:**
-
-- `List[BlakeWork]`: List of downloaded BlakeWork objects
-
-**Example:**
-
-```python
-# Fetch provider-discovered records through the source-provider coordinator
-works = await blake.download_all()
-
-# Force re-download
-works = await blake.download_all(force=True)
-```
-
-#### download_work()
-
-```python
-async def download_work(work_id: str, force: bool = False) -> Optional[BlakeWork]
-```
-
-Download a specific work by ID.
-
-**Parameters:**
-
-- `work_id` (str): Unique identifier for the work
-- `force` (bool): Force re-download even if work exists. Default: False
-
-**Returns:**
-
-- `Optional[BlakeWork]`: Downloaded work or None if not found
-
-**Example:**
-
-```python
-# Download specific work
-work = await blake.download_work("21160")
-if work:
-    print(f"Downloaded: {work.metadata.title}")
-```
-
-#### analyze_work()
-
-```python
-async def analyze_work(work_id: str, analysis_types: Optional[List[str]] = None) -> Dict[str, Any]
-```
-
-Analyze a specific work.
-
-**Parameters:**
-
-- `work_id` (str): Unique identifier for the work
-- `analysis_types` (Optional[List[str]]): Types of analysis to perform. Options: ['text', 'visual', 'cross']. Default: None (all types)
-
-**Returns:**
-
-- `Dict[str, Any]`: Analysis results dictionary
-
-**Example:**
-
-```python
-# Analyze all types
-results = await blake.analyze_work("21160")
-
-# Analyze only text
-text_results = await blake.analyze_work("21160", ["text"])
-```
-
-#### analyze_all()
-
-```python
-async def analyze_all(analysis_types: Optional[List[str]] = None) -> Dict[str, Dict[str, Any]]
-```
-
-Analyze every work currently saved in the local corpus cache.
-
-**Parameters:**
-
-- `analysis_types` (Optional[List[str]]): Types of analysis to perform. Default: None (all types)
-
-**Returns:**
-
-- `Dict[str, Dict[str, Any]]`: Dictionary mapping work IDs to analysis results
-
-**Example:**
-
-```python
-# Analyze all local works
-all_analysis = await blake.analyze_all()
-
-# Analyze only visual content
-visual_analysis = await blake.analyze_all(["visual"])
-```
-
-#### get_work()
-
-```python
-async def get_work(work_id: str) -> Optional[BlakeWork]
-```
-
-Retrieve a work by ID from the database.
-
-**Parameters:**
-
-- `work_id` (str): Unique identifier for the work
-
-**Returns:**
-
-- `Optional[BlakeWork]`: Work object or None if not found
-
-**Example:**
-
-```python
-work = await blake.get_work("21160")
-if work:
-    print(f"Title: {work.metadata.title}")
-    print(f"Source: {work.metadata.source}")
-```
-
-#### get_all_works()
-
-```python
-async def get_all_works() -> List[BlakeWork]
-```
-
-Retrieve every work currently saved in the local database.
-
-**Returns:**
-
-- `List[BlakeWork]`: List of all BlakeWork objects
-
-**Example:**
-
-```python
-works = await blake.get_all_works()
-print(f"Total works: {len(works)}")
-```
-
-#### search_works()
-
-```python
-async def search_works(query: str, filters: Optional[Dict[str, Any]] = None) -> List[BlakeWork]
-```
-
-Search works by content and metadata.
-
-**Parameters:**
-
-- `query` (str): Search query string
-- `filters` (Optional[Dict[str, Any]]): Additional filters. Options: work_type, source, has_images, has_text
-
-**Returns:**
-
-- `List[BlakeWork]`: List of matching BlakeWork objects
-
-**Example:**
-
-```python
-# Basic search
-results = await blake.search_works("innocence")
-
-# Search with filters
-poems = await blake.search_works("tiger", {"work_type": "poem"})
-```
-
-#### get_statistics()
-
-```python
-async def get_statistics() -> Dict[str, Any]
-```
-
-Get collection statistics.
-
-**Returns:**
-
-- `Dict[str, Any]`: Statistics dictionary with counts and metadata
-
-**Example:**
-
-```python
-stats = await blake.get_statistics()
-print(f"Total works: {stats['total_works']}")
-print(f"Work types: {stats['work_types']}")
-```
-
-#### export_works()
-
-```python
-async def export_works(config: ExportConfig) -> Path
-```
-
-Export works in specified format.
-
-**Parameters:**
-
-- `config` (ExportConfig): Export configuration object
-
-**Returns:**
-
-- `Path`: Path to exported file
-
-**Example:**
-
-```python
-from blake.models import ExportConfig
-
-config = ExportConfig(
-    format="json",
-    output_dir=Path("./exports"),
-    include_images=True
-)
-output_path = await blake.export_works(config)
-```
-
-#### explore()
-
-```python
-def explore(host: str = "localhost", port: int = 8501) -> None
-```
-
-Launch interactive web interface.
-
-**Parameters:**
-
-- `host` (str): Host address. Default: "localhost"
-- `port` (int): Port number. Default: 8501
-
-**Example:**
-
-```python
-# Launch GUI
-blake.explore()
-
-# Launch on specific port
-blake.explore(port=8502)
-```
-
-#### clear_cache()
-
-```python
-async def clear_cache() -> None
-```
-
-Clear the works cache.
-
-**Example:**
-
-```python
-await blake.clear_cache()
-```
-
-#### create_visualization()
-
-```python
-async def create_visualization(viz_type: str, data_type: str = "all", config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]
-```
-
-Create a visualization.
-
-**Parameters:**
-
-- `viz_type` (str): Type of visualization to create
-- `data_type` (str): Type of data to visualize (text, image, temporal, network, all). Default: "all"
-- `config` (Optional[Dict[str, Any]]): Visualization configuration
-
-**Returns:**
-
-- `Dict[str, Any]`: Visualization data
+from blake import BlakeCorpus
+
+async def main():
+    corpus = BlakeCorpus(Path("blake_data"), output_dir=Path("analysis_output"))
+    works = await corpus.search_works("innocence", {"work_type": "poem"})
+    for work in works:
+        print(work.id, work.metadata.title)
+    await corpus.clear_cache()
+
+asyncio.run(main())
+~~~
+
+Discovery search uses substring relevance, including text content. For exact
+source-bound occurrence counts and original offsets use the declared
+[retrieval profiles](shared-methods.md) or [text-search interface](text-search.md).
+
+## Configuration and models
+
+The authoritative corpus schema is [corpus/models.py](../blake/corpus/models.py).
+[Configuration](configuration.md) describes defaults, fixtures, output paths and
+the separate manuscript/environment settings. `CorpusRunSummary`,
+`CorpusManifest`, `PhaseResult` and source/target records describe their own
+run or capture; a completed software phase is not complete Blake coverage.
+
+Work metadata and image schemas live in [models.py](../blake/models.py).
+Construct them using their actual Pydantic fields, rather than a second schema
+copied from prose:
+
+- `BlakeMetadata` requires `id`, `title`, `work_type` and `source`.
+- `BlakeWork` requires `id` and `metadata`; text and associated images are separate.
+- `BlakeImage` requires `id`, `metadata_id`, `title` and `file_path`.
+  `original_url` records an available source URL; paths and metadata do not prove
+  that a file was downloaded, inspected or cleared for redistribution.
+- `WorkType`, `SourceType` and `LicenseType` have the concrete values declared
+  in that source. Use `model_json_schema()` / `model_fields` for complete current
+  field/validation descriptions. A recorded rights label is an observation, not
+  permission inferred by the software.
+
+Portable bundle/projection/study schemas have their own versions and explicit
+[conversion boundary](shared-methods.md). They are not interchangeable with a
+corpus ORM layout or a model dump from another schema.
+
+## Analysis and visualization
+
+| Owner | Public interface |
+|---|---|
+| [BlakeAnalyzer](../blake/analysis/analyzer.py) | Async `analyze_work`, `analyze_multiple_works`, `compare_works`, `load_analysis_result`; synchronous `get_analysis_summary` |
+| [TextAnalyzer](../blake/analysis/text_analysis.py) | Async `analyze_work(work)` and `compare_works(works)` |
+| [VisualAnalyzer](../blake/analysis/visual_analysis.py) | Async `analyze_image(image)` and `compare_images(images)` |
+| [Corpus pipeline](../blake/corpus/pipeline.py) | Async `create_visualization`, `visualize`, dashboard/report methods and available-visualization inspection |
+| [Visualization package](../blake/viz/README.md) | Renderer and dashboard owners |
+
+Sentiment, theme and image-composition helpers are implementation details of
+these analyzers. Their private helper names are not separate public APIs.
+Model availability, inference outputs, figure inspection and literary
+interpretation have separate acceptance scopes.
+
+## Export
+
+[BlakeExporter](../blake/export/exporter.py) owns async
+`export_works(works, config)`, `export_work(work, output_path, format="json")`
+and `export_analysis_results(works, output_path, format="json")`.
+`get_supported_formats()` and `get_export_info()` are synchronous.
+
+`ExportConfig` is declared in [models.py](../blake/models.py). It selects a
+format and output directory plus image/metadata/analysis/filter/compression
+options. Use unused accounted destinations and inspect what will be copied;
+exporting local provider images is a separate rights decision.
+
+The format protocol is [BaseExporter](../blake/export/formats.py), with three
+async export methods. `formats.EXPORTERS` maps names to implementation classes;
+the dispatcher instantiates these as `BlakeExporter.exporters`. Unsupported
+formats raise `ExportError`. [Extension guidance](developer-guide.md#extending-the-package).
 
 ## Corpus CLI
 
-Use these commands for reproducible corpus work:
+The actual registration is [cli.py](../blake/cli.py), with recovery commands
+delegated to [recovery_commands.py](../blake/recovery_commands.py).
 
-```bash
-blake corpus run --quick --output-dir analysis_output
-blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
-blake corpus status --coverage
-blake corpus visualize --profile core
-blake corpus audit-sources --output-dir analysis_output --archive-scope archive-inventory
-blake corpus acquire-evidence --from-audit analysis_output/data/source_audit.json --dry-run
-blake corpus private-release-preflight --output-dir analysis_output --data-dir blake_data
-blake corpus public-release-preflight --output-dir analysis_output --data-dir blake_data
-blake corpus public-release-package --output-dir analysis_output --data-dir blake_data
-```
+| Entry | Purpose |
+|---|---|
+| `blake corpus run` | Declared corpus pipeline |
+| `blake corpus status` / `visualize` | Inventory/coverage and visualization |
+| `blake corpus audit-sources` / `acquire-evidence` | Explicit source inspection/acquisition |
+| `blake corpus recover` / `verify-recovery` / `import-recovery` | Captured recovery and registration |
+| `blake corpus backup` / `verify-backup` / `restore` | Source snapshot custody |
+| `blake corpus private-release-preflight` | Private release preflight |
+| `blake corpus public-release-preflight` / `public-release-package` | Declared public package selection and blockers |
+| `blake info`, `search`, `interactive`, `explore`, `scrape-archive` | Inventory, discovery and optional interfaces |
 
-- `run --quick`: offline smoke workflow; may seed fixture records if the local cache is empty.
-- `run --skip-download`: main local regeneration path; reuses `blake_data/` and regenerates analysis, visualizations, exports, and reports.
-- `status --coverage`: prints target-ledger coverage from local metadata.
-- `visualize`: regenerates visualization datasets and the workbench from local artifacts.
-- `audit-sources`: writes source discovery, provider health, source audit, and missing-evidence review data.
-- `acquire-evidence`: validates fallback evidence candidates; `--dry-run` writes review output without saving works.
-- `private-release-preflight`: writes local-only private preflight and rights-gate reports with `publish_action: none`.
-- `public-release-preflight`: writes a non-publishing GitHub + Zenodo release preflight report and corroboration ledger.
-- `public-release-package`: locally stages the release bundle, checksums, citation file, GitHub notes, and Zenodo metadata under `analysis_output/releases/public_release/`; it does not publish or deposit.
+Use `uv run --locked blake --help` and the selected command's `--help` with the
+correct extras. Nested command help may initialize the corpus callback; use
+admitted data/output paths. `blake-text` and `blake-application` have independent
+entry points for their documented source-bound contracts.
 
-## Data Models
+## HTTP API and errors
 
-### BlakeWork
+[BlakeAPI](../blake/export/api.py) is instantiated with a corpus instance and
+exposes its FastAPI `app`. The source defines the routes and error envelopes.
+It does not export a module-global initialized app or supply a built-in
+authentication/deployment service. API serving needs `full` and `api`.
 
-Main data model representing a Blake work.
-
-```python
-class BlakeWork:
-    id: str
-    metadata: BlakeMetadata
-    text_content: Optional[str]
-    text_versions: List[str]
-    images: List[BlakeImage]
-    primary_image: Optional[BlakeImage]
-    text_analysis: Dict[str, Any]
-    visual_analysis: Dict[str, Any]
-    cross_analysis: Dict[str, Any]
-    fully_processed: bool
-    processing_errors: List[str]
-```
-
-### BlakeMetadata
-
-Metadata for a Blake work.
-
-```python
-class BlakeMetadata:
-    id: str
-    title: str
-    work_type: WorkType
-    creation_date: Optional[datetime]
-    publication_date: Optional[datetime]
-    period: Optional[str]
-    description: Optional[str]
-    medium: Optional[str]
-    dimensions: Optional[str]
-    location: Optional[str]
-    source: SourceType
-    source_url: Optional[str]
-    source_id: Optional[str]
-    license_type: LicenseType
-    attribution: Optional[str]
-    usage_terms: Optional[str]
-    related_works: List[str]
-    parent_work: Optional[str]
-    series: Optional[str]
-    tags: List[str]
-    themes: List[str]
-    subjects: List[str]
-    file_path: Optional[Path]
-    file_size: Optional[int]
-    mime_type: Optional[str]
-    checksum: Optional[str]
-    created_at: datetime
-    updated_at: datetime
-    processed: bool
-    analysis_results: Dict[str, Any]
-```
-
-### BlakeImage
-
-Image data model.
-
-```python
-class BlakeImage:
-    id: str
-    url: str
-    file_path: Path
-    width: int
-    height: int
-    format: str
-    file_size: int
-    thumbnail_path: Optional[Path]
-    analysis_results: Dict[str, Any]
-    metadata: Dict[str, Any]
-```
-
-### Enums
-
-#### WorkType
-
-```python
-class WorkType(Enum):
-    POEM = "poem"
-    PAINTING = "painting"
-    DRAWING = "drawing"
-    PRINT = "print"
-    MANUSCRIPT = "manuscript"
-    LETTER = "letter"
-    PROSE = "prose"
-    UNKNOWN = "unknown"
-```
-
-#### SourceType
-
-```python
-class SourceType(Enum):
-    BLAKE_ARCHIVE = "blake_archive"
-    PROJECT_GUTENBERG = "project_gutenberg"
-    INTERNET_ARCHIVE = "internet_archive"
-    BRITISH_MUSEUM = "british_museum"
-    TATE = "tate"
-    WIKIMEDIA = "wikimedia"
-    UNKNOWN = "unknown"
-```
-
-#### LicenseType
-
-```python
-class LicenseType(Enum):
-    PUBLIC_DOMAIN = "public_domain"
-    CREATIVE_COMMONS = "creative_commons"
-    COPYRIGHT = "copyright"
-    UNKNOWN = "unknown"
-```
-
-## Analysis Classes
-
-### BlakeAnalyzer
-
-Main analysis orchestrator.
-
-```python
-class BlakeAnalyzer:
-    def __init__(self, data_dir: Path)
-    
-    async def analyze_work(self, work: BlakeWork, analysis_types: Optional[List[str]] = None) -> Dict[str, Any]
-    async def analyze_multiple_works(self, works: List[BlakeWork], analysis_types: Optional[List[str]] = None) -> Dict[str, Dict[str, Any]]
-    async def compare_works(self, works: List[BlakeWork]) -> Dict[str, Any]
-    def get_analysis_summary(self, works: List[BlakeWork]) -> Dict[str, Any]
-```
-
-### TextAnalyzer
-
-Text analysis functionality.
-
-```python
-class TextAnalyzer:
-    def __init__(self)
-    
-    async def analyze_work(self, work: BlakeWork) -> Dict[str, Any]
-    async def compare_works(self, works: List[BlakeWork]) -> Dict[str, Any]
-    async def extract_themes(self, text: str) -> List[str]
-    async def analyze_sentiment(self, text: str) -> Dict[str, Any]
-    async def extract_entities(self, text: str) -> List[Dict[str, Any]]
-```
-
-### VisualAnalyzer
-
-Visual analysis functionality.
-
-```python
-class VisualAnalyzer:
-    def __init__(self)
-    
-    async def analyze_image(self, image: BlakeImage) -> Dict[str, Any]
-    async def compare_images(self, images: List[BlakeImage]) -> Dict[str, Any]
-    async def extract_colors(self, image_path: Path) -> List[str]
-    async def analyze_composition(self, image_path: Path) -> Dict[str, Any]
-```
-
-## Export Classes
-
-### BlakeExporter
-
-Export functionality.
-
-```python
-class BlakeExporter:
-    def __init__(self, data_dir: Path)
-    
-    async def export_works(self, works: List[BlakeWork], config: ExportConfig) -> Path
-    async def export_to_json(self, works: List[BlakeWork], output_path: Path) -> Path
-    async def export_to_csv(self, works: List[BlakeWork], output_path: Path) -> Path
-    async def export_to_pdf(self, works: List[BlakeWork], output_path: Path) -> Path
-```
-
-### ExportConfig
-
-Export configuration.
-
-```python
-class ExportConfig:
-    format: str  # "json", "csv", "pdf", "parquet"
-    output_dir: Path
-    include_images: bool
-    include_analysis: bool
-    include_metadata: bool
-    custom_fields: Optional[List[str]]
-```
-
-## GUI Classes
-
-### BlakeGUI
-
-Streamlit-based GUI.
-
-```python
-class BlakeGUI:
-    def __init__(self, data_dir: Path)
-    
-    def run(self, host: str = "localhost", port: int = 8501) -> None
-    def create_work_explorer(self) -> None
-    def create_analysis_dashboard(self) -> None
-    def create_search_interface(self) -> None
-```
-
-## API Classes
-
-### BlakeAPI
-
-REST API server.
-
-```python
-class BlakeAPI:
-    def __init__(self, blake_instance: BlakeCorpus)
-    
-    def run(self, host: str = "0.0.0.0", port: int = 8000) -> None
-```
-
-**Endpoints:**
-
-- `GET /` - Root endpoint
-- `GET /works` - List works with pagination
-- `GET /works/{work_id}` - Get specific work
-- `GET /works/{work_id}/analysis` - Get work analysis
-- `POST /works/{work_id}/analyze` - Analyze work
-- `GET /search` - Search works
-- `GET /statistics` - Get collection statistics
-- `GET /export/{work_id}` - Export work
-- `GET /health` - Health check
-
-## Exceptions
-
-### BlakeError
-
-Base exception for all Blake package errors.
-
-### DownloadError
-
-Raised when download operations fail.
-
-### AnalysisError
-
-Raised when analysis operations fail.
-
-### MetadataError
-
-Raised when metadata operations fail.
-
-### ExportError
-
-Raised when export operations fail.
-
-## Configuration
-
-### Configuration Surfaces
-
-The package reads no `BLAKE_*` environment variables and no configuration file.
-Configuration is passed programmatically through `CorpusConfig`, through the
-`BlakeCorpus` constructor, or through the CLI options described under
-[Corpus CLI](#corpus-cli).
+Project exceptions are defined in [exceptions.py](../blake/exceptions.py).
+Portable evidence admission also uses named `EvidenceError`/`ResearchError`
+contracts documented in [shared methods](shared-methods.md). Retain the exact
+error and failed epoch; an exception is not permission to replace source data
+or treat an unavailable result as zero.

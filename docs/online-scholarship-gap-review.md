@@ -33,7 +33,10 @@ The refresh adds a distinction that the earlier ledger did not make strongly eno
 
 The pass found leads, not missing completed evidence. The strongest practical improvement is to make the next partial-evidence pass source-specific: exact Wikisource subpages for text-bearing fallback candidates, Morgan page-sequence records for Pickering Manuscript review, Yale records for manuscript and collection corroboration, Blake/An Illustrated Quarterly scholarship controls for complex works such as *Four Zoas*, and a rights-gated Blake Archive resolver only if it can fetch source-owned files reproducibly. Generic search pages, catalog landing pages, version pages, app-shell pages, bibliography-only pages, and throttled/short pulls remain rejection cases.
 
-## Next Local Actions
+## Recorded next actions and current staging status
+
+The direct-source rows discussed in steps 1–3 are already staged in [source-leads.json](source-leads.json) as manual-review candidates. That closes row staging only: exact-page extraction, source checks, corroboration, permissions and accepted coverage remain separate. The following list retains the original discovery plan; [project status](PROJECT_STATUS.md) and [TODO](../TODO.md) define the current scoped queue.
+
 
 1. Add exact direct-source candidate rows for the Wikisource text leads, preserving Wikimedia attribution and license metadata.
 2. Add Morgan page-sequence review for *The Pickering Manuscript* with one negative-control page proving that partial page text is not whole-work evidence.

@@ -19,15 +19,17 @@ The Blake package can be installed using UV (recommended) or pip:
 
 ```bash
 # Using UV (recommended)
-uv add blake
+uv add "blake[full]"
 
 # Using pip
-pip install blake
+pip install "blake[full]"
 ```
 
-The core install supports the corpus workflow and local artifact generation.
-Install `blake[api]` for FastAPI serving surfaces and `blake[gui]` for
-Streamlit/Gradio exploration.
+The default installation supports portable methods. These corpus/NLP/vision examples require `full`; HTTP serving adds `api`, and Streamlit/Gradio adds `gui`. From this checkout use the locked profiles in [verification](verification.md). Package-index commands select the version available there, not an implicit current Git revision.
+
+Python fragments after the complete introductory workflow assume the same explicit `corpus` instance and an async function or a notebook with top-level await. Synchronous launchers such as `explore()` are named separately. Keep data, outputs, model/cache resources and both Python prefixes in their admitted external workspace.
+
+The example ID `21160` is illustrative. Select IDs from your local `get_all_works()` result; `get_work()` may return `None`. Inspection/export examples enforce that precondition instead of assuming a successful acquisition.
 
 ### First Steps
 
@@ -134,6 +136,10 @@ if work:
 
 #### Read Text Content
 ```python
+work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
+
 if work.text_content:
     print(f"Text length: {len(work.text_content)} characters")
     print("First 200 characters:")
@@ -142,6 +148,10 @@ if work.text_content:
 
 #### Access Images
 ```python
+work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
+
 if work.images:
     print(f"Number of images: {len(work.images)}")
     for image in work.images:
@@ -156,6 +166,7 @@ if work.images:
 The Blake package organizes data in a structured directory tree:
 
 ```
+
 analysis_output/
 ├── pipeline_summary.json
 ├── corpus_manifest.json
@@ -243,6 +254,8 @@ cross_analysis = await corpus.analyze_work("21160", ["cross"])
 #### Text Analysis
 ```python
 work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
 if work.text_analysis:
     print("Text Analysis Results:")
     
@@ -268,6 +281,10 @@ if work.text_analysis:
 
 #### Visual Analysis
 ```python
+work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
+
 if work.visual_analysis:
     print("Visual Analysis Results:")
     for image_id, analysis in work.visual_analysis.items():
@@ -371,6 +388,8 @@ from pathlib import Path
 
 # Export specific work
 work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
 config = ExportConfig(
     format="json",
     output_dir=Path("./exports"),
@@ -383,6 +402,10 @@ print(f"Exported to: {output_path}")
 
 #### Export to CSV
 ```python
+work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
+
 config = ExportConfig(
     format="csv",
     output_dir=Path("./exports"),
@@ -443,7 +466,7 @@ corpus = BlakeCorpus(Path("/path/to/my/blake/data"))
 
 ### Configuration Surfaces
 
-The package reads no `BLAKE_*` environment variables and no configuration file.
+Corpus run settings use the explicit configuration surface below. Manuscript YAML, `BLAKE_MANUSCRIPT_EVIDENCE_ROOT`, `TEMPLATE_REPO_ROOT` and external storage/runtime bindings have separate roles; see [configuration](configuration.md).
 Run settings live in `CorpusConfig` or the matching `blake corpus run` options,
 while data and output locations come from the `BlakeCorpus` constructor or the
 global `--data-dir` / `--output-dir` CLI options:
@@ -463,6 +486,10 @@ corpus = BlakeCorpus(
 ### Custom Analysis
 
 ```python
+work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Choose an existing local work ID from get_all_works()")
+
 # You can extend the analysis by accessing the analyzer directly
 analyzer = corpus.analyzer
 
@@ -491,7 +518,9 @@ if not work:
 ```python
 # Check if work is processed
 work = await corpus.get_work("21160")
-if not work.fully_processed:
+if work is None:
+    print("Work not found in this local collection")
+elif not work.fully_processed:
     print("Work not fully processed. Check processing_errors:")
     print(work.processing_errors)
 ```
@@ -506,14 +535,15 @@ works = await corpus.get_all_works()
 batch_size = 3
 for i in range(0, len(works), batch_size):
     batch = works[i:i + batch_size]
-    await corpus.analyze_all()
+    for work in batch:
+        await corpus.analyze_work(work.id)
     await corpus.clear_cache()
 ```
 
 ### Getting Help
 
-1. **Check the logs**: Look in your data directory's `logs/` folder
-2. **Run diagnostics**: Use the verification script
+1. **Keep the raw error/logs**: Retain the actual command's streams and failed output epoch.
+2. **Choose the matching diagnostic**: Use [verification](verification.md) and [troubleshooting](troubleshooting.md); there is no single generic verification script for every surface.
 3. **Check GitHub Issues**: Look for similar problems
 4. **Ask for help**: Create a new issue with details
 
@@ -535,6 +565,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Check work details
 work = await corpus.get_work("21160")
+if work is None:
+    raise LookupError("Work not found in this local collection")
 print(f"Work ID: {work.id}")
 print(f"Fully processed: {work.fully_processed}")
 print(f"Processing errors: {work.processing_errors}")

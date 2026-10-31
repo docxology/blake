@@ -1,8 +1,8 @@
-# `docs/guides/` — Task-Specific Guides
+# Workflow guides
 
-Focused how-to documents that complement the main documentation in `../`.
+- [Source-governed acquisition](download-workflow.md): discovery, review and explicit local evidence refresh.
+- [Interactive terminal](interactive-orchestrator.md): optional terminal interface and its active source owner.
 
-| File | What it covers |
-|------|----------------|
-| `download-workflow.md` | How corpus acquisition works and how to run it |
-| `interactive-orchestrator.md` | Using the terminal interactive orchestrator (`blake/interactive_orchestrator.py`) |
+Use [documentation](../README.md) for shared methods, application integration and installation profiles; [project status](../PROJECT_STATUS.md) owns next work.
+
+[Guide maintenance contract](AGENTS.md).
