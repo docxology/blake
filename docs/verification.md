@@ -1,17 +1,36 @@
 # Verification scope
 
-The current 0.4.0 source removes obsolete interface paths while retaining the
-acquisition, NLP, vision, GUI and recovery capabilities. [publication.json](../publication.json)
-binds the final source commit, installed artifacts, rendered PDF and deposit.
-Results below are local qualification; there is no hosted test/lint/type workflow.
+The current 0.5.0 source adds deterministic review planning and blank batch
+custody. Active acquisition, NLP, vision, GUI and recovery capabilities remain.
+The retained 0.4.0 paper/deposit keeps its exact identities in
+[publication.json](../publication.json); this source update creates no new
+package-index, manuscript or Zenodo release. There is no hosted test/lint/type
+workflow; these are local source and installed-artifact qualifications.
 
 | Surface | Actual qualification | Result |
 |---|---|---|
-| Integrated source | CPython 3.11.17; locked full/dev/GUI/API installation | 1,171 tests passed; 83.34% branch-aware coverage against the 80% floor |
-| Interface migration | Recovery, method contracts, installed-layout fixtures and real CLI refusals | 403 tests passed; six new controls first reproduced the obsolete-interface failures |
-| Manuscript typing | Actual pinned template source supplied through MYPYPATH | Five source files pass strict mypy; 29 code errors repaired |
-| Numerical preservation | Offline fixture and nonzero display controls | 149 variable values and 20 statistical payloads unchanged |
-| Installed SDK | Separate normal wheel environment, outside the source checkout | Exact wheel digest, test count and coverage recorded in the publication manifest |
+| Integrated source | CPython 3.11.17; locked full/dev/GUI installation | 1,233 passed; 83.55% statement/branch coverage against the 80% floor |
+| New planning modules | Synthetic ordering, exhaustive small capacity oracle, permutations, real-file corruption and semantic-forgery controls | 62 passed; 100% of statements and branches in all three modules |
+| New module style/types | Declared isort, Black, flake8 and strict mypy | Three production modules pass; no whole-package strict typing claim |
+| Installed SDK 3.9 | Normal wheel; CPython 3.9.25; copied methods/studies tests outside source checkout | 340 passed; 99.03% statement/branch coverage against the 90% floor |
+| Installed SDK 3.11 | Same normal wheel; CPython 3.11.17; copied methods/studies tests outside source checkout | 340 passed; 99.12% statement/branch coverage against the 90% floor |
+| Artifact/runtime identity | All 174 wheel package/resource files independently compared with canonical and installed bytes; both Python prefixes external | Same golden ordered selection and full-pool digest on 3.9 and 3.11; dependency checks pass |
+| Metadata refusal | Actual repaired test on copied publication metadata | Unchanged records pass; falsely relabelled deposit and preferred-citation versions each fail |
+
+The qualified wheel SHA-256 is
+`83a730492da86d1290dbc94010f17a2b7041350416ba6df20a58a7645279ca27`.
+Installed SDK tests used pytest 8.4.2 and pytest-cov 6.3.0; their actual resolved
+dependency versions are retained separately for each interpreter. The source
+full-stack gate uses the repository lock. Passing under these environments does
+not qualify every optional dependency combination.
+
+The original 1,230-pass/one-failure full gate remains retained: it exposed a test
+that equated the retained deposit with current software. Its repaired assertions
+bind the paper/deposit to the publication manifest. Two independently identified
+ordinary-JSON plan contradictions first failed their refusal tests, then passed
+after exclusion-cardinality and selected/excluded-disjointness guards were added.
+Earlier interface, authoring and native qualifications remain attached to the
+0.4.0 publication; no old analysis or rendering is relabelled by this work.
 
 ## Reproduce the source and authoring gates
 

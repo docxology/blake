@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0 source — 2026-10-30
+
+- Add deterministic, source-facet round-robin review planning with explicit effort, seed, unit caps, full-pool hashes and shortfall.
+- Publish exclusive blank batches and verify actual membership, every selected evidence field and deterministic order against the original pool.
+- Keep scope, decision vocabularies and interpretation in applications; preserve historical analysis and paper producers. This source addition does not create a package-index or Zenodo release.
+
 ## 0.4.0 — 2026-10-29
 
 - Remove the recovery re-export module and duplicate archive command wrapper; use implementation owners and the executable recovery command module.

@@ -1,6 +1,6 @@
 # Shared research methods
 
-The 0.4.0 source separates reusable evidence methods from application policy.
+The 0.5.0 source separates reusable evidence methods from application policy.
 Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
 `uv sync --extra full` for acquisition, NLP, vision and the corpus pipeline.
 The complete test suite includes GUI tests and requires
@@ -166,6 +166,16 @@ means document-level ALL. The aggregate counts still include all participating
 occurrences, despite the one-hit display cap. It reports per-term totals, source
 coverage, token denominators and facets. Proximity is a retrieval constraint,
 not evidence that two expressions have the same meaning or institutional role.
+
+## Deterministic review workloads
+
+`review_planning.plan_review` ranks a caller-verified hit pool using explicit
+source-facet strata, a seed and a global source-unit cap. `review_batches`
+publishes and verifies immutable blank batches; the application owns source
+scope, original-run admission and authored decisions. Selection is an
+operational workload, not probability sampling or adjudication. See the
+[complete planning contract](methods/review-planning.md) for the byte grammar,
+capacity/shortfall semantics, custody and refusing controls.
 
 ## Review queues, run membership and producer closure
 

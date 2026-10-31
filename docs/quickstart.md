@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Choose the methods-only install or the full corpus pipeline. The 0.4.0 source
+Choose the methods-only install or the full corpus pipeline. The 0.5.0 source
 revision has passed [bounded installed-package qualification](verification.md).
 Use the source checkout below for the current source revision. Package-index
 commands apply to the version actually published there; they do not select the

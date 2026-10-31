@@ -11,7 +11,7 @@ new generic logic here and qualify the exact source adopted by each application.
 |---|---|
 | Current status or next work | [Project status](docs/PROJECT_STATUS.md) and [verification scope](docs/verification.md) |
 | Portable corpus, application integration or migration | [Application contract](docs/applications.md) and [shared methods](docs/shared-methods.md) |
-| Matching, schemas, statistics, proximity, composition or hierarchy | [Shared methods](docs/shared-methods.md), the relevant module tests and [style guide](docs/style-guide.md) |
+| Matching, schemas, statistics, proximity, composition, hierarchy or review planning | [Shared methods](docs/shared-methods.md), the relevant module tests and [style guide](docs/style-guide.md) |
 | Acquisition, recovery, NLP, vision or GUI | [README workflows](README.md), [method profiles](docs/methods.md) and the declared extras in `pyproject.toml` |
 | Paper, figures, rendering or publication | [Reproducibility](docs/manuscript/08_reproducibility.md), [style guide](docs/style-guide.md) and the exact deposited identities in `publication.json` |
 

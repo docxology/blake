@@ -1,6 +1,6 @@
 # Local source evidence methods
 
-Software: **0.4.0**. Methods profile: `local-source-evidence-v2`.
+Software source: **0.5.0**. Methods profile: `local-source-evidence-v2`.
 Dashboard schema: `2`. These labels describe software contracts. Captured source
 commits, manifest hashes, target-ledger versions and search normalization remain
 independently versioned evidence identities.
@@ -96,7 +96,7 @@ uv run --python 3.11 streamlit run blake/gui/gui.py
 ```
 
 Source and image terms still apply. Raw corpus data, private indexes, backups and
-provider text stay local. The current software assets accompany the versioned working paper at
+provider text stay local. The retained 0.4.0 software assets accompany the versioned working paper at
 [10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249). The earlier
 record contains the earlier PDF. Saved record analyses retain their actual
 producer identity independently from the current package and manuscript diagnostics.
