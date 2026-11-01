@@ -1,6 +1,6 @@
 # Verification scope
 
-The current 0.5.0 source adds deterministic review planning and blank batch
+The retained 0.5.0 source adds deterministic review planning and blank batch
 custody. Active acquisition, NLP, vision, GUI and recovery capabilities remain.
 The retained 0.4.0 paper/deposit keeps its exact identities in
 [publication.json](../publication.json); this source update creates no new
@@ -71,3 +71,43 @@ qualification does not qualify that optional stack. Historical analysis producer
 source roles and evidence hashes remain unchanged by interface removal. Browser
 interaction, accessibility, specialist scientific acceptance, complete oeuvre
 coverage and redistribution rights require their own evidence.
+
+## 0.6.0 installed provenance addition
+
+The new installed Git verifier passes 60 real metadata/file/import controls, with 100%
+statement/branch coverage across its three production modules. Strict mypy, isort/Black
+and flake8 pass for the changed module family. The repaired full-stack source suite
+passes 1,290 tests at 83.78% statement/branch coverage. The final packaging-only delta
+includes the new method guide in the sdist; normal wheel/source/resource checks
+separately qualify that closure. No dependency or qualified Python-source change
+follows. The same normally installed wheel passes 400 SDK tests on each of Python 3.9.25
+(99.13% statement/branch coverage) and Python 3.11.17 (99.21%), against the 90% floor.
+Every one of its 162 package/resource members matches both source and installation;
+observed imported Blake files resolve inside the selected external environment. A wrong
+wheel pin is refused before producing identity output. These results do not replace
+earlier 0.5.0 or deposited-paper receipts.
+
+Independent review reproduced stale post-import receipts, line-ending changes in
+metadata hashes, malformed RECORD parser exceptions and invalid scalar selection. Those
+defects have new refusing controls. The original 1,262-pass / 3-failure run and its
+unchanged-baseline reproduction remain retained. Exactly three obsolete tests that
+pinned duplicated overview commands or superseded TODO phrases were retired after
+independent review; no production behavior assertion was removed. Documentation remains
+subject to real source/link/command checks. The final count is not the old denominator
+relabeled.
+
+Exact raw receipts are retained under
+`Local/blake-sdk-scholarship-20261101T000147Z/evidence/`; source, normal-install,
+independent-review and publication claims stay separate.
+
+Subprocess instrumentation is explicit. The initial uninstrumented 32% observation and
+the first Python 3.9 instrumented SDK attempt are retained. That 3.9 attempt exposed
+coverage 7.10.7 subprocess tracing output that polluted strict child stdout controls;
+raw outputs were neither stripped nor accepted. Both normal consumer environments use
+pytest-cov 6.3.0's own subprocess support without the additional coverage subprocess
+patch, retaining all methods in the denominator. Python 3.11 source controls separately
+measure every new verifier statement/branch with subprocess tracing enabled.
+
+A second independent review found that normalized-text equality still allowed a decoy metadata directory. The revised locator requires the unique normal directory for the selected distribution name and restricts metadata RECORD members to that directory. Equal-normalized CRLF/LF decoys for all three metadata files now refuse; physical-byte positives remain valid. The rejected candidates and the incorrect 177-member documentation statement remain in their sealed preimages; the actual wheel has 162 package/resource members and 167 total files.
+
+The final locator binds the exact standard filesystem PathDistribution selected by Python through its guarded `_path` interface before inspecting metadata. It refuses a non-normal selection instead of substituting a different normal directory. Nonstandard providers, missing paths and non-filesystem metadata have real refusing controls. This explicit CPython implementation dependency is qualified on the declared Python 3.9/3.11 environments; it is not a universal provider adapter.

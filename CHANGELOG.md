@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 source — 2026-10-31
+
+- Add caller-pinned installed Git package verification over normal-install metadata, RECORD bytes, complete package membership and actual imported module origins. Editable/archive qualification remains a separate workflow; this local consistency receipt is not a security attestation.
+- Reject malformed RECORD parsing, use physical metadata bytes and recheck package/metadata state after import. Retain the rejected candidate, independent adversarial controls and original failures.
+- Retire three independently reviewed obsolete prose-pinning tests while preserving real CLI/software behavior coverage and the original RED denominator.
+- Reconcile metadata, export, analysis and corpus module guidance with current async APIs, capability profiles and evidence custody.
+- Preserve historical analysis, native and deposited-paper identities; no new paper or Zenodo edition follows from this source addition.
+
 ## 0.5.0 source — 2026-10-30
 
 - Add deterministic, source-facet round-robin review planning with explicit effort, seed, unit caps, full-pool hashes and shortfall.

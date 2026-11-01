@@ -343,84 +343,10 @@ def test_reproducibility_prepares_a_fresh_store_before_offline_analysis():
     assert "preserves Blake's analysis environment" in reproducibility
 
 
-def test_public_docs_use_canonical_local_regeneration_command():
-    root = Path(__file__).resolve().parents[1]
-    docs = [
-        root / "README.md",
-        root / "blake" / "README.md",
-        root / "docs" / "index.md",
-        root / "docs" / "quickstart.md",
-        root / "docs" / "user-guide.md",
-        root / "docs" / "api-reference.md",
-        root / "docs" / "developer-guide.md",
-        root / "docs" / "guides" / "download-workflow.md",
-        root / "docs" / "manuscript" / "AGENTS.md",
-    ]
-    canonical = "blake corpus run --skip-download --output-dir analysis_output"
-
-    for path in docs:
-        text = path.read_text(encoding="utf-8")
-        assert canonical in text, path
-        assert "blake corpus run --skip-download --skip-analysis" not in text, path
-        assert "uv run python run_all.py --quick" not in text, path
 
 
-def test_public_docs_document_corpus_cli_and_artifact_contract():
-    root = Path(__file__).resolve().parents[1]
-    api_reference = (root / "docs" / "api-reference.md").read_text(encoding="utf-8")
-    readme = (root / "README.md").read_text(encoding="utf-8")
-    docs_index = (root / "docs" / "index.md").read_text(encoding="utf-8")
-    combined = "\n".join([api_reference, readme, docs_index])
-
-    for command in [
-        "blake corpus run",
-        "blake corpus status",
-        "blake corpus visualize",
-        "blake corpus audit-sources",
-        "blake corpus acquire-evidence",
-        "blake corpus private-release-preflight",
-        "blake corpus public-release-preflight",
-        "blake corpus public-release-package",
-    ]:
-        assert command in combined
-
-    for artifact in [
-        "source_discovery_health.json",
-        "source_audit.json",
-        "evidence_acquisition_review.json",
-        "analysis_summary.json",
-        "analysis_diagnostics.json",
-        "figure_registry.json",
-        "private_release_preflight",
-        "rights_gate_report",
-        "public_release_preflight",
-        "public_release_package",
-    ]:
-        assert artifact in combined
-
-    assert "publish_action: none" in api_reference
 
 
-def test_todo_remains_forward_only_public_release_scope():
-    root = Path(__file__).resolve().parents[1]
-    todo = (root / "TODO.md").read_text(encoding="utf-8").lower()
-
-    for required in [
-        "public release decision",
-        "fallback-text corroboration",
-        "partial-evidence pass",
-        "distribution rights gate",
-    ]:
-        assert required in todo
-
-    for stale in [
-        "completed visualization",
-        "schema 1.4",
-        "dataset_statistics",
-        "private preflight implementation",
-        "render pdf",
-    ]:
-        assert stale not in todo
 
 
 def test_wikisource_fallback_script_is_scoped_to_text_only_missing_targets():

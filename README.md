@@ -2,7 +2,7 @@
 
 Start with [current status and scoped next work](docs/PROJECT_STATUS.md).
 
-Software source: **0.5.0**. See [release changes](CHANGELOG.md) and the
+Software source: **0.6.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 

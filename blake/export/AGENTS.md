@@ -1,37 +1,30 @@
-# export Module
+# Corpus export and optional API
 
-Export functionality and REST API for Blake data.
+Follow the [repository contract](../../AGENTS.md), [rights/method profiles](../../docs/methods.md) and [verification guide](../../docs/verification.md).
 
-## Components
+[BlakeExporter](exporter.py) orchestrates corpus exports:
+`await exporter.export_works(works, config)`, where `config` is
+`blake.models.ExportConfig` and owns the output directory. Its timestamped
+subdirectory is not an immutable evidence epoch; callers must select safe new
+output custody and retain original inputs. Compression removes that newly
+created uncompressed export directory, so never point it at retained evidence.
 
-| File | Class | Purpose |
-|------|-------|---------|
-| `exporter.py` | `BlakeExporter` | Main export orchestrator |
-| `formats.py` | Format handlers | JSON, CSV, PDF, HTML, Markdown support |
-| `api.py` | FastAPI app | REST API endpoints |
+[Format handlers](formats.py) have a different contract:
+`await get_exporter("html").export_works(works, output_dir, config)`.
+`get_exporter` returns JSON, CSV, PDF, HTML, Markdown/`md` or Parquet handlers.
+Keep output extensions, empty-input behavior, provenance and structured analysis
+fields consistent with the selected format. PDF uses ReportLab when available;
+dependency availability is not a qualified native manuscript render. Corpus
+exports are separate from the pinned docxology/template paper workflow.
 
-## Export Formats
+[BlakeAPI](api.py) owns the optional FastAPI app at `BlakeAPI(corpus).app`.
+Routes include `GET /works`, `GET /works/{work_id}`,
+`GET /works/{work_id}/analysis`, `POST /works/{work_id}/analyze`,
+`GET /search?q=...`, `GET /statistics`, `GET /export/{work_id}?format=...`
+and `GET /health`. Preserve status codes, typed error responses, pagination
+and rights/source metadata. Do not start a server to verify pure export changes.
 
-| Format | Extension | Description |
-|--------|-----------|-------------|
-| JSON | `.json` | Full structured export with metadata and analysis |
-| CSV | `.csv` | Tabular metadata export for spreadsheets |
-| PDF | `.pdf` | Formatted document with ReportLab |
-| HTML | `.html` | Styled web reports with CSS |
-| Markdown | `.md` | Documentation-friendly output |
-
-## Usage
-
-```python
-from blake.export import get_exporter
-
-exporter = get_exporter('html')
-await exporter.export_works(works, output_dir, config)
-```
-
-## API Endpoints
-
-- `GET /works` - List all works
-- `GET /works/{id}` - Get specific work
-- `GET /search` - Search works
-- `GET /export` - Export data
+Use the `full` capability for corpus exports, adding `api` for API work.
+Test real temporary output files and real local requests as appropriate; never
+substitute a mocked writer for an export gate. A successful export grants no
+redistribution permission for provider content or private application material.

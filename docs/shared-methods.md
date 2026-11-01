@@ -1,6 +1,6 @@
 # Shared research methods
 
-The 0.5.0 source separates reusable evidence methods from application policy.
+The 0.6.0 source separates reusable evidence methods from application policy.
 Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
 `uv sync --extra full` for acquisition, NLP, vision and the corpus pipeline.
 The complete test suite includes GUI tests and requires
@@ -241,3 +241,7 @@ Use `uv sync --extra full --extra dev --extra gui` for the complete test suite,
 including its Streamlit native tests. The full workflow is qualified
 separately on Python 3.11;
 the core's Python 3.9 result does not qualify that optional stack.
+
+## Installed producer admission
+
+Use the [installed Git provenance contract](methods/installed-provenance.md) to compare a caller-held commit, actual normal-install metadata, recorded package bytes and imported module origins before a new application producer stage. Allowed pins and native/release policy remain application responsibilities. Historical producers retain their original bindings.
