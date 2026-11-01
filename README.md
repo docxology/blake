@@ -2,7 +2,7 @@
 
 Start with [current status and scoped next work](docs/PROJECT_STATUS.md).
 
-Software source: **0.6.0**. See [release changes](CHANGELOG.md) and the
+Software source: **0.7.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 
@@ -36,7 +36,8 @@ counted statistics, proximity, review custody and offline workspaces.
 
 The shared methods have passed bounded source and installed-wheel
 qualification. The current source adds [deterministic review planning](docs/methods/review-planning.md)
-and blank, source-bound batches; applications own scope and authored decisions. See [verification scope and commands](docs/verification.md) for
+and blank, source-bound batches, plus [exact interval support](docs/methods/intervals.md).
+Applications own coordinate frames, grouping, activation and authored decisions. See [verification scope and commands](docs/verification.md) for
 the tested environments and retained limitations. The package-index distribution is independent of the current Git source.
 The working-paper DOI identifies the deposited manuscript and its exact assets.
 

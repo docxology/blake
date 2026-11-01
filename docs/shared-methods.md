@@ -1,6 +1,6 @@
 # Shared research methods
 
-The 0.6.0 source separates reusable evidence methods from application policy.
+The 0.7.0 source separates reusable evidence methods from application policy.
 Plain `uv sync` installs packaging, Click, Pydantic and typing extensions. Use
 `uv sync --extra full` for acquisition, NLP, vision and the corpus pipeline.
 The complete test suite includes GUI tests and requires
@@ -13,6 +13,15 @@ Private applications own vocabularies, research questions, review labels,
 branding and interpretation. Federalism and Entomology use those boundaries;
 this package publishes neither their source corpora nor their research claims.
 Shared conventions live in the [style guide](style-guide.md).
+
+## Exact interval support
+
+[`blake.methods.intervals`](methods/intervals.md) supplies strict nonnegative
+integer intervals and exact union, intersection, difference, support measure
+and overlapping record-pair counts. Set geometry coalesces adjacency; pair
+counting preserves multiplicity and requires strict intersection. Applications
+declare coordinate frames, group sources and activate time-dependent protection
+before calling these operations. Search windows retain their distinct contract.
 
 ## Declared evidence hierarchies
 

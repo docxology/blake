@@ -1,5 +1,7 @@
 # Verification scope
 
+The current 0.7.0 interval addition is qualified below, with exact structured
+receipts in [the interval qualification record](interval-qualification-20261101.json).
 The retained 0.5.0 source adds deterministic review planning and blank batch
 custody. Active acquisition, NLP, vision, GUI and recovery capabilities remain.
 The retained 0.4.0 paper/deposit keeps its exact identities in
@@ -16,6 +18,9 @@ workflow; these are local source and installed-artifact qualifications.
 | Installed SDK 3.11 | Same normal wheel; CPython 3.11.17; copied methods/studies tests outside source checkout | 340 passed; 99.12% statement/branch coverage against the 90% floor |
 | Artifact/runtime identity | All 174 wheel package/resource files independently compared with canonical and installed bytes; both Python prefixes external | Same golden ordered selection and full-pool digest on 3.9 and 3.11; dependency checks pass |
 | Metadata refusal | Actual repaired test on copied publication metadata | Unchanged records pass; falsely relabelled deposit and preferred-citation versions each fail |
+
+These rows retain the 0.5.0 producer. The later 0.6.0 and 0.7.0 qualifications
+below describe their own source and installed artifacts.
 
 The qualified wheel SHA-256 is
 `83a730492da86d1290dbc94010f17a2b7041350416ba6df20a58a7645279ca27`.
@@ -111,3 +116,47 @@ measure every new verifier statement/branch with subprocess tracing enabled.
 A second independent review found that normalized-text equality still allowed a decoy metadata directory. The revised locator requires the unique normal directory for the selected distribution name and restricts metadata RECORD members to that directory. Equal-normalized CRLF/LF decoys for all three metadata files now refuse; physical-byte positives remain valid. The rejected candidates and the incorrect 177-member documentation statement remain in their sealed preimages; the actual wheel has 162 package/resource members and 167 total files.
 
 The final locator binds the exact standard filesystem PathDistribution selected by Python through its guarded `_path` interface before inspecting metadata. It refuses a non-normal selection instead of substituting a different normal directory. Nonstandard providers, missing paths and non-filesystem metadata have real refusing controls. This explicit CPython implementation dependency is qualified on the declared Python 3.9/3.11 environments; it is not a universal provider adapter.
+
+## 0.7.0 exact interval addition
+
+The final Python 3.11.17 full-stack source suite passes 1,364 tests at 83.07%
+statement/branch coverage against the 80% floor. Its 74 interval tests cover all
+86 statements and 38 branches of the new module. Independent finite integer-set
+and multiplicity oracles cover adjacency, empty support, duplicates, nesting,
+fragmentation, permutations, large integers and invalid constructed/copied
+models. Strict mypy, isort, Black and flake8 pass for the new module family.
+
+The same normal wheel passes 474 methods/studies tests on each of Python 3.9.25
+and 3.11.17: 99.17% and 99.25% statement/branch coverage respectively, against the
+90% SDK floor. All 163 package/resource members match source and both installed
+copies; observed imports remain inside the selected external environment.
+Dependency compatibility checks pass. The 234-package lock preserves every
+non-Blake package version from the preceding lock.
+
+Five plausible wrong rules fail the same real contract tests on independent
+ordinary source copies: strict versus closed intersection, record deduplication,
+raw-length summation, lost subtraction fragments and an incorrect depth
+threshold. The valid copy passes; the production module is unchanged by these
+controls. The initial new-feature import failures, formatting refusals, occupied
+lock-copy refusal and an incorrectly supplied wheel digest remain retained. The
+last was refused before installed identity/test output; the final wheel digest
+was read from the built artifact. None is relabelled as a successful attempt.
+An initial documentation extractor selected zero links and was insufficient;
+the corrected check traverses 95 links, executes the installed API example and
+refuses an extracted missing-link control. Its earlier output remains retained.
+
+The [structured qualification](interval-qualification-20261101.json) names exact
+evidence and wheel identities. Source, normal-wheel, installed-Git consumer,
+application, native, scientific and publication claims remain separate. This
+addition supplies no new matching profile, reading decision or paper/deposit.
+
+Independent review approved the Python/API and earlier normal wheel after
+33,003 new oracle comparisons and 63 refusals on each interpreter. Its
+nonblocking DOC-01 found the qualification JSON missing from the sdist. The
+owner added that file and reproduced a second packaging discrepancy: direct
+wheel builds included 15 agent-guidance files omitted by source-archive builds.
+Explicit wheel exclusions align the two runtime manifests. The replacement
+wheel changes only packaged `pyproject.toml` and RECORD bytes, preserves every
+Python member and passes 474 tests in each fresh normal SDK environment. The
+final archive/source/resource checks qualify this packaging delta separately;
+the earlier independent verdict is retained on its original candidate.

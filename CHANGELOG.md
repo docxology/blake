@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 source — 2026-11-01
+
+- Add exact half-open integer interval union, intersection, difference, support measure and record-depth support, plus strict overlapping record-pair counts. Set operations merge adjacency; depth and pair counts preserve duplicate records and exclude empty support. Pair counts require strict intersection.
+- Revalidate all supplied interval models at every public boundary, including instances constructed or copied without validation. Keep coordinate units, source grouping, activation and interpretation in applications.
+- Characterize the new contract against exhaustive finite-set oracles and deliberately incorrect endpoint, multiplicity, measure and fragmentation rules. Source, installed SDK, application and native qualifications retain separate receipts.
+- Preserve retrieval/window contracts, captured source roles, historical analysis producers and the retained deposited-paper identities.
+- Include the new qualification record in the source archive and align direct/source-archive wheel membership through explicit agent-guidance exclusions; retain the discovered mismatch and verify the corrected package separately.
+
 ## 0.6.0 source — 2026-10-31
 
 - Add caller-pinned installed Git package verification over normal-install metadata, RECORD bytes, complete package membership and actual imported module origins. Editable/archive qualification remains a separate workflow; this local consistency receipt is not a security attestation.

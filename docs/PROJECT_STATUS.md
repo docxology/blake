@@ -23,6 +23,17 @@ whole-oeuvre, image, scientific, accessibility or redistribution certification.
 
 The four module guides for [metadata](../blake/metadata/AGENTS.md), [export](../blake/export/AGENTS.md), [analysis](../blake/analysis/AGENTS.md) and [corpus](../blake/corpus/AGENTS.md) now describe the current owners, async entry points, optional capabilities and safe evidence custody. The 0.6.0 [installed provenance method](methods/installed-provenance.md) implements the concrete application custody seam; its qualification is recorded separately from the retained 0.5.0 gate below.
 
+## 1 November interval-method addition
+
+Software 0.7.0 adds [exact interval support](methods/intervals.md): union,
+intersection, subtraction, union length, multiplicity-depth support and strict
+record-pair counts. Applications retain coordinate frames, grouping, activation
+and interpretation. Retrieval windows and historical analytical producers keep
+their distinct contracts. The [qualification record](interval-qualification-20261101.json)
+binds 1,364 source tests and 474 normal installed SDK tests on each supported
+qualification interpreter. The deposited paper retains the publication identities
+above; no new native or Zenodo edition follows from this method addition.
+
 ## Next bounded units
 
 | Scope and owner | Useful unit and resource budget | Acceptance |

@@ -108,6 +108,7 @@ blake-application = "blake.applications:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["blake"]
+exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "uv.lock" = "blake/_resources/uv.lock"
@@ -120,7 +121,7 @@ path = "blake/version.py"
 [tool.hatch.build.targets.sdist]
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
-    "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md",
+    "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md", "/docs/methods/intervals.md", "/docs/interval-qualification-20261101.json",
     "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md", "/docs/verification.md", "/docs/methods/composition.md", "/docs/methods/review-planning.md", "/docs/methods/installed-provenance.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]

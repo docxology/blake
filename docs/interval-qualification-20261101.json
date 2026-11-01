@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "software_version": "0.7.0",
+  "source_tests": {
+    "tests": 1364,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_statement_branch_coverage": 83.07364360757245,
+  "interval_module": {
+    "covered_lines": 86,
+    "num_statements": 86,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 0,
+    "num_branches": 38,
+    "num_partial_branches": 0,
+    "covered_branches": 38,
+    "missing_branches": 0
+  },
+  "interval_sha256": "d9fa5345506b579579255f005d018857ecfb61a6eb3a2effd3aa24a101077d11",
+  "normal_installed_sdk": {
+    "39": {
+      "tests": {
+        "tests": 474,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "statement_branch_coverage": 99.1686460807601,
+      "package_resources": 163,
+      "distributions": 16,
+      "python": "3.9.25 (main, Oct 31 2025, 23:01:59) \n[Clang 21.1.4 ]",
+      "wheel_sha256": "24eb670f3f1048393127b8ff3f865b0413fd8e0aa09ec87166af8b32983fb677",
+      "prefix": "/Volumes/GitVault/Local/blake-manuscript-advance-20261101T212248Z/artifacts/sdk07-packaging03-39",
+      "base_prefix": "/Volumes/GitVault/Local/blake-review-planning-20261030T232019Z/artifacts/python-runtime/cpython-3.9.25-macos-aarch64-none"
+    },
+    "311": {
+      "tests": {
+        "tests": 474,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "statement_branch_coverage": 99.24782264449723,
+      "package_resources": 163,
+      "distributions": 14,
+      "python": "3.11.17 (main, Oct 14 2026, 00:55:17) [Clang 23.1.3 ]",
+      "wheel_sha256": "24eb670f3f1048393127b8ff3f865b0413fd8e0aa09ec87166af8b32983fb677",
+      "prefix": "/Volumes/GitVault/Local/blake-manuscript-advance-20261101T212248Z/artifacts/sdk07-packaging03-311",
+      "base_prefix": "/Volumes/GitVault/Local/runtimes/uv-python/cpython-3.11-macos-aarch64-none"
+    }
+  },
+  "canaries": {
+    "original_module_sha256": "d9fa5345506b579579255f005d018857ecfb61a6eb3a2effd3aa24a101077d11",
+    "unchanged": true,
+    "cases": [
+      {
+        "rule": "baseline",
+        "actual_returncode": 0,
+        "tests": {
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "d9fa5345506b579579255f005d018857ecfb61a6eb3a2effd3aa24a101077d11",
+        "evidence": "interval-canary-baseline02"
+      },
+      {
+        "rule": "depth-threshold",
+        "actual_returncode": 1,
+        "tests": {
+          "tests": 14,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "173acd5e6f2a3bd28498ec3d2a283cc92fca953cced3ed8141751a379de1295d",
+        "evidence": "interval-canary-depth-threshold02"
+      },
+      {
+        "rule": "closed-endpoint",
+        "actual_returncode": 1,
+        "tests": {
+          "tests": 14,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "961c80d35fc60af404b5c03bb6372d23189d1708f97ea9992e2fded03110732d",
+        "evidence": "interval-canary-closed-endpoint02"
+      },
+      {
+        "rule": "deduplicated-records",
+        "actual_returncode": 1,
+        "tests": {
+          "tests": 14,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "3e834e6667a757598f09d9a318a82aa17f7c391b335e1027c1b92f92968e2539",
+        "evidence": "interval-canary-deduplicated-records02"
+      },
+      {
+        "rule": "raw-length-sum",
+        "actual_returncode": 1,
+        "tests": {
+          "tests": 14,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "8fb44cb3cb8ecdde13c076d74075accdf9faf2a2ced2a71f7a05181a13f894c8",
+        "evidence": "interval-canary-raw-length-sum02"
+      },
+      {
+        "rule": "lost-middle-fragment",
+        "actual_returncode": 1,
+        "tests": {
+          "tests": 14,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0
+        },
+        "module_sha256": "f9aefe31ef655212d395cbaea05f65ff1978040c6a92514aee7be23a0a02b9d3",
+        "evidence": "interval-canary-lost-middle-fragment02"
+      }
+    ],
+    "scope": "Independent ordinary source copies; expected failing contract tests retained, not an installed qualification."
+  },
+  "evidence_root": "Local/blake-manuscript-advance-20261101T212248Z",
+  "scope": "Local source and normal-wheel qualification. No application analysis, native manuscript, package-index, hosted-CI, scholarly or deposit acceptance.",
+  "independent_review": {
+    "reviewed_candidate_sha256": "0c57d08b0981975ccc9a2318fe6f82cb0d450871f25f5f704b937ca907410a76",
+    "reviewed_wheel_sha256": "5ccfe2874bfba50bcf13bccd266375847e652c8e2ee01d4c5738f5e4fb9065ff",
+    "verdict_sha256": "8459e87b7d14d1c6aa83e22b8b65d8bb09209855f4d08df50cec01595c7b809b",
+    "oracle_comparisons_each": 33003,
+    "refusals_each": 63,
+    "scope": "Reviewed Python/API and exact earlier normal wheel. Final packaging delta is owner-qualified separately."
+  },
+  "owner_packaging_followup": {
+    "finding": "DOC-01",
+    "sdist_addition": "docs/interval-qualification-20261101.json",
+    "wheel_routes": "Direct build originally added 15 AGENTS.md files; explicit wheel exclusions restore the reviewed runtime membership.",
+    "changed_wheel_members": [
+      "blake/_resources/pyproject.toml",
+      "blake-0.7.0.dist-info/RECORD"
+    ],
+    "python_members_unchanged": true,
+    "normal_sdk_tests_each": 474,
+    "scope": "Replacement wheel checked in fresh normal environments; no fresh independent audit of this packaging-only delta."
+  }
+}

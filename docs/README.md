@@ -10,7 +10,7 @@ documentation map; [index.md](index.md) is a short entry point.
 | Need | Contract |
 |---|---|
 | Portable corpus and an independent research application | [Application contract](applications.md) and [shared methods](shared-methods.md) |
-| Matching profiles, statistics, proximity, annotations, hierarchy or review planning | [Shared APIs](shared-methods.md), [composition](methods/composition.md) and [review planning](methods/review-planning.md) |
+| Matching profiles, statistics, proximity, annotations, hierarchy, review planning or interval support | [Shared APIs](shared-methods.md), [composition](methods/composition.md), [review planning](methods/review-planning.md) and [intervals](methods/intervals.md) |
 | Source acquisition, local corpus analysis, GUI or API | [User guide](user-guide.md), [configuration](configuration.md) and [API reference](api-reference.md) |
 | Recovery, source-bound search and an offline workspace | [Local evidence methods](methods.md) and [text search](text-search.md) |
 | Extend the implementation | [Developer guide](developer-guide.md), [architecture](ARCHITECTURE.md) and [technical specification](spec.md) |
