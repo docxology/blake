@@ -15,10 +15,6 @@ Every item should preserve the source-governed corpus contract: distinguish
 local evidence, source authority, generated summaries, and public redistribution
 permission.
 
-## Minor Improvements
-
-- [ ] Reconcile module agent guidance. The four named paths, 30–60 minute budget and acceptance are scoped in [project status](docs/PROJECT_STATUS.md#next-bounded-units). Compare the guidance with the actual [API/source contracts](docs/api-reference.md), check its links/claims and run `git diff --check`. No unrelated full-stack campaign is needed for this guide-only unit.
-
 ## Medium Improvements
 
 - [ ] Fallback-text corroboration review pass. Scope: use the generated
