@@ -18,8 +18,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Text Processing :: Linguistic",
@@ -122,13 +120,13 @@ path = "blake/version.py"
 include = [
     "/blake", "/pyproject.toml", "/uv.lock", "/README.md", "/LICENSE",
     "/CITATION.cff", "/codemeta.json", "/.zenodo.json", "/CHANGELOG.md", "/docs/methods/intervals.md", "/docs/interval-qualification-20261101.json",
-    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md", "/docs/verification.md", "/docs/methods/composition.md", "/docs/methods/review-planning.md", "/docs/methods/installed-provenance.md",
+    "/DESIGN.md", "/docs/methods.md", "/docs/text-search.md", "/docs/applications.md", "/docs/shared-methods.md", "/docs/style-guide.md", "/docs/verification.md", "/docs/runtime-profile-20261102.json", "/docs/methods/composition.md", "/docs/methods/review-planning.md", "/docs/methods/installed-provenance.md",
 ]
 exclude = ["**/__pycache__", "**/*.pyc", "**/AGENTS.md"]
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ['py311']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -150,7 +148,7 @@ multi_line_output = 3
 line_length = 88
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

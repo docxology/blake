@@ -40,7 +40,8 @@ application evidence instead of an internal SQLite layout.
 ## Qualify and deliver
 
 Use `uv` and the pinned project toolchain. Follow [the verification guide](docs/verification.md)
-for the Python 3.9 methods and Python 3.11 optional-stack gates, real local
+for current Python 3.11 methods/optional-stack gates and retained Python 3.9
+artifact qualifications, real local
 fixtures/HTTP controls, installed-wheel checks and their distinct coverage
 floors. Reproduce the failure and exercise a refusing control before declaring
 a repair complete. Documentation changes need link/command/claim checks, not
