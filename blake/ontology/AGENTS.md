@@ -2,7 +2,7 @@
 
 Small, mostly-static knowledge module. Each file carries its own module
 docstring; public surface is defined in `__init__.py`. Human overview:
-`README.md` here. Repo-wide policy: See the lane-level policy at `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md` (local-only tree, symlinked into the template checkout; never commit).
+`README.md` here. Repo-wide policy: See the lane-level policy, maintained in the template repository (a local-only tree, symlinked into the template checkout; never commit).
 
 - `concepts.py`, `themes.py`, `symbols.py` define data + detectors; keep
   entries scholarly and cite-worthy (this project treats wrong public claims

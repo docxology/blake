@@ -1,6 +1,6 @@
 # `blake/viz/integrations/` — Agent Notes
 
-Human overview: `README.md` here. Repo-wide policy: See the lane-level policy at `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md` (local-only tree, symlinked into the template checkout; never commit).
+Human overview: `README.md` here. Repo-wide policy: See the lane-level policy, maintained in the template repository (a local-only tree, symlinked into the template checkout; never commit).
 
 - Sibling subpackages: `dashboards/`, `engines/`, `integrations/`,
   `renderers/`, `reports/` — every child of `blake/viz/` is documented; none
