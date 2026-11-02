@@ -154,13 +154,13 @@ Raw downloads, SQLite metadata, cached texts, and images live under `blake_data/
 ## Recover the local corpus
 
 ```bash
-uv sync --python 3.11 --extra full --extra dev --extra api --extra gui
-uv run --python 3.11 python -m blake.recovery_commands recover --full
-uv run --python 3.11 python -m blake.recovery_commands verify
-uv run --python 3.11 python -m blake.recovery_commands register
-uv run --python 3.11 blake-text build-recovered
-uv run --python 3.11 blake-text --recovered query eternity
-uv run --python 3.11 blake-text --recovered query state --scope exploratory --plane erdman
+uv sync --extra full --extra dev --extra api --extra gui
+uv run python -m blake.recovery_commands recover --full
+uv run python -m blake.recovery_commands verify
+uv run python -m blake.recovery_commands register
+uv run blake-text build-recovered
+uv run blake-text --recovered query eternity
+uv run blake-text --recovered query state --scope exploratory --plane erdman
 ```
 
 Recovery saves the entire pinned `blakearchive/data` source repository, every
@@ -204,9 +204,9 @@ are bound to exact source hashes; other ambiguous readings remain explicit error
 Create a portable local backup after recovery:
 
 ```bash
-uv run --python 3.11 python -m blake.recovery_commands backup --destination blake_data/backups/full-corpus.tar
-uv run --python 3.11 python -m blake.recovery_commands verify-backup blake_data/backups/full-corpus.tar
-uv run --python 3.11 python -m blake.recovery_commands restore-drill blake_data/backups/full-corpus.tar --destination blake_data/restore-check
+uv run python -m blake.recovery_commands backup --destination blake_data/backups/full-corpus.tar
+uv run python -m blake.recovery_commands verify-backup blake_data/backups/full-corpus.tar
+uv run python -m blake.recovery_commands restore-drill blake_data/backups/full-corpus.tar --destination blake_data/restore-check
 ```
 
 The bundle includes every inventoried source, text, image and index, plus the
@@ -307,7 +307,7 @@ python -m blake.text_search --index blake_data/search/demo.sqlite suite
 ## Development
 
 ```bash
-uv sync --locked --python 3.11 --extra full --extra dev --extra api --extra gui
+uv sync --locked --extra full --extra dev --extra api --extra gui
 uv run pytest tests/ -q
 uv run pytest tests/ -q -m "not slow and not integration"
 uv run blake corpus run --quick --output-dir analysis_output

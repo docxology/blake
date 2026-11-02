@@ -29,10 +29,10 @@ existing checkout, choose the needed locked environment:
 uv sync --locked
 
 # Corpus pipeline
-uv sync --locked --python 3.11 --extra full
+uv sync --locked --extra full
 
 # Complete test collection, including GUI/API dependencies
-uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
+uv sync --locked --extra full --extra dev --extra gui --extra api
 ~~~
 
 Methods support Python 3.9; the optional-stack qualification uses Python 3.11.
