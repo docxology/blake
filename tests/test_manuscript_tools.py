@@ -270,9 +270,8 @@ def test_render_typography_uses_compact_pdf_layout():
     assert r"\changefontsize[13.2pt]{10.5pt}" in preamble
 
 
-def test_manuscript_title_and_section_titles_are_evidence_bounded():
+def test_manuscript_section_anchors_are_unique_and_complete():
     root = Path(__file__).resolve().parents[1]
-    config = (root / "docs" / "manuscript" / "config.yaml").read_text(encoding="utf-8")
     headings = "\n".join(
         line
         for path in sorted((root / "docs" / "manuscript").glob("*.md"))
@@ -280,23 +279,20 @@ def test_manuscript_title_and_section_titles_are_evidence_bounded():
         if line.startswith("#")
     )
 
-    assert 'title: "Mapping William Blake’s Works"' in config
-    assert (
-        'subtitle: "Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"'
-        in config
-    )
-    for title in [
-        "# Introduction: Making Blake Coverage Measurable {#sec:introduction}",
-        "# Methods: Target Ledger, Source Custody, and Offline Analysis {#sec:methods_pipeline}",
-        "# Methods: Local Text, Image, Cross-Modal, and Theme Diagnostics {#sec:methods_analysis}",
-        "# Results: Target Coverage, Provenance, and Evidence Gaps {#sec:results_coverage}",
-        "# Results: Text Scale, Visual Evidence, and Cross-Modal Diagnostics {#sec:results_text}",
-        "# Discussion: What the Corpus Can and Cannot Claim {#sec:discussion}",
-        "# Rights and Distribution Controls {#sec:legal_distribution}",
-        "# Limitations: Target Scope, Source Drift, and Missing Evidence {#sec:limitations}",
-        "# Conclusion: Evidence-Bounded Blake Corpus Mapping {#sec:conclusion}",
-    ]:
-        assert title in headings
+    anchors = re.findall(r"\{#(sec:[a-zA-Z0-9_-]+)(?:\s+[^{}]*)?\}", headings)
+    required = {
+        "sec:introduction",
+        "sec:methods_pipeline",
+        "sec:methods_analysis",
+        "sec:results_coverage",
+        "sec:results_text",
+        "sec:discussion",
+        "sec:legal_distribution",
+        "sec:limitations",
+        "sec:conclusion",
+    }
+    assert required <= set(anchors)
+    assert len(anchors) == len(set(anchors))
 
 
 def test_manuscript_overclaims_are_negated_or_scoped():
@@ -341,12 +337,6 @@ def test_reproducibility_prepares_a_fresh_store_before_offline_analysis():
     assert "--seed {{ANALYSIS_SEED}}" in reproducibility
     assert "no synthetic fixtures" in reproducibility
     assert "preserves Blake's analysis environment" in reproducibility
-
-
-
-
-
-
 
 
 def test_wikisource_fallback_script_is_scoped_to_text_only_missing_targets():
@@ -628,7 +618,7 @@ def test_registered_figures_are_cited_in_manuscript_sources():
     )
 
     registered = {name for name, _builder in FIGURES}
-    embedded = set(re.findall(r"\{#fig:([a-z_]+)\}", manuscript_text))
+    embedded = set(re.findall(r"\{#fig:([a-z_]+)(?:\s+[^{}]*)?\}", manuscript_text))
     omitted = {
         "all_acquired_images_mosaic",
         "work_area_image_mosaics",

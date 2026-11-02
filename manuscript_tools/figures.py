@@ -6,7 +6,6 @@ import sqlite3
 import textwrap
 from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Literal
 
@@ -26,6 +25,11 @@ from manuscript_tools.core_architecture import (  # noqa: E402
     core_figure_statistics,
     fig_core_profile_ownership,
 )
+from manuscript_tools.interval_figure import (  # noqa: E402
+    INTERVAL_FIGURE_BRIEF,
+    fig_interval_support,
+)
+from manuscript_tools.interval_illustration import interval_tokens  # noqa: E402
 from manuscript_tools.method_types import (  # noqa: E402
     CategoryCoverage,
     authority_label,
@@ -421,6 +425,7 @@ FIGURE_STATISTICAL_BRIEFS: dict[str, dict[str, str]] = {
 for _figure_name, _fields in FIGURE_STATISTICAL_BRIEFS.items():
     FIGURE_BRIEFS[_figure_name].update(_fields)
 FIGURE_BRIEFS["core_profile_ownership"] = dict(CORE_FIGURE_BRIEF)
+FIGURE_BRIEFS["core_interval_support"] = dict(INTERVAL_FIGURE_BRIEF)
 
 
 def _read(ao: Path, rel: str) -> Any:
@@ -828,6 +833,8 @@ def compute_figure_statistics(
 ) -> dict[str, Any]:
     if figure_name == "core_profile_ownership":
         return dict(core_figure_statistics())
+    if figure_name == "core_interval_support":
+        return dict(interval_tokens())
     ao = Path(analysis_output)
     target_rows = _read_optional(ao, "visualizations/target_coverage_matrix.json", [])
     text_rows = _read_optional(ao, "visualizations/text_metrics.json", [])
@@ -2491,6 +2498,7 @@ def fig_source_authority_tiers(ao: Path, out_dir: Path) -> Path:
 
 FIGURES = [
     ("core_profile_ownership", fig_core_profile_ownership),
+    ("core_interval_support", fig_interval_support),
     ("coverage_status", fig_coverage_status),
     ("category_coverage", fig_category_coverage),
     ("corpus_modalities", fig_corpus_modalities),
@@ -2524,45 +2532,4 @@ PUBLICATION_OMISSIONS = frozenset(
 )
 
 
-def generate_all_figures(
-    project_root: Path | str, *, public_only: bool = False,
-    evidence_root: Path | str | None = None,
-) -> list[Path]:
-    from manuscript_tools.paths import manuscript_roots
-
-    roots = manuscript_roots(project_root, evidence_root)
-    ao = roots.analysis
-    if not ao.exists():
-        raise FileNotFoundError(
-            f"analysis_output/ not found at {ao}. Run `run_all.py --quick` first."
-        )
-    _configure()
-    out_dir = roots.output / "figures"
-    written: list[Path] = []
-    for name, builder in FIGURES:
-        if public_only and name in PUBLICATION_OMISSIONS:
-            continue
-        written.append(builder(ao, out_dir))
-    registry = {
-        "schema_version": "1.5",
-        "scope": "public" if public_only else "local",
-        "generated_at": datetime.now().isoformat(),
-        "figures": [
-            {
-                "label": f"fig:{path.stem}",
-                "filename": path.name,
-                "path": path.name,
-                "alt_text": FIGURE_BRIEFS[path.stem]["accessibility_summary"],
-                "generated_by": "manuscript_tools.figures",
-                "bytes": path.stat().st_size,
-                "statistics": compute_figure_statistics(ao, path.stem),
-                **FIGURE_BRIEFS[path.stem],
-            }
-            for path in written
-        ],
-    }
-    (out_dir / "figure_registry.json").write_text(
-        json.dumps(registry, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    return written
+from manuscript_tools.figure_dispatch import generate_all_figures as generate_all_figures  # noqa: E402

@@ -10,10 +10,10 @@ Every registry figure must include these statistical fields:
 
 - `statistical_question`: the descriptive question the visual answers.
 - `data_shape`: the artifact grain, such as one target row, one work row, or one image-depth row.
-- `statistical_method`: the descriptive method used; current figures are run/census diagnostics, not inferential estimates.
+- `statistical_method`: the declared descriptive, source-code or mathematical method; no figure supplies an inferential population estimate.
 - `missingness_or_scope`: the denominator, exclusion, or rights/scope caveat needed to prevent overclaiming.
 - `statistical_check`: the figure-specific check that keeps denominators, labels, or scope visible.
-- `statistics`: a JSON-serializable object regenerated from `analysis_output/`, not hand-authored prose.
+- `statistics`: a JSON-serializable object computed by the declared producer. Corpus diagnostics use saved `analysis_output/`; code and mathematical figures use current declarations or public API outputs, independently of that analytical epoch.
 
 The figure families use the following statistic patterns:
 
@@ -21,6 +21,7 @@ The figure families use the following statistic patterns:
 - Text figures report text-work `n`, total and share-of-total words, document frequency, top-term share, length-band caveats, and median/IQR summaries where length sensitivity matters.
 - PCA and text-image scatter figures report feature count, work count, variance, top-axis terms, zero-image mass, outliers, and descriptive local-run correlations only.
 - Image-depth/profile/mosaic/authority figures report resolved-vs-downloaded ratios, completion status counts, missing-path exclusions, rights-gate notes, category totals, and authority-tier percentages.
+- Source-code diagrams bind their exact implementation files. Interval illustrations bind their validated toy records and actual API outputs; coordinates are caller-declared arbitrary units, not corpus observations or application outcomes.
 
 Figure QA now also checks that:
 
@@ -34,6 +35,7 @@ Figure QA now also checks that:
 | Figure | Story job | Data source | Encoding | Caveat | Static/mobile fallback | QA check |
 | --- | --- | --- | --- | --- | --- | --- |
 | `core_profile_ownership.png` / `fig:core_profile_ownership` | Separate declared retrieval contracts and caller/shared responsibilities. | `blake/methods/profiles.py`, `core_profile_ownership.json`; generator in `manuscript_tools/core_architecture.py` | Directly labelled profile rows and ownership lanes. | Code diagnostic with its own source digest; no fresh NLP run, corpus adjudication or application result. | Static PNG/SVG with direct labels. | Check source-binding sidecar and final text size at actual manuscript scale. |
+| `core_interval_support.png` / `fig:core_interval_support` | Distinguish set support, indexed multiplicity and strictly intersecting pairs. | Public `blake.methods.intervals`, `core_interval_support.json`; `manuscript_tools/interval_illustration.py` | Directly labelled records, union/mask/difference and depth rows; open endpoints supplement color. | A mathematical illustration in arbitrary integer units; no literary finding, authenticated source frame or application decision. | PNG/SVG/PDF masters and the native full-size link; proportional HTML scaling. | Check exact inputs/API outputs, printed labels, preserved image aspect ratio and the invalid-boundary controls. |
 | `coverage_status.png` / `fig:coverage_status` | Show the gap between represented targets and fully evidenced targets. | `reports/source_coverage.json` | Status bars with count and percentage labels. | Work-level denominator only; copy/object completeness is out of scope. | Direct labels and high-contrast status colors. | Verify counts and percentages are readable in PDF and mobile screenshots. |
 | `category_coverage.png` / `fig:category_coverage` | Locate remaining coverage work by target category. | `visualizations/target_coverage_matrix.json` | Horizontal stacked bars by status and category. | Categories are ledger groups, not literary-period claims. | Legend plus category labels; no interaction required. | Confirm legend and long category labels do not overlap. |
 | `corpus_modalities.png` / `fig:corpus_modalities` | Separate text, image, joint, and metadata-only evidence. | `visualizations/text_metrics.json`, `visualizations/text_image_linkage.json` | Bars by evidence modality. | Local image records are not a full facsimile mirror. | Modality names and counts appear directly on the chart. | Confirm all modality labels fit at mobile width. |

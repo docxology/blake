@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Thin orchestrator: generate manuscript figures for blake.
 
-Draws every manuscript figure from ``analysis_output/`` JSON into
-``output/figures/``. All plotting logic lives in ``manuscript_tools.figures``.
-Run after ``blake corpus run`` has refreshed ``analysis_output/`` and before PDF
-rendering.
+Draws the registered manuscript figures into ``output/figures/``. Analytical
+figures read the explicitly selected saved-evidence root; source-derived method
+illustrations use the focused ``manuscript_tools`` builders. Keep the retained
+analysis producer and its outputs unchanged when preparing a new display epoch.
 
 Exit codes:
     0   all figures written
@@ -36,7 +36,10 @@ def main() -> int:
     parser.add_argument(
         "--public-only",
         action="store_true",
-        help="Generate only the aggregate figures used by the public paper; exclude source-image mosaics.",
+        help=(
+            "Generate only the aggregate figures used by the public paper; "
+            "exclude source-image mosaics."
+        ),
     )
     args = parser.parse_args()
     cover_paths = generate_cover(_PROJECT_ROOT)

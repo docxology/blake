@@ -1,6 +1,6 @@
 # Reproducibility: Source Snapshot, Analysis Epoch, and Publication {#sec:reproducibility}
 
-This working-paper revision is identified by the DOI in the publishing information. Earlier deposited versions remain separate archival records.
+The publishing information gives the concept DOI for this versioned working paper. The release manifest identifies the particular deposited edition and its exact PDF and source bytes. Earlier deposited versions remain separate archival records.
 
 Reproduction requires the captured source inventory, its private local files, the recorded analysis producer, and a compatible environment. The public release supplies project-owned source, the manuscript, aggregate evidence, producer identities, and checksums; it does not supply the provider corpus. The preservation chain connects inputs, commands, derived results, figures, and rendered bytes [@peng2011reproducible; @sandve2013ten; @wilson2014best; @w3cprov2013overview; @owens2018digitalpreservation].
 
@@ -87,6 +87,40 @@ TEMPLATE_REPO_ROOT=../template \
 ```
 
 The cover is a labeled project-authored generated asset with provenance, outside the corpus evidence ledger. Local source-image mosaics can be generated for private inspection but are excluded from the public manuscript and reproduction archive. Publication hydration requires every used quantitative token to resolve from the saved artifacts and verified publication evidence. The input membership and content digests remain inspectable.
+
+
+### Mathematical Interval Diagnostic
+
+The registered `core_interval_support` figure is a mathematical illustration
+produced by `manuscript_tools.interval_illustration` and
+`manuscript_tools.interval_figure` through the actual public interval API.
+It reads no retained corpus or model output. Its JSON sidecar records the
+illustrated interval records, mask, canonical supports, threshold supports,
+indexed pair count, actual refusal controls and source bindings, followed by
+digests of its PNG, SVG and PDF assets. The figure source digest
+`{{CORE_INTERVAL_SOURCE_SHA256}}` is separate from the saved analytical
+producer and the deposited-paper identities.
+
+The normal figure dispatcher includes this diagnostic in both local and public
+profiles. A code-only check can call the dedicated builder with a new destination:
+
+```python
+from pathlib import Path
+from manuscript_tools.interval_figure import fig_interval_support
+
+fig_interval_support(
+    Path("unused-analysis-input"),
+    Path("output/interval-illustration-new"),
+)
+```
+
+Use the declared external Python environment and external temporary/cache
+bindings. The first argument retains the common figure-builder interface and
+is deliberately not read. The dedicated builder refuses occupied artifact names
+and symlinked output roots; its completion sidecar follows the real image files.
+It does not infer permission to regenerate a corpus, recover missing provider
+files or invoke the native template. A passing code-only figure check is distinct
+from complete figure/hydration preparation and final rendered-page acceptance.
 
 ## Render and Validate
 

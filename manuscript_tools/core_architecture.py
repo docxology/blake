@@ -7,7 +7,7 @@ contains no source-provider expression and makes no application-result claims.
 import ast
 import hashlib
 import json
-import textwrap
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Final
 
@@ -18,6 +18,7 @@ from blake.methods.profiles import (
     RetrievalProfile,
     describe_profile,
 )
+from manuscript_tools.interval_illustration import interval_tokens
 
 
 class ProfileOwner(FrozenModel):
@@ -67,11 +68,14 @@ _RESPONSIBILITIES: Final = (
     ),
     Responsibility(
         owner="Shared methods",
-        responsibility="Validated schemas, retrieval, counting and tree layout",
+        responsibility=(
+            "Validated schemas, retrieval, counting, interval support and tree layout"
+        ),
         source_paths=(
             "blake/methods/profiles.py",
             "blake/methods/statistics.py",
             "blake/methods/hierarchy.py",
+            "blake/methods/intervals.py",
         ),
     ),
     Responsibility(
@@ -92,6 +96,9 @@ _RESPONSIBILITIES: Final = (
             "manuscript_tools/variables.py",
             "manuscript_tools/figures.py",
             "manuscript_tools/method_types.py",
+            "manuscript_tools/interval_illustration.py",
+            "manuscript_tools/interval_figure.py",
+            "manuscript_tools/figure_dispatch.py",
         ),
     ),
 )
@@ -114,6 +121,7 @@ def build_core_architecture(source_root: Path) -> CoreArchitecture:
             "blake/methods/common.py",
             "blake/methods/producer.py",
             "manuscript_tools/core_architecture.py",
+            "manuscript_tools/core_profile_figure.py",
         )
     )
     bindings = source_hashes(
@@ -154,13 +162,14 @@ def build_core_architecture(source_root: Path) -> CoreArchitecture:
     )
 
 
-def architecture_tokens() -> dict[str, str]:
+def architecture_tokens() -> Mapping[str, str]:
     """Compute manuscript quantities from the current executable source inventory."""
     evidence = build_core_architecture(Path(__file__).resolve().parents[1])
     return {
         "CORE_RETRIEVAL_PROFILE_COUNT": str(len(evidence.profiles)),
         "CORE_ARCHITECTURE_SOURCE_FILES": str(len(evidence.source_bindings)),
         "CORE_ARCHITECTURE_SOURCE_SHA256": evidence.source_binding_sha256,
+        **interval_tokens(),
     }
 
 
@@ -169,100 +178,36 @@ CORE_FIGURE_BRIEF: Final = {
     "data_sources": ["blake/methods/profiles.py", "core_profile_ownership.json"],
     "claim": "Named retrieval contracts remain distinct and source-bound.",
     "encoding": "Directly labeled profile rows and responsibility lanes.",
-    "caveat": "Code diagnostic, not a fresh NLP run or a scientific application result.",
+    "caveat": (
+        "Code diagnostic, not a fresh NLP run or a scientific application result."
+    ),
     "static_mobile_fallback": "Static directly labeled PNG and companion SVG.",
     "qa_check": "Inspect final rendered text size and source-binding sidecar.",
-    "accessibility_summary": "Profiles list normalization and source spans; ownership lanes separate policy, methods, adapters and preparation.",
-    "statistical_question": "Which contracts and responsibilities does this source candidate declare?",
+    "accessibility_summary": (
+        "Profiles list normalization and source spans; ownership lanes separate "
+        "policy, methods, adapters and preparation."
+    ),
+    "statistical_question": (
+        "Which contracts and responsibilities does this source candidate declare?"
+    ),
     "data_shape": "Named profile records and source-file SHA-256 inventory.",
-    "statistical_method": "Exact enumeration and byte hashing; no statistical estimation.",
-    "missingness_or_scope": "Public source mechanisms only; private decisions are not measured.",
+    "statistical_method": (
+        "Exact enumeration and byte hashing; no statistical estimation."
+    ),
+    "missingness_or_scope": (
+        "Public source mechanisms only; private decisions are not measured."
+    ),
     "statistical_check": "All listed source bytes must match the imported producer.",
 }
 
 
-def core_figure_statistics() -> dict[str, str]:
+def core_figure_statistics() -> Mapping[str, str]:
     """Return quantities with the current source binding for the figure registry."""
     return architecture_tokens()
 
 
 def fig_core_profile_ownership(analysis_output: Path, out_dir: Path) -> Path:
-    """Draw a code-only figure; analysis_output is intentionally not consumed."""
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import FancyBboxPatch
+    """Keep the registered profile-figure entry point with its focused renderer."""
+    from manuscript_tools.core_profile_figure import fig_core_profile_ownership as draw
 
-    evidence = build_core_architecture(Path(__file__).resolve().parents[1])
-    out_dir.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(
-        2, 1, figsize=(11, 9), gridspec_kw={"height_ratios": (1.35, 1)}
-    )
-    fig.patch.set_facecolor("#fcfaf4")
-    for ax in axes:
-        ax.set_axis_off()
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-    axes[0].set_title("Named retrieval contracts", loc="left", fontsize=15)
-    for i, profile in enumerate(evidence.profiles):
-        y = 0.95 - i * 0.31
-        axes[0].text(
-            0.01,
-            y,
-            profile.semantics.profile.value,
-            va="top",
-            fontsize=10.5,
-            weight="bold",
-            color="#0072B2",
-        )
-        text = "\n".join(
-            textwrap.wrap(
-                profile.semantics.normalization + ". " + profile.semantics.boundaries,
-                width=106,
-            )
-        )
-        axes[0].text(0.01, y - 0.065, text, va="top", fontsize=10, linespacing=1.5)
-        axes[0].text(
-            0.01,
-            y - 0.21,
-            profile.entrypoint,
-            va="top",
-            fontsize=9,
-            family="monospace",
-            color="#5f625d",
-        )
-    axes[1].set_title(
-        "Responsibility stays explicit at each boundary", loc="left", fontsize=15
-    )
-    for i, owner in enumerate(evidence.responsibilities):
-        y = 0.91 - i * 0.23
-        axes[1].add_patch(
-            FancyBboxPatch(
-                (0.005, y - 0.17),
-                0.99,
-                0.18,
-                boxstyle="round,pad=0.005",
-                facecolor="#f0ece2",
-                edgecolor="#d8d2c4",
-            )
-        )
-        axes[1].text(
-            0.025, y - 0.035, owner.owner, va="top", fontsize=10.5, weight="bold"
-        )
-        axes[1].text(0.025, y - 0.105, owner.responsibility, va="top", fontsize=10)
-    fig.text(
-        0.03,
-        0.022,
-        "Source-code diagnostic only; analytical producer and saved corpus epoch remain separate.",
-        fontsize=10,
-        color="#5f625d",
-    )
-    fig.tight_layout(rect=(0.01, 0.05, 0.99, 0.99), h_pad=2)
-    path = out_dir / "core_profile_ownership.png"
-    try:
-        fig.savefig(path, dpi=190, facecolor=fig.get_facecolor())
-        fig.savefig(path.with_suffix(".svg"), facecolor=fig.get_facecolor())
-    finally:
-        plt.close(fig)
-    path.with_suffix(".json").write_text(
-        evidence.model_dump_json(indent=2) + "\n", encoding="utf-8"
-    )
-    return path
+    return draw(analysis_output, out_dir)

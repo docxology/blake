@@ -1,6 +1,6 @@
 # Blake Corpus Manuscript Configuration
 # Consumed by infrastructure/rendering/_pdf_combined_renderer.py (metadata) and
-# projects/working/blake/scripts/z_generate_manuscript_variables.py (none — this
+# scripts/z_generate_manuscript_variables.py (none — this
 # project's variables come from analysis_output/, not from this file).
 #
 # CONTRACT: title and subtitle do not substitute placeholders (only docs/manuscript/*.md
@@ -10,8 +10,8 @@
 paper:
   title: "Mapping William Blake’s Works"
   subtitle: "Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
-  version: "0.4.0"
-  date: "2026-10-29"
+  version: "0.5.0"
+  date: "2026-11-01"
   cover:
     image: "output/cover/cover_blakean.png"
     usage_note: "Generative Blakean visual interpretation; not corpus evidence."
@@ -27,7 +27,7 @@ publication:
   github_repository: "docxology/blake"
   journal: "Independent working paper"
   year: "2026"
-  doi_status: "10.5281/zenodo.23770249"
+  doi_status: "10.5281/zenodo.21047573"
 
 keywords:
   - "William Blake"

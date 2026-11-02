@@ -1,4 +1,4 @@
-# Methods: Local Text, Image, Cross-Modal, and Theme Diagnostics {#sec:methods_analysis}
+# Methods: Shared Evidence Operations and Saved Corpus Diagnostics {#sec:methods_analysis}
 
 ## Shared Mechanisms and Application Policy {#sec:shared_methods}
 
@@ -36,6 +36,86 @@ and an internal row is the arithmetic mean of all descendant leaf rows. Averagin
 only immediate child rows would over-weight small subtrees. Depth counts parent
 edges. Neither depth nor row represents elapsed time, evolutionary distance or
 confidence, and the API supplies no domain taxonomy or identity judgment.
+
+## Exact Support and Record Multiplicity {#sec:interval_support}
+
+An interval record is a half-open integer range $I_i=[a_i,b_i)$ in one
+caller-declared coordinate frame, with $0\leq a_i\leq b_i$. Equal endpoints
+represent empty support. The application establishes the frame, units,
+eligible records, source grouping and any activation conditions before invoking
+geometry. Operations assume compatible coordinates supplied by the caller; they
+do not authenticate a frame or source identity, establish a source-length bound
+or decide inclusion. A source-indexed application must check its ranges against
+the exact original expression before computing geometry.
+
+For a finite indexed collection $R=(I_i)$, define its union $U(R)$ and its
+multiplicity-threshold support $D_k(R)$, for a positive integer $k$:
+
+$$
+U(R)=\bigcup_i I_i,\qquad
+D_k(R)=\left\{x:\sum_i\mathbf{1}_{I_i}(x)\geq k\right\}.
+$$ {#eq:interval_support}
+
+Union, intersection and difference concern sets of coordinates. Their outputs
+are sorted maximal positive components; adjacent components coalesce. The
+measure $\mu(S)$ denotes the total length of a coordinate support $S$; the API
+computes $\mu(U(R))$, not the sum of record lengths. By contrast, the
+positive-intersection pair count preserves
+the separate record indices:
+
+$$
+\mu(U(R))=\sum_{[a,b)\in\operatorname{components}(U(R))}(b-a),
+\qquad
+P(R)=\sum_{i<j}\mathbf{1}\!\left\{\max(a_i,a_j)<\min(b_i,b_j)\right\}.
+$$ {#eq:interval_measure_pairs}
+
+Duplicating a positive record leaves the union unchanged but can increase
+threshold support and the pair count. Touching endpoints can join the union
+without producing a positive intersection. Empty records contribute neither
+support nor pairs. The lengths $\mu(U(R))$ and $\mu(D_k(R))$ concern different
+coordinate supports, while $P(R)$ counts record pairs; these quantities cannot
+substitute for one another. Subtraction retains every connected
+fragment of $U(R)\setminus U(M)$ for a supplied mask collection $M$; it does not
+summarize a fragmented remainder by its total length alone.
+
+[@fig:core_interval_support] is a mathematical illustration, not a corpus
+observation. Its {{INTERVAL_EXAMPLE_RECORD_COUNT}} indexed records are
+{{INTERVAL_EXAMPLE_RECORDS}}. The union is {{INTERVAL_EXAMPLE_UNION}}, with
+length {{INTERVAL_EXAMPLE_UNION_LENGTH}}, while the summed record lengths are
+{{INTERVAL_EXAMPLE_RAW_LENGTH}}. Against mask {{INTERVAL_EXAMPLE_MASK}}, the
+intersection is {{INTERVAL_EXAMPLE_INTERSECTION}} and the remainder is
+{{INTERVAL_EXAMPLE_DIFFERENCE}}. Support covered by at least two indices is
+{{INTERVAL_EXAMPLE_DEPTH_TWO}}, of length {{INTERVAL_EXAMPLE_DEPTH_TWO_LENGTH}};
+support covered by at least three is {{INTERVAL_EXAMPLE_DEPTH_THREE}}. The
+positive-intersection pair count is {{INTERVAL_EXAMPLE_PAIRS}}. Geometric outputs
+and pair counts come from the actual public API; summed record lengths are
+calculated directly from the validated input endpoints. Values are generated
+by the tooling, rather than transcribed into the diagram or treated as findings
+about Blake.
+
+![Mathematical illustration in arbitrary integer coordinate units. The indexed records include a duplicate, an adjacent positive record and an empty record. The canonical union has length {{INTERVAL_EXAMPLE_UNION_LENGTH}}, compared with summed record lengths of {{INTERVAL_EXAMPLE_RAW_LENGTH}}; {{INTERVAL_EXAMPLE_PAIRS}} unordered record pairs intersect positively. The mask, intersection, remainder and multiplicity-threshold rows answer separate questions. Open endpoint markers and direct labels supplement color. The companion JSON binds the exact illustrated inputs, API outputs, source bytes and generated image digests.](../../output/figures/core_interval_support.png){#fig:core_interval_support height=205mm}
+
+The implementation sorts integer endpoints rather than enumerating coordinates.
+Union and pair counting use $O(n\log n)$ time; threshold support combines
+endpoint events before advancing to the next segment. Binary set operations
+canonicalize their operands and scan the resulting components. Arbitrary-size
+integer arithmetic avoids conversion to floating coordinates. The figure's
+displayed pair list is constructed only for this finite illustration through
+individual API calls; the pair-counting API itself does not materialize that list.
+
+Admission rejects invalid scalar types, undeclared fields, negative endpoints,
+reversed ranges and invalid thresholds. Public operations revalidate existing
+models, including instances made through construction or copying that bypassed
+normal admission. The illustration records {{INTERVAL_BOUNDARY_CONTROLS}} actual
+refusing controls: a boolean endpoint, a constructed reversed interval and a
+boolean threshold. Accepting any of these aborts illustration production.
+Its {{CORE_INTERVAL_SOURCE_FILES}} producer-source bindings have digest
+`{{CORE_INTERVAL_SOURCE_SHA256}}`. These controls qualify named implementation
+boundaries; they do not validate an application's eligibility, grouping or
+interpretive choices. The complete API and its separate software qualification
+are documented in `docs/methods/intervals.md`. Retrieval windows retain their
+own matching and feasible-origin contract; they are not silently converted to
+this nonnegative half-open geometry.
 
 ## Finite Grouped-Category Composition
 

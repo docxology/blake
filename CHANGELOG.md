@@ -1,5 +1,13 @@
 # Changelog
 
+## Paper 0.5.0 working draft — 2026-11-01
+
+- Develop the corpus/methods boundary, exact interval formalisms and source-bound profile/support illustrations without rerunning the retained `0.2.0rc1` corpus analysis.
+- Require an explicit valid template selection for strict variable hydration, with real-file refusing controls.
+- Render the 94-page draft through the pinned template's actual PDF/web APIs. Preserve proportional HTML figures, wrapped evidence-table cells and captions that remain visible during keyboard scrolling.
+- Replace a brittle heading-wording assertion with unique, complete cross-reference-anchor checks; keep registered figure checks valid when print-size attributes are present.
+- Keep the deposited 0.4.0 PDF, DOI and preferred citation separate from the new working draft. A new Zenodo deposition still requires authenticated publication and asset readback.
+
 ## 0.7.0 source — 2026-11-01
 
 - Add exact half-open integer interval union, intersection, difference, support measure and record-depth support, plus strict overlapping record-pair counts. Set operations merge adjacency; depth and pair counts preserve duplicate records and exclude empty support. Pair counts require strict intersection.

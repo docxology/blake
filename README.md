@@ -41,8 +41,17 @@ Applications own coordinate frames, grouping, activation and authored decisions.
 the tested environments and retained limitations. The package-index distribution is independent of the current Git source.
 The working-paper DOI identifies the deposited manuscript and its exact assets.
 
-The current paper is [Blake.pdf](Blake.pdf). Its publication manifest records
-the reviewed PDF hash, source commit and Zenodo record. Archived papers remain
+The current authoring edition is the 94-page [0.5.0 working draft](Blake-0.5.0.pdf).
+Its [render-reproduction bundle](Blake-0.5.0-reproduction.zip) and
+[reproduction guide](docs/paper-reproduction.md) preserve the exact native inputs,
+template pin and distinction between mathematical illustrations and saved corpus
+diagnostics. This draft uses the concept DOI; its new Zenodo deposit awaits
+authenticated publication. The [working-draft record](paper-working-draft.json)
+binds the complete independent page/browser review and its remaining limits.
+
+The deposited 0.4.0 paper remains [Blake.pdf](Blake.pdf). Its
+[publication manifest](publication.json) records the reviewed PDF hash, source
+commit and actual Zenodo record. Archived papers remain
 accessible at [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
 [0.1.0](https://doi.org/10.5281/zenodo.21047574).
 

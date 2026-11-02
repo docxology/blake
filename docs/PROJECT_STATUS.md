@@ -1,6 +1,6 @@
 # Current status and scoped next work
 
-Status date: 31 October 2026. This index separates the retained release from
+Status date: 1 November 2026. This index separates the retained release from
 current repository maintenance and future research. GitVault is the working
 collection; reference mirrors do not contain local unpublished research.
 
@@ -34,10 +34,36 @@ binds 1,364 source tests and 474 normal installed SDK tests on each supported
 qualification interpreter. The deposited paper retains the publication identities
 above; no new native or Zenodo edition follows from this method addition.
 
+## Completed 0.5.0 manuscript working draft
+
+The current [0.5.0 manuscript draft](../Blake-0.5.0.pdf) adds source-derived
+retrieval/ownership and exact-support figures, distinguishes set geometry from
+indexed record multiplicity, and retains the analytical producer `0.2.0rc1`.
+The [native replay guide](paper-reproduction.md) identifies the actual pinned
+template PDF/web APIs and admitted article stylesheet. The 94-page PDF has
+SHA-256 `812e53237b40f808b4502e3dd358cbee5cda7d587e493ba95e41f02c11ad03eb`.
+The current authoring regression has 1,382 passing tests at 83.06%
+statement/branch coverage. Installed SDK and native-output qualifications remain
+separate. Responsive HTML repairs preserve image proportions and keep the
+long evidence-table caption within its keyboard-scrollable region; the original
+failed layouts and regression results remain retained.
+
+The deposited 0.4.0 identities above remain current publication facts. A new
+Zenodo edition requires an available authenticated credential and exact public
+asset readback; the two expired credential requests created no deposition.
+Final source/render/delivery receipts for this wave are retained under
+`Local/blake-manuscript-advance-20261101T212248Z/` on GitVault.
+
+The independent final correction review inspected all 94 current pages and the
+responsive HTML, accepting this bounded working draft with limitations. The
+PDF/configuration carry the concept DOI; the HTML currently omits it. This is
+not full bibliographic metadata parity or specialist accessibility acceptance.
+
 ## Next bounded units
 
 | Scope and owner | Useful unit and resource budget | Acceptance |
 |---|---|---|
+| Minor — manuscript maintainer | Add the concept DOI to the native HTML bibliographic representation in a separately pinned output epoch. Budget one metadata fixture and a focused PDF/HTML comparison. | Confirm the literal DOI and link, preserve the prior edition and inspect changed output. The current PDF DOI is already correct. |
 | Medium — workspace/accessibility maintainer | Select one keyboard or assistive-technology interaction in the existing offline workspace. Budget one fixture, one real-browser scenario and its refusing/empty control; run no parallel full-stack campaign. | Retain actual interactions and observed limitations. Functional source tests alone do not close accessibility. |
 | Medium — methods maintainer and application author | When a concrete new application contract requires it, improve one reusable schema, query or custody seam upstream. Budget one module family and focused real-file/CLI controls before the appropriate broader gate. | Preserve historical serialization/profiles, show invalid inputs refuse, and independently compare the exact SDK pin and installed source consumed by the application. |
 | Major — corpus custodian and scholarly collaborators | Declare one new capture, edition/object reconciliation or image-inventory cohort. Begin with a bounded feasibility/rights inventory; authorize acquisition and native/recovery work separately for that unit. | Bind source membership, roles, locators, available/unavailable items and rights. Use new pins/epochs and retain the full denominator; no corpus or scientific completion follows from a successful infrastructure run. |

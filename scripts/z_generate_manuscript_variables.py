@@ -26,42 +26,27 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 
-def _find_repo_root() -> Path | None:
-    """Locate the template repo root (the dir containing ``infrastructure/``).
-
-    ``blake`` lives under ``projects/working/`` as a symlink to an external
-    repo, so ``Path(__file__).resolve()`` escapes the template tree and the
-    relative climb to the repo root breaks. Resolution order:
-
-    1. ``TEMPLATE_REPO_ROOT`` env var — set by the render pipeline when it
-       invokes this hydration script as a subprocess (the intended hook).
-    2. Search upward from the current working directory and the unresolved
-       script path for the marker module (covers standalone ``uv run`` use).
-    """
-    marker = Path("infrastructure") / "rendering" / "manuscript_injection.py"
-    env_root = os.environ.get("TEMPLATE_REPO_ROOT")
-    if env_root and (Path(env_root) / marker).exists():
-        return Path(env_root)
-    starts = [Path.cwd(), Path(__file__).absolute().parent]
-    for base in starts:
-        p = base
-        for _ in range(12):
-            if (p / marker).exists():
-                return p
-            if p.parent == p:
-                break
-            p = p.parent
-    return None
-
-
-_REPO_ROOT = _find_repo_root()
-if _REPO_ROOT is not None:
-    sys.path.insert(0, str(_REPO_ROOT))
+def _find_repo_root(selected: str | None = None) -> Path:
+    """Admit the explicitly selected rendering package without ancestor guesses."""
+    if selected is None:
+        selected = os.environ.get("TEMPLATE_REPO_ROOT")
+    if not selected or not selected.strip():
+        raise ValueError("template_root_required: set TEMPLATE_REPO_ROOT")
+    root = Path(selected).absolute()
+    if any(path.is_symlink() for path in (root, *root.parents)):
+        raise ValueError("template_root_symlink: select the actual checkout")
+    if not (root / "infrastructure/rendering/__init__.py").is_file():
+        raise ValueError("template_root_invalid: rendering package is absent")
+    return root
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Generate manuscript variables for blake"
+    )
+    parser.add_argument(
+        "--template-root",
+        help="Explicit framework checkout; defaults to TEMPLATE_REPO_ROOT",
     )
     parser.add_argument(
         "--evidence-root",
@@ -76,6 +61,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    sys.path.insert(0, str(_find_repo_root(args.template_root)))
     from infrastructure.rendering.manuscript_injection import (
         write_resolved_manuscript_tree,
     )

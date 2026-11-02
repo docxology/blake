@@ -1,5 +1,10 @@
 # Blake manuscript
 
+Current authoring edition: [0.5.0 working draft](../../Blake-0.5.0.pdf).
+The [native replay guide](../paper-reproduction.md) covers its frozen public
+inputs and actual pinned template APIs. The stored corpus-analysis producer
+and deposited paper retain their separate identities.
+
 The canonical sources live here. The paper reports a retained local analysis
 epoch, captured-source recoverability and explicit scholarly/distribution limits.
 Provider transcriptions, XML, images, indexes, backups and source-image mosaics

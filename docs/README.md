@@ -15,7 +15,7 @@ documentation map; [index.md](index.md) is a short entry point.
 | Recovery, source-bound search and an offline workspace | [Local evidence methods](methods.md) and [text search](text-search.md) |
 | Extend the implementation | [Developer guide](developer-guide.md), [architecture](ARCHITECTURE.md) and [technical specification](spec.md) |
 | Diagnose a failed operation | [Troubleshooting](troubleshooting.md) |
-| Author or reproduce the retained paper | [Manuscript guide](manuscript/README.md), [reproducibility](manuscript/08_reproducibility.md) and [style guide](style-guide.md) |
+| Author or reproduce a paper edition | [Manuscript guide](manuscript/README.md), [current native replay](paper-reproduction.md), [analytical reproducibility](manuscript/08_reproducibility.md) and [style guide](style-guide.md) |
 
 ## Installation profiles
 

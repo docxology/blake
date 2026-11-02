@@ -15,9 +15,10 @@ Technical specification for the blake repo's maintenance scripts.
 - Reusable script behavior is covered by tests in `tests/` (moved logic:
   `tests/test_text_repair.py`, `tests/test_gutenberg_redownload.py`,
   `tests/test_target_corpus.py`, `tests/test_viz_generate_visualizations.py`).
-- Human overview: `README.md` here. Repo-wide policy: see the lane-level
-  policy at `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md`
-  (local-only tree, symlinked into the template checkout; never commit).
+- Read the [repository contract](../AGENTS.md), [style guide](../docs/style-guide.md)
+  and [reproduction workflow](../docs/manuscript/08_reproducibility.md). The human
+  overview is [README.md](README.md). Keep source, runtime prefixes, output epochs,
+  caches and temporary files on mounted GitVault under supported admission.
 
 ## Script Inventory
 
@@ -37,10 +38,14 @@ Technical specification for the blake repo's maintenance scripts.
 
 ## Notes
 
-- `z_generate_manuscript_variables.py` reads `analysis_output/` artifacts, so
-  it fails (or drafts) if the corpus run hasn't happened. Run
-  acquisition/analysis first. It locates the template repo root via
-  `TEMPLATE_REPO_ROOT` (see its `_find_repo_root`).
+- Figure and hydration scripts accept `--evidence-root` or
+  `BLAKE_MANUSCRIPT_EVIDENCE_ROOT`; reads remain distinct from authoring/output.
+  An explicit invalid root must fail without searching another checkout.
+- `z_generate_manuscript_variables.py` uses saved evidence and strict used-token
+  admission. Unknown/empty tokens and invalid bindings fail; no draft fallback
+  supplies missing results. `TEMPLATE_REPO_ROOT` selects separately pinned
+  infrastructure. A missing artifact does not authorize acquisition, recovery or
+  another analysis; select the actual qualified reproduction scope first.
 - Network-touching scripts (`download_*`, `acquire_*`, `redownload_*`) hit
   external archives — run deliberately, not in doc/CI passes.
 - Verify locally: `uv run python scripts/<script>.py --help`; full behaviour

@@ -17,6 +17,14 @@ permission.
 
 ## Medium Improvements
 
+- [ ] Publish the qualified 0.5.0 paper as the next Zenodo version when an
+  authenticated credential is available. The two private credential requests
+  expired without creating a deposition. Acceptance: verify the existing concept,
+  upload the exact qualified PDF and public reproduction assets, publish through
+  the ordinary API, verify anonymous downloads, then update the deposited-paper
+  manifest and citation metadata. No acquisition or model rerun is part of this
+  publication unit.
+
 - [ ] Fallback-text corroboration review pass. Scope: use the generated
   fallback corroboration records to review every validated fallback text against
   at least one additional authority before public notes describe it as
@@ -79,4 +87,4 @@ permission.
   report names added, removed, renamed, and materially changed targets and
   updates coverage interpretation accordingly.
 
-- [ ] Next-edition scholarly/package review. Scope a new exact revision for independent source, generated-output, manuscript-claim and rights review before its publication. The retained first-release/deposit inspection keeps its recorded limits; it is not peer review or whole-corpus scientific acceptance. Acceptance: each changed claim traces to its own artifact/source, changed native outputs pass actual page/browser checks, and exclusions retain explicit reasons.
+- [ ] Review the next corpus-bearing revision. Scope any changed capture, inference or literary claim after the current source-method/working-draft wave with its own independent source, generated-output, manuscript and rights review. The retained inspections do not supply peer review or whole-corpus scientific acceptance. Acceptance: each changed claim traces to its own artifact/source, changed native outputs pass complete page/browser checks, and exclusions retain explicit reasons.

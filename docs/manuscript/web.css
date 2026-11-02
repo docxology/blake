@@ -1,0 +1,41 @@
+/* Print dimensions remain in Markdown; responsive HTML preserves proportions. */
+figure img,
+.figure img {
+  height: auto !important;
+}
+
+/* Evidence tables wrap within useful column widths, with local horizontal
+   scrolling for wide tables and a caption bounded by the visible scrollport. */
+.table-scroll {
+  container-type: inline-size;
+}
+
+.table-scroll > table {
+  display: table;
+  overflow: visible;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-scroll > table:has(tr > :nth-child(5)) {
+  min-width: 60rem;
+}
+
+.table-scroll th,
+.table-scroll td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table-scroll > table > caption {
+  box-sizing: border-box;
+  inline-size: 100cqw;
+  max-inline-size: 100cqw;
+  margin-inline: 0;
+  padding: 0.4rem 0.5rem 0.65rem;
+  position: sticky;
+  inset-inline-start: 0;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
