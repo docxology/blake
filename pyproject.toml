@@ -7,7 +7,7 @@ name = "blake"
 dynamic = ["version"]
 description = "Target-aware corpus acquisition, analysis, and completeness accounting for William Blake research"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [
     {name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"},
