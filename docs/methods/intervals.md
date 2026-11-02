@@ -2,7 +2,7 @@
 
 `blake.methods.intervals` calculates half-open support within a single
 caller-declared coordinate frame. It works with the dependency-light methods
-installation on Python 3.9 and later. A frame may represent original source
+installation described in [verification](../verification.md). A frame may represent original source
 codepoints or integer hours; the application declares its units and identity.
 Never combine offsets from different source units or clocks in one call.
 

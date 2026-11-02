@@ -67,8 +67,10 @@ merely by entering a queue.
 New output receipts bind the actual consumed source, input and method bytes.
 Original corpus captures and earlier producers remain historical when software
 advances. Consumer qualification checks the exact selected SDK and installed
-files. [Verification](verification.md) distinguishes Python 3.9 methods from the
-Python 3.11 optional stack and native/browser/scientific work.
+files. [Verification](verification.md) distinguishes current dependency-light methods,
+the optional stack and retained historical Python 3.9 wheels. Current methods
+and optional-stack setup use the qualified Python 3.11.17 default; native,
+browser and scientific work keep separate qualifications.
 
 ## Resource and deployment boundary
 

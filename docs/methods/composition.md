@@ -1,8 +1,10 @@
 # Finite grouped-category composition
 
-`blake.methods.composition` is a lightweight Python 3.9+ API. It accepts counts,
+`blake.methods.composition` is a dependency-light API. It accepts counts,
 not text or application vocabulary. It does not tokenize, match, deduplicate or
-assign a category policy.
+assign a category policy. Current interpreter and installation qualifications
+are defined in [verification](../verification.md); historical wheel receipts
+retain their exact earlier source and metadata.
 
 ```python
 from blake.methods.composition import inventory_from_strata, composition_audit

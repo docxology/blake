@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "epoch": "documentation-review-20261102",
+  "scope": "Documentation/source reconciliation only; no implementation, corpus, authored article, native output or installed runtime replacement.",
+  "reviewed_base": "0d0ffac71c22f58277e11b46395a0c1f7e1f835c",
+  "original_docs_files": 64,
+  "original_review": {
+    "report": "Local/blake-docs-delivery-20261102T213043Z/review/core/REPORT.md",
+    "sha256": "c40e10e0ea73d9711c62a905903f943f0db08494a61d0530c450ea310816136e",
+    "status": "NEEDS_DOCUMENTATION_CORRECTIONS",
+    "findings": [
+      "CORE-DOC-01",
+      "CORE-DOC-02",
+      "CORE-DOC-03",
+      "CORE-DOC-04",
+      "CORE-DOC-05"
+    ],
+    "limits": "Original frozen findings and reviewer procedure exceptions remain retained; no software/scientific acceptance inferred."
+  },
+  "owner_corrections": [
+    "CORE-DOC-01",
+    "CORE-DOC-02",
+    "CORE-DOC-03",
+    "CORE-DOC-04",
+    "CORE-DOC-05"
+  ],
+  "evidence_root": "Local/blake-docs-delivery-20261102T213043Z",
+  "qualification_layers": "Owner documentation controls and subsequent bounded review are separate from retained software, native, scientific, accessibility, rights and publication evidence.",
+  "publication": "Ordinary main integration events are recorded separately after completion; this source record alone supplies no publication fact.",
+  "current_docs_files": 65,
+  "runtime_authority": "docs/verification.md",
+  "preserved_identities": {
+    "software": "0.7.0",
+    "current_draft": "0.5.0",
+    "deposit": "0.4.0",
+    "saved_analysis": "0.2.0rc1"
+  },
+  "unrefreshed_scopes": [
+    "External scholarly/provider URLs",
+    "Scientific and rights adjudication",
+    "Native output and Zenodo publication"
+  ]
+}

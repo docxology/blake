@@ -4,7 +4,8 @@
 distribution_name="")` checks a caller-selected normal Git installation before
 an application admits a new producer stage. `expected_commit` is a full,
 lowercase Git SHA, held by the caller independently of the installed metadata.
-This method is available in the dependency-light Python 3.9+ profile.
+This method is available in the dependency-light profile. Follow the current
+interpreter requirements in [verification](../verification.md).
 
 ```python
 from blake.methods.installed import verify_installed_git
@@ -42,4 +43,4 @@ package bytes with the reviewed source or wheel, preserve the environment's
 external runtime identity, and revalidate bindings before delivery. No literary,
 native-output, hosted-CI, rights or release acceptance follows from this check.
 
-The filesystem provider is bound to CPython’s selected `PathDistribution._path` before its metadata accessors run; a guessed directory is never substituted. This is an explicit standard-library implementation boundary. Nonstandard providers, missing paths, non-filesystem metadata and a selected directory inconsistent with the supported normal layout refuse. Python 3.9 and 3.11 normal installations are qualified separately. See [CPython’s implementation](https://github.com/python/cpython/blob/v3.11.17/Lib/importlib/metadata/__init__.py).
+The filesystem provider is bound to CPython’s selected `PathDistribution._path` before its metadata accessors run; a guessed directory is never substituted. This is an explicit standard-library implementation boundary. Nonstandard providers, missing paths, non-filesystem metadata and a selected directory inconsistent with the supported normal layout refuse. Retained Python 3.9 and 3.11 normal installations were qualified separately on their original sources; current requirements and installed-wheel qualification are in [verification](../verification.md). See [CPython’s implementation](https://github.com/python/cpython/blob/v3.11.17/Lib/importlib/metadata/__init__.py).

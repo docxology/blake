@@ -1,6 +1,6 @@
 # Local source evidence methods
 
-Software source: **0.5.0**. Methods profile: `local-source-evidence-v2`.
+Software source: **0.7.0**. Methods profile: `local-source-evidence-v2`.
 Dashboard schema: `2`. These labels describe software contracts. Captured source
 commits, manifest hashes, target-ledger versions and search normalization remain
 independently versioned evidence identities.

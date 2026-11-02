@@ -80,6 +80,15 @@ warnings are retained; no whole-package strict typing pass is claimed.
 
 [Structured runtime record](runtime-profile-20261102.json). This is source/setup maintenance; current native editions and publication records remain unchanged.
 
+## Documentation reconciliation — 2 November 2026
+
+The independent review accounted for all 64 preceding docs files, including
+63 complete text readings and one binary identity. Current runtime/version
+guidance, historical ISA orientation, covariance-PCA wording and stylesheet
+navigation are corrected. [Documentation record](documentation-review-20261102.json)
+separates this owner correction from the frozen review and retained software,
+paper and publication qualifications. No analytical or native producer changes.
+
 ## Next bounded units
 
 | Scope and owner | Useful unit and resource budget | Acceptance |

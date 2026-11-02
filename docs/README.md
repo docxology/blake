@@ -25,6 +25,9 @@ their surface extra to `full`; recovery has its own smaller profile. From an
 existing checkout, choose the needed locked environment:
 
 ~~~sh
+# Select the qualified local interpreter before sync/run
+uv python pin 3.11.17
+
 # Portable methods
 uv sync --locked
 
@@ -35,8 +38,10 @@ uv sync --locked --extra full
 uv sync --locked --extra full --extra dev --extra gui --extra api
 ~~~
 
-Methods support Python 3.9; the optional-stack qualification uses Python 3.11.
-See [verification](verification.md) before broadening a gate. In managed
+Current methods and optional-stack installations require Python 3.11 or newer;
+the qualified local default is 3.11.17. Retained Python 3.9 wheel results belong
+to their original source and metadata. Use [verification](verification.md) as the
+runtime authority before selecting an interpreter or broadening a gate. In managed
 GitVault work, use supported admission, external caches/TMP and both external
 Python prefixes. A package-index installation selects the version available
 there; it does not select the current Git source.
@@ -65,6 +70,7 @@ operating instructions belong in the workflow guides above.
 | [Scholarship gap review](online-scholarship-gap-review.md) | Dated discovery and evidence-gaps note |
 | [Publication consistency review](publication-consistency-review.md) | Dated publication observations |
 | [Manuscript sources and status](manuscript/README.md) | Retained paper inputs, generated assets and reproduction scope |
+| [Current documentation reconciliation](documentation-review-20261102.json) | Frozen review, owner corrections and exact evidence scope |
 | [Agent guidance](AGENTS.md) | Where to read before changing these documents |
 
 Dated research and publication observations retain their original identities.
