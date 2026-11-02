@@ -6,7 +6,7 @@ Software source: **0.7.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
 view exposes recorded recovery status and scoped, read-only corpus search.
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23770249-blue.svg)](https://doi.org/10.5281/zenodo.23770249)
 
@@ -55,10 +55,18 @@ commit and actual Zenodo record. Archived papers remain
 accessible at [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
 [0.1.0](https://doi.org/10.5281/zenodo.21047574).
 
+Current main requires Python 3.11 or newer and pins **3.11.17** for the qualified
+methods and optional-stack workflows. The peer Python 3.15 default is retained
+in history: a real binary-only probe rejects the locked `pydantic-core==2.33.2`
+on that interpreter/platform. [Current runtime qualification](docs/runtime-profile-20261102.json)
+separates this setup repair from the retained Python 3.9 wheel receipts and
+from every historical analysis, native paper and deposit.
+
 ## Primary Workflow
 
 ```bash
-uv sync --extra full --extra dev
+uv python pin 3.11.17
+uv sync --locked --python 3.11.17 --extra full --extra dev
 uv run blake corpus run --quick --output-dir analysis_output
 uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none
 uv run blake corpus public-release-preflight --output-dir analysis_output --data-dir blake_data

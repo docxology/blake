@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "software_version": "0.7.0",
+  "python_floor": ">=3.11",
+  "default_python": "3.11.17",
+  "scope": "Current setup/runtime metadata repair; all 138 implementation files unchanged. No new corpus, analysis, native paper, package-index or Zenodo release.",
+  "lock": {
+    "status": "LOCK_PROFILE_REPAIRED",
+    "base": "e0739c1c13c7b3e4820803e367ecc7e1c476eae5",
+    "branch": "fix/qualified-runtime-lock-20261102",
+    "old_lock_packages": 234,
+    "new_lock_packages": 210,
+    "dependency_versions_added": [],
+    "inactive_resolutions_removed": [
+      [
+        "aiofiles",
+        "23.2.1"
+      ],
+      [
+        "async-timeout",
+        "5.0.1"
+      ],
+      [
+        "backports-asyncio-runner",
+        "1.2.0"
+      ],
+      [
+        "click",
+        "8.1.8"
+      ],
+      [
+        "contourpy",
+        "1.3.0"
+      ],
+      [
+        "contourpy",
+        "1.3.2"
+      ],
+      [
+        "exceptiongroup",
+        "1.3.0"
+      ],
+      [
+        "gradio",
+        "4.44.1"
+      ],
+      [
+        "gradio-client",
+        "1.3.0"
+      ],
+      [
+        "importlib-metadata",
+        "8.7.0"
+      ],
+      [
+        "importlib-resources",
+        "6.5.2"
+      ],
+      [
+        "kiwisolver",
+        "1.4.7"
+      ],
+      [
+        "markdown-it-py",
+        "3.0.0"
+      ],
+      [
+        "markupsafe",
+        "2.1.5"
+      ],
+      [
+        "matplotlib",
+        "3.9.4"
+      ],
+      [
+        "networkx",
+        "3.2.1"
+      ],
+      [
+        "networkx",
+        "3.4.2"
+      ],
+      [
+        "pillow",
+        "10.4.0"
+      ],
+      [
+        "scikit-learn",
+        "1.6.1"
+      ],
+      [
+        "scipy",
+        "1.13.1"
+      ],
+      [
+        "scipy",
+        "1.15.3"
+      ],
+      [
+        "tomlkit",
+        "0.12.0"
+      ],
+      [
+        "websockets",
+        "12.0"
+      ],
+      [
+        "zipp",
+        "3.23.0"
+      ]
+    ],
+    "python_programs_unchanged": 138,
+    "default_python": "3.11.17",
+    "failed_unrequested_upgrade_candidate": "unrequested-upgrades.lock",
+    "scope": "Only current setup/runtime metadata; no implementation, corpus, analysis, manuscript or deposit change."
+  },
+  "full_profile": {
+    "python": "3.11.17",
+    "locked_packages": 210,
+    "installed_distributions": 189,
+    "tests": {
+      "tests": 1382,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "statement_branch_coverage": 83.06349286910623,
+    "floor": 80,
+    "warnings": 4,
+    "dependency_check": "PASS"
+  },
+  "normal_sdk": {
+    "python": "3.11.17",
+    "tests": {
+      "tests": 474,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "statement_branch_coverage": 99.24782264449723,
+    "floor": 90,
+    "wheel_sha256": "9d722477615d9d9c7aaad94a5788be8f571af12d693fa46c30b4e1be674465a3",
+    "package_resources_verified": 163,
+    "distributions": {
+      "Pygments": "2.21.0",
+      "annotated-types": "0.8.0",
+      "blake": "0.7.0",
+      "click": "8.5.0",
+      "coverage": "7.17.0",
+      "iniconfig": "2.3.1",
+      "packaging": "26.3",
+      "pluggy": "1.7.0",
+      "pydantic": "2.14.2",
+      "pydantic_core": "2.50.2",
+      "pytest": "8.4.2",
+      "pytest-cov": "6.3.0",
+      "typing-inspection": "0.4.4",
+      "typing_extensions": "4.16.0"
+    },
+    "dependency_check": "PASS",
+    "scope": "Same retained SDK test-tool versions, outside source checkout; project full lock and minimal SDK environments are distinct."
+  },
+  "controls": {
+    "old_lock_refused": "evidence/316-core-current-lock-readonly-check",
+    "repaired_lock_check": "PASS",
+    "unsupported_python39_install": "Actual new wheel dry-run refused the current Python floor; historical Python 3.9 artifacts/environments unchanged.",
+    "python315_binary_probe": "Exact locked pydantic-core==2.33.2 has no usable binary in the retained real CPython 3.15.1 probe on this platform; no full 3.15 source build or qualification inferred."
+  },
+  "active_capability_smoke": {
+    "torch": "2.8.0",
+    "spacy": "3.7.5",
+    "model": "3.7.1",
+    "tokens": 7
+  },
+  "runtime_prefixes": "Both prefixes physically resolve on mounted GitVault for qualified environments.",
+  "style_type_scope": "Configured Python 3.11 checks of the unchanged interval module; no whole-package strict claim.",
+  "whole_package_strict_typing": "NOT_CLAIMED",
+  "historical_python39": "Original 0.5/0.6/0.7 wheel receipts retain their exact original source and metadata; they do not qualify the new current-main wheel on Python 3.9.",
+  "failures_preserved": [
+    "original lock refusal",
+    "unrequested resolver-upgrade candidate",
+    "offline metadata cache miss",
+    "flake8 invocation with implicit 79-column default"
+  ],
+  "evidence_root": "Local/blake-visual-revision-20261102T164814Z/core-runtime09",
+  "default_interpreter_setup": "uv python pin 3.11.17 initializes the intentionally ignored local .python-version before locked sync/run; no host/global interpreter registration changes.",
+  "documentation_controls": {
+    "local_links_checked": 56,
+    "missing_link_refused": true,
+    "wrong_wheel_pin_refused": true
+  }
+}

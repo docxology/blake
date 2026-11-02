@@ -37,12 +37,39 @@ after exclusion-cardinality and selected/excluded-disjointness guards were added
 Earlier interface, authoring and native qualifications remain attached to the
 0.4.0 publication; no old analysis or rendering is relabelled by this work.
 
+## Current runtime and lock repair — 2 November 2026
+
+Current main admits Python **3.11+** and pins **3.11.17** for reproducible
+methods and optional-stack work. The peer floor change left the older
+universal lock stale; its real locked check refused. The repaired
+210-package lock preserves every retained third-party version and removes
+only inactive older-interpreter resolutions. The unrequested-upgrade
+candidate and original cache/style failures remain retained.
+
+Fresh full/dev/GUI setup installed **189 distributions**. All **1,382**
+source tests pass at **83.06%** statement/branch coverage. The rebuilt
+normal wheel passes **474** SDK tests outside the source tree at
+**99.25%** coverage; all **163** runtime/resource members agree with
+source and installation. Dependency checks and actual Torch/spaCy model
+smokes pass. The new wheel refuses installation on a real Python 3.9
+environment. The interval family passes the configured Python 3.11
+mypy, Black, isort and explicit 88-column flake8 checks. Four full-suite
+warnings are retained; no whole-package strict typing pass is claimed.
+
+[Current structured qualification](runtime-profile-20261102.json). The
+Python 3.9 results below describe their original retained wheels, not
+this new current-main packaging. Analysis/native/deposit producers and
+caller-held application pins remain unchanged.
+
 ## Reproduce the source and authoring gates
 
-Use Python 3.11 for the qualified optional full stack:
+Use Python 3.11.17 for the qualified optional full stack. The setup command
+writes the local, intentionally ignored `.python-version`; later `uv run`
+commands then select the same interpreter as the locked installation:
 
 ```bash
-uv sync --locked --python 3.11 --extra full --extra dev --extra gui
+uv python pin 3.11.17
+uv sync --locked --python 3.11.17 --extra full --extra dev --extra gui
 uv run --locked pytest tests/ -q --cov=blake --cov-branch --cov-fail-under=80
 ```
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## Runtime/lock maintenance — 2026-11-02
+
+- Align current Python floor, classifiers and static-tool targets with Python 3.11; pin the qualified 3.11.17 default.
+- Repair the lock without new third-party versions, retain the rejected candidates and qualify fresh full/source and normal-wheel SDK installations.
+- Preserve every implementation file, historical Python 3.9 artifact, analytical/native producer and deposit identity.
+
 ## Paper 0.5.0 working draft — 2026-11-01
 
 - Develop the corpus/methods boundary, exact interval formalisms and source-bound profile/support illustrations without rerunning the retained `0.2.0rc1` corpus analysis.

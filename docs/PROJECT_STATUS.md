@@ -1,6 +1,6 @@
 # Current status and scoped next work
 
-Status date: 1 November 2026. This index separates the retained release from
+Status date: 2 November 2026. This index separates the retained release from
 current repository maintenance and future research. GitVault is the working
 collection; reference mirrors do not contain local unpublished research.
 
@@ -58,6 +58,27 @@ The independent final correction review inspected all 94 current pages and the
 responsive HTML, accepting this bounded working draft with limitations. The
 PDF/configuration carry the concept DOI; the HTML currently omits it. This is
 not full bibliographic metadata parity or specialist accessibility acceptance.
+
+## Current runtime and lock repair — 2 November 2026
+
+Current main admits Python **3.11+** and pins **3.11.17** for reproducible
+methods and optional-stack work. The peer floor change left the older
+universal lock stale; its real locked check refused. The repaired
+210-package lock preserves every retained third-party version and removes
+only inactive older-interpreter resolutions. The unrequested-upgrade
+candidate and original cache/style failures remain retained.
+
+Fresh full/dev/GUI setup installed **189 distributions**. All **1,382**
+source tests pass at **83.06%** statement/branch coverage. The rebuilt
+normal wheel passes **474** SDK tests outside the source tree at
+**99.25%** coverage; all **163** runtime/resource members agree with
+source and installation. Dependency checks and actual Torch/spaCy model
+smokes pass. The new wheel refuses installation on a real Python 3.9
+environment. The interval family passes the configured Python 3.11
+mypy, Black, isort and explicit 88-column flake8 checks. Four full-suite
+warnings are retained; no whole-package strict typing pass is claimed.
+
+[Structured runtime record](runtime-profile-20261102.json). This is source/setup maintenance; current native editions and publication records remain unchanged.
 
 ## Next bounded units
 
