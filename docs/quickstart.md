@@ -9,7 +9,11 @@ current Git source or guarantee its installation profiles.
 
 ## Installation
 
-### Using UV (Recommended)
+### Using UV (Recommended) — when published
+
+`blake` is not on PyPI yet: `pip install blake` answers "No matching distribution
+found" (checked 2026-11-02), so the package-index commands below apply once it is
+published. [From Source](#from-source) is the route that works today.
 
 ```bash
 # Methods-only dependencies
@@ -22,7 +26,7 @@ uv add "blake[full]"
 uv add "blake[full,gui,api,dev]"
 ```
 
-### Using Pip
+### Using Pip — when published
 
 ```bash
 # Methods-only installation
