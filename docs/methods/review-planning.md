@@ -121,7 +121,8 @@ They report global and scoped reviewed counts separately. Edited decision queues
 are authored inputs for the existing review workflow; do not overwrite the blank
 batch or relabel its completion receipt as a decision receipt.
 
-The dependency-light Python 3.9 and optional-stack Python 3.11 gates are separate.
+Current dependency-light and optional-stack gates are separate. Historical
+Python 3.9 wheel results retain their original source and packaging identities.
 See [verification](../verification.md), [review custody](../shared-methods.md#review-queues-run-membership-and-producer-closure)
 and the [application boundary](../applications.md). This operational method adds
 no literary labels, manuscript results, source acquisition or new paper deposit.

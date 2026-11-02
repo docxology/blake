@@ -6,8 +6,9 @@ Their scientific decisions remain local to those applications.
 
 ## Python and API boundaries
 
-Support Python 3.9 for the dependency-light core. Retain Click and the dependency
-profiles in `pyproject.toml`; a generic tooling preference does not justify an
+Follow the current interpreter contract in [verification](verification.md) and
+`pyproject.toml`; historical Python 3.9 wheels retain their own evidence. Retain
+Click and the declared dependency profiles; a generic tooling preference does not justify an
 interpreter or dependency migration. Use fully annotated public functions,
 explicit optional returns and immutable Pydantic boundary models. New schemas
 forbid undeclared fields and reject invalid scalar types. Preserve scientific

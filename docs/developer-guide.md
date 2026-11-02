@@ -12,14 +12,16 @@ TMP and caches to external storage; use the supported repository/common-store
 lease for source integration and publication.
 
 ~~~sh
-# Full corpus stack and complete test collection
-uv sync --locked --python 3.11 --extra full --extra dev --extra gui --extra api
+# Select the qualified local interpreter, then install the full test profile
+uv python pin 3.11.17
+uv sync --locked --python 3.11.17 --extra full --extra dev --extra gui --extra api
 
 # Read the actual interpreter identity
 uv run --locked python -c 'import sys; print(sys.prefix); print(sys.base_prefix)'
 ~~~
 
-Dependency-light methods use a separate Python 3.9 qualification; do not import
+Dependency-light methods retain a separate qualification from the optional
+stack; use the current runtime in [verification](verification.md). Do not import
 acquisition/NLP/GUI modules into those interfaces. Plain `uv sync --locked`
 installs the methods profile, not the full pipeline or complete test collection.
 
@@ -55,7 +57,8 @@ unavailable result.
 Corpus APIs are asynchronous where documented. Use an explicit corpus instance
 and await its I/O methods. A local list slice does not constrain `analyze_all()`;
 call `analyze_work(work.id)` for each selected work. Generic methods must remain
-usable on Python 3.9 without optional model imports.
+usable in the declared dependency-light profile without optional model imports.
+Historical Python 3.9 wheels retain their original qualifications.
 
 ## Testing
 

@@ -11,13 +11,19 @@ updated: 2026-06-23
 
 # ISA - Blake Initial Publication Hardening
 
-## Current State
+Historical planning record from 22–23 June 2026. Its state, criteria and command
+blocks describe that earlier campaign; they are not current execution guidance.
+Start with [project status](docs/PROJECT_STATUS.md), the
+[current native replay](docs/paper-reproduction.md) and
+[reproducibility](docs/manuscript/08_reproducibility.md) for the active contracts.
+
+## State recorded in June 2026
 
 The active corpus manuscript describes a source-audited Blake corpus pass with a `{{TARGET_TOTAL}}`-entry target ledger, `{{WORKS_PRESENT}}` local works, `{{TARGETS_PRESENT}}` fully evidenced targets, `{{WORKS_PARTIAL}}` partial targets, and `{{WORKS_MISSING}}` missing targets after token injection. Text-canon targets without primary Archive work ids may be represented by explicitly recorded Wikisource fallback text.
 
 The publication object is local source-owned readiness: regenerated corpus artifacts, manuscript variables, figures, PDF, web output, and validation reports. It does not include GitHub publication, Zenodo deposition, public promotion, or new live acquisition beyond the bounded source audit.
 
-## Active Publication Contract
+## Publication contract recorded in June 2026
 
 - The manuscript reports a target-aware partial corpus, not William Blake's complete works.
 - Representation, full evidence, partial evidence, fallback text evidence, missing targets, and source-audit status remain separate claims.
@@ -37,9 +43,12 @@ The publication object is local source-owned readiness: regenerated corpus artif
 4. Reproducibility: corpus outputs, bounded source audit, figures, variables, PDF, and validation output have been regenerated with the current commands.
 5. Release readiness: focused manuscript tests, rendered PDF/web QA, and forward-only TODO cleanup have been completed for local initial publication readiness.
 
-## Verification Spine
+## Historical verification spine
 
-```bash
+Retained commands below are evidence of the earlier plan, not a current runbook.
+Do not execute them as a replacement for the linked current contracts.
+
+```text
 uv run pytest tests/test_manuscript_tools.py -q
 uv run python scripts/acquire_missing_texts.py
 uv run blake corpus run --skip-download --output-dir analysis_output --fixture-mode never --viz-profile core --format json --archive-scope archive-inventory --image-mode archive-all --image-dpi 300 --max-images-per-work none

@@ -243,13 +243,16 @@ Node differential tests compare the same shared engine against Python.
 
 ## Installation profiles
 
-The core is qualified on actual Python 3.9 and 3.11. The default wheel supports portable-bundle reading and these methods through its declared dependency closure; exact resolved distribution inventories belong to each installation receipt.
+Current main requires Python 3.11 or newer; use the qualified local default and
+installation commands in [verification](verification.md). The default wheel
+supports portable-bundle reading and these methods through its declared
+dependency closure; resolved distribution inventories belong to each receipt.
+Retained Python 3.9/3.11 wheels keep their original source and metadata.
 Use `uv sync --extra recovery` for source recovery and recovered-projection export;
 this adds HTML parsing, image verification and platform certificate support.
 Use `uv sync --extra full --extra dev --extra gui` for the complete test suite,
-including its Streamlit native tests. The full workflow is qualified
-separately on Python 3.11;
-the core's Python 3.9 result does not qualify that optional stack.
+including its Streamlit native tests. The full workflow has its own qualification;
+a historical dependency-light result does not qualify that optional stack.
 
 ## Installed producer admission
 

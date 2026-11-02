@@ -44,6 +44,7 @@ the saved analytical producer.
 | Evidence supplements | [Gaps](10_supplement_evidence_gaps.md), [missing evidence](11_supplement_missing_evidence.md), [visual mosaics](12_supplement_visual_mosaics.md) |
 | Custody supplements | [Rights matrix](13_supplement_rights_matrix.md), [recoverability](14_supplement_recoverability.md) |
 | Citations and metadata | [Reference heading](99_references.md), [BibTeX](references.bib), [configuration](config.yaml), [preamble](preamble.md) |
+| HTML styling | [Article stylesheet](web.css), admitted through the pinned web writer; PDF styling remains in template configuration and preamble |
 | Claim/asset records | [Legal-claim ledger](legal_claim_ledger.yaml), [asset inventory](assets/README.md), [asset guidance](assets/AGENTS.md), [generated cover source](assets/cover_blakean_source.png) |
 
 Raw body links can target generated local graphics. Their availability and

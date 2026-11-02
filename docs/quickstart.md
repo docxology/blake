@@ -1,7 +1,8 @@
 # Quick Start Guide
 
-Choose the methods-only install or the full corpus pipeline. The 0.5.0 source
-revision has passed [bounded installed-package qualification](verification.md).
+Choose the methods-only install or the full corpus pipeline.
+[Verification](verification.md) identifies the current runtime/source and normal
+installed-wheel qualifications separately from retained historical results.
 Use the source checkout below for the current source revision. Package-index
 commands apply to the version actually published there; they do not select the
 current Git source or guarantee its installation profiles.
@@ -36,7 +37,8 @@ pip install "blake[full,gui,api,dev]"
 ```bash
 git clone https://github.com/docxology/blake.git
 cd blake
-uv sync --locked --python 3.11 --extra full --extra dev --extra gui
+uv python pin 3.11.17
+uv sync --locked --python 3.11.17 --extra full --extra dev --extra gui
 # The complete test suite includes GUI tests. Add --extra api for API serving.
 ```
 
