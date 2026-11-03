@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+message: "If you use this software or its corpus-governance method, please cite it as below."
+title: "Blake: A Reproducible, Rights-Bounded William Blake Corpus Workflow"
+abstract: >-
+  Blake builds a reproducible local corpus workflow for William Blake texts,
+  images, metadata, analysis results, visual summaries, exports, and reports,
+  with an auditable target ledger and a fail-closed rights gate that separates
+  open-source code and aggregate analytics from provider-supplied source files.
+type: software
+version: "0.7.0"
+date-released: "2026-11-01"
+license: MIT
+url: "https://github.com/docxology/blake"
+repository-code: "https://github.com/docxology/blake"
+references:
+  - type: report
+    title: "Mapping William Blake’s Works"
+    version: "0.2.0"
+    doi: "10.5281/zenodo.23601681"
+    authors:
+      - family-names: Friedman
+        given-names: Daniel Ari
+  - type: report
+    title: "Mapping William Blake’s Works"
+    version: "0.1.0"
+    doi: "10.5281/zenodo.21047574"
+    notes: "Earlier working-paper PDF; the published record does not include the current software assets."
+    authors:
+      - family-names: Friedman
+        given-names: Daniel Ari
+keywords:
+  - William Blake
+  - digital humanities
+  - corpus acquisition
+  - source provenance
+  - rights-bounded release
+authors:
+  - family-names: Friedman
+    given-names: Daniel Ari
+    orcid: "https://orcid.org/0000-0001-6232-9096"
+    affiliation: "Active Inference Institute"
+    email: "daniel@activeinference.institute"
+preferred-citation:
+  type: report
+  title: "Mapping William Blake’s Works: Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
+  version: "0.4.0"
+  year: 2026
+  doi: "10.5281/zenodo.23770249"
+  authors:
+    - family-names: Friedman
+      given-names: Daniel Ari
+      orcid: "https://orcid.org/0000-0001-6232-9096"
+      affiliation: "Active Inference Institute"

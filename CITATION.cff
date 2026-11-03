@@ -8,7 +8,7 @@ abstract: >-
   open-source code and aggregate analytics from provider-supplied source files.
 type: software
 version: "0.7.0"
-date-released: "2026-11-01"
+date-released: "2026-11-03"
 license: MIT
 url: "https://github.com/docxology/blake"
 repository-code: "https://github.com/docxology/blake"
@@ -43,9 +43,9 @@ authors:
 preferred-citation:
   type: report
   title: "Mapping William Blake’s Works: Evidence ledgers, source provenance, text-image diagnostics, and rights-bounded release controls"
-  version: "0.4.0"
+  version: "0.5.0"
   year: 2026
-  doi: "10.5281/zenodo.23770249"
+  doi: "10.5281/zenodo.23921364"
   authors:
     - family-names: Friedman
       given-names: Daniel Ari

@@ -9,7 +9,7 @@ The canonical sources live here. The paper reports a retained local analysis
 epoch, captured-source recoverability and explicit scholarly/distribution limits.
 Provider transcriptions, XML, images, indexes, backups and source-image mosaics
 remain local. [publication.json](../../publication.json) identifies the deposited
-0.4.0 paper separately from later software and documentation.
+0.5.0 paper separately from later software and documentation.
 
 ## Authoring and reproduction
 
