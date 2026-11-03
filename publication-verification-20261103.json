@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-11-03",
+  "repository": "docxology/blake",
+  "public": true,
+  "release_tag": "v0.7.0",
+  "release_source_commit": "bae1c7f717c0d79674bfce81b6ca6eb0a396064c",
+  "github_release": "https://github.com/docxology/blake/releases/tag/v0.7.0",
+  "zenodo": {
+    "record_id": 23921364,
+    "doi": "10.5281/zenodo.23921364",
+    "url": "https://zenodo.org/records/23921364",
+    "state": "done",
+    "datacite_state": "findable",
+    "doi_resolver_http": 200
+  },
+  "assets": {
+    "blake-0.7.0.tar.gz": {
+      "sha256": "789ceaafc973828b64684efe8ab3b87f621dacc6daa4382888ec66ec113db0b9",
+      "bytes": 596029,
+      "md5": "93b3cb80e6d121893f65d5c867fda294"
+    },
+    "blake-0.7.0-py3-none-any.whl": {
+      "sha256": "36168c904af77b74175d3edb6193d1cc859866af4708c01023b2c283eb005655",
+      "bytes": 628977,
+      "md5": "7537000c98e8c9409da0bc909a6aaa19"
+    },
+    "FONT-NOTICES.zip": {
+      "sha256": "87594cda1deed6db69951aec0cec926755a562147b572ebc6e86d1006ed86fcd",
+      "bytes": 15133,
+      "md5": "2aacfcdf5e32b15646462aff49583475"
+    },
+    "release-manifest.json": {
+      "sha256": "11701c4c367898bfa87150f5da876d35ac95eed7d9b67d2cb1daf97b9f419c1f",
+      "bytes": 2157,
+      "md5": "928a6363fc67449780fc3abdd615f84b"
+    },
+    "SHA256SUMS": {
+      "sha256": "8b7fc442e1c770349359d1fa5e2b7c5eda5e251e8d14a0d72d9661856027f34b",
+      "bytes": 604,
+      "md5": "546134eda7ce928b7449c67c497db214"
+    },
+    "Blake-0.5.0-reproduction.zip": {
+      "sha256": "95114e666f15130d2bf2b97044e0c2f4dd6a0fdfcb39142e31b9fad36c94a94e",
+      "bytes": 18100088,
+      "md5": "d90cc0ffc6a58efcf40ebcf463dad2f6"
+    },
+    "source-map.json": {
+      "sha256": "d78a10a5da6e27ded1d77e9f3f49c47f75c3ce1249e9ab77b8e5dbcdcc43b2c6",
+      "bytes": 44760,
+      "md5": "aea6818565257c31728ea8192df55d85"
+    },
+    "Blake.pdf": {
+      "sha256": "812e53237b40f808b4502e3dd358cbee5cda7d587e493ba95e41f02c11ad03eb",
+      "bytes": 11762801,
+      "md5": "5b0d0daebe7fc0613e9e308f6a39e232"
+    }
+  },
+  "anonymous_readback": {
+    "zenodo": 8,
+    "github": 8,
+    "sha256_and_size_match": true
+  },
+  "hosted_checks_at_release_integration": [
+    {
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "github_reviews_at_release_integration": [],
+  "independent_review": {
+    "verdict": "APPROVE_PROSPECTIVE_RELEASE_PAYLOAD",
+    "verdict_sha256": "e66dbf77948bc7bfe6b94306e51817338f026f65ac38e0ef657df624b2a965b1",
+    "report_sha256": "d2434e263954f14dfa5c00f6a17500b9f8c33b16545e9b9b4ac5e0d7a7ceb27f",
+    "scope": "Frozen corrected prospective content/exposure, distinct from actual publication and scientific acceptance."
+  },
+  "scope": "Post-release owner-qualified publication/readback/documentation receipt. Immutable tags and deposited source maps retain the approved release source. Later documentation does not create a new software/manuscript version or reassign native/analytical producers.",
+  "limits": [
+    "Working papers; publication is not scientific peer review or specialist accessibility certification.",
+    "Provider corpus, indexes and restricted captures remain ignored and unredistributed.",
+    "Earlier failures, editions, reading ceilings and custody receipts remain preserved."
+  ],
+  "software_version": "0.7.0",
+  "paper_version": "0.5.0",
+  "normal_release_wheel": {
+    "project": "core",
+    "prefix": "/Volumes/GitVault/Local/blake-public-release-20261103T140356Z/artifacts/environments/final-core",
+    "base_prefix": "/Volumes/GitVault/Local/runtimes/uv-python/cpython-3.11-macos-aarch64-none",
+    "normal_wheel_members": 163,
+    "version": "0.7.0",
+    "origin": "/Volumes/GitVault/Local/blake-public-release-20261103T140356Z/artifacts/environments/final-core/lib/python3.11/site-packages/blake/__init__.py",
+    "release_metadata_exact": true
+  },
+  "previous_deposit_preserved": {
+    "previous_record": 23770249,
+    "all_previous_files_unchanged": 6,
+    "old_pdf_sha256": "fd7274c0df56356c2ed03fd7debe976dc34b7ac390e69618ae4c6fc42da9ee4f",
+    "latest_core_record_after_hook_restoration": 23921364
+  },
+  "zenodo_hook_restored": {
+    "id": 653874771,
+    "active": true,
+    "events": [
+      "release"
+    ]
+  }
+}
