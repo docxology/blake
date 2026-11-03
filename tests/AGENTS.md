@@ -16,8 +16,8 @@ tests/
 ├── test_comprehensive_acquisition.py  # Integration tests
 ├── run_all_tests.py               # Test runner
 ├── unit/                          # Unit tests
-├── integration/                   # Integration tests
-└── performance/                   # Performance tests
+└── integration/                   # Integration tests
+                                     # (performance tests are marked, not a directory — see below)
 ```
 
 ## Running Tests
