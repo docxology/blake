@@ -17,14 +17,6 @@ permission.
 
 ## Medium Improvements
 
-- [ ] Publish the qualified 0.5.0 paper as the next Zenodo version when an
-  authenticated credential is available. The two private credential requests
-  expired without creating a deposition. Acceptance: verify the existing concept,
-  upload the exact qualified PDF and public reproduction assets, publish through
-  the ordinary API, verify anonymous downloads, then update the deposited-paper
-  manifest and citation metadata. No acquisition or model rerun is part of this
-  publication unit.
-
 - [ ] Fallback-text corroboration review pass. Scope: use the generated
   fallback corroboration records to review every validated fallback text against
   at least one additional authority before public notes describe it as

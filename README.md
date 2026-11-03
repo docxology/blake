@@ -366,3 +366,6 @@ Core software **0.7.0** accompanies manuscript **0.5.0**. The application
 releases keep their qualified SDK pin `263d7c83abe6f1309a64af3285a683c1b7672269`;
 a later documentation or publication commit does not reassign their producer.
 [Publication facts](publication.json) bind the selected PDF and assets. Provider corpora remain in private ignored custody.
+
+[Publication and reproduction verification](docs/publication-20261103.md) records the completed publication and separates
+immutable release inputs from later documentation and remaining research.
