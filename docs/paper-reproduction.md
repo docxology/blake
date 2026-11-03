@@ -68,9 +68,8 @@ while the current HTML has no literal DOI or DOI link. Do not claim full
 PDF/HTML bibliographic metadata parity. Exact review, replay and software
 bindings are in [the working-draft record](../paper-working-draft.json).
 
-The [publication manifest](../publication.json) still identifies the actual
-deposited **0.4.0** paper. The new draft uses the
-[concept DOI](https://doi.org/10.5281/zenodo.21047573); its next Zenodo version
-requires an available credential, publication and exact download readback.
-Source, software, native rendering, scientific interpretation, hosted CI and
-publication evidence retain separate scopes.
+The [publication manifest](../publication.json) identifies deposited paper **0.5.0**
+at [10.5281/zenodo.23921364](https://doi.org/10.5281/zenodo.23921364), accompanying software **0.7.0**.
+The concept DOI remains stable across paper editions. Source, software, native
+rendering, scientific interpretation, hosted CI and publication evidence retain
+separate scopes. The preceding 0.4.0 manifest remains preserved in history.

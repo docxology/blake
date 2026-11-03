@@ -8,7 +8,7 @@ view exposes recorded recovery status and scoped, read-only corpus search.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23770249-blue.svg)](https://doi.org/10.5281/zenodo.23770249)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23921364-blue.svg)](https://doi.org/10.5281/zenodo.23921364)
 
 Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
@@ -45,14 +45,14 @@ The current authoring edition is the 94-page [0.5.0 working draft](Blake-0.5.0.p
 Its [render-reproduction bundle](Blake-0.5.0-reproduction.zip) and
 [reproduction guide](docs/paper-reproduction.md) preserve the exact native inputs,
 template pin and distinction between mathematical illustrations and saved corpus
-diagnostics. This draft uses the concept DOI; its new Zenodo deposit awaits
-authenticated publication. The [working-draft record](paper-working-draft.json)
+diagnostics. This edition retains the stable concept DOI on its cover; its
+versioned record is [Zenodo 23921364](https://doi.org/10.5281/zenodo.23921364). The [working-draft record](paper-working-draft.json)
 binds the complete independent page/browser review and its remaining limits.
 
-The deposited 0.4.0 paper remains [Blake.pdf](Blake.pdf). Its
+The deposited 94-page 0.5.0 paper is [Blake.pdf](Blake.pdf). Its
 [publication manifest](publication.json) records the reviewed PDF hash, source
 commit and actual Zenodo record. Archived papers remain
-accessible at [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
+accessible at [0.4.0](https://doi.org/10.5281/zenodo.23770249), [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
 [0.1.0](https://doi.org/10.5281/zenodo.21047574).
 
 Current main requires Python 3.11 or newer and pins **3.11.17** for the qualified
@@ -81,7 +81,7 @@ The second command refreshes the existing pipeline store. Publication analysis i
 
 ## Publication analysis and rendered paper
 
-The [versioned working paper](https://doi.org/10.5281/zenodo.23770249) accompanies
+The [versioned working paper](https://doi.org/10.5281/zenodo.23921364) accompanies
 the software assets. Its source/copy records, target-ledger entries, image
 associations and distinct files are separate denominators. Exploratory NLP
 retains unverified authorship labels. Recoverability of captured bytes does not
@@ -347,9 +347,22 @@ The manuscript's legal distribution section and rights-matrix supplement are the
 
 This project is archived on Zenodo with a DOI, cross-linked to this repository:
 
-- **DOI:** [10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249)
+- **DOI:** [10.5281/zenodo.23921364](https://doi.org/10.5281/zenodo.23921364)
 - **Zenodo record:** working-paper PDF, wheel, source distribution, allowlisted reproduction archive, release manifest and SHA-256 checksums. Provider image mosaics are omitted.
 - **Earlier paper:** [10.5281/zenodo.21047574](https://doi.org/10.5281/zenodo.21047574), whose published record contains the earlier PDF.
 - See [`CITATION.cff`](CITATION.cff) for citation metadata.
 
 The MIT license covers project code and project-authored outputs only. Provider-supplied Blake Archive TEI, transcriptions, images, and fallback source texts are not included here and remain under their source-provider terms.
+
+## Public editions — 3 November 2026
+
+| Project | GitHub | Zenodo |
+|---|---|---|
+| Corpus and shared methods | [blake](https://github.com/docxology/blake) | [Paper 0.5.0](https://doi.org/10.5281/zenodo.23921364) |
+| Invertebrate readings and concordance | [Blakean Entomology](https://github.com/docxology/Blakean_Entomology) | [1.0.0](https://doi.org/10.5281/zenodo.23900583) |
+| Political argument and institutional models | [Blakean Federalism](https://github.com/docxology/Blakean_Federalism) | [1.0.0](https://doi.org/10.5281/zenodo.23900617) |
+
+Core software **0.7.0** accompanies manuscript **0.5.0**. The application
+releases keep their qualified SDK pin `263d7c83abe6f1309a64af3285a683c1b7672269`;
+a later documentation or publication commit does not reassign their producer.
+[Publication facts](publication.json) bind the selected PDF and assets. Provider corpora remain in private ignored custody.

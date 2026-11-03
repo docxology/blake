@@ -76,14 +76,11 @@
     }
   },
   "publication": {
-    "current_deposit_version": "0.4.0",
+    "current_deposit_version": "0.5.0",
     "manifest": "publication.json",
-    "current_deposit_doi": "10.5281/zenodo.23770249",
+    "current_deposit_doi": "10.5281/zenodo.23921364",
     "concept_doi": "10.5281/zenodo.21047573",
-    "new_deposition": "BLOCKED_NO_AVAILABLE_CREDENTIAL",
-    "expired_credential_requests": 2,
-    "deposition_mutation_performed": false,
-    "scope": "This record and later Git documentation commits do not change the deposited paper or its preferred citation."
+    "scope": "Approved unchanged 94-page manuscript; accompanying software 0.7.0. Historical credential failures and earlier deposits remain preserved."
   },
   "delivery": {
     "target_branch": "main",

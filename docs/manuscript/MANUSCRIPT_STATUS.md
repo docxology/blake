@@ -27,12 +27,12 @@ The corrected HTML SHA-256 is
 The original complete PDF inspection applies to these identical PDF bytes;
 changed HTML has its own desktop/mobile checks and correction review.
 
-The deposited paper remains **0.4.0**, 92 pages, at
-[10.5281/zenodo.23770249](https://doi.org/10.5281/zenodo.23770249).
-[publication.json](../../publication.json) and preferred-citation metadata retain
-that actual deposit. The new draft uses the
-[concept DOI](https://doi.org/10.5281/zenodo.21047573); authenticated Zenodo
-publication remains external work. This status file is not a release receipt.
+The deposited paper is **0.5.0**, 94 pages, at
+[10.5281/zenodo.23921364](https://doi.org/10.5281/zenodo.23921364), accompanying
+software **0.7.0**. [publication.json](../../publication.json) and preferred
+citation metadata identify that edition. The cover retains the stable
+[concept DOI](https://doi.org/10.5281/zenodo.21047573). The original native
+producer and bounded output acceptance apply to these unchanged PDF bytes.
 
 Historical papers remain available at
 [0.2.0](https://doi.org/10.5281/zenodo.23601681) and

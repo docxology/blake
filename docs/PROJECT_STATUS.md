@@ -1,6 +1,6 @@
 # Current status and scoped next work
 
-Status date: 2 November 2026. This index separates the retained release from
+Status date: 3 November 2026. This index separates the retained release from
 current repository maintenance and future research. GitVault is the working
 collection; reference mirrors do not contain local unpublished research.
 
@@ -12,7 +12,7 @@ collection; reference mirrors do not contain local unpublished research.
 | Version 0.4.0 interface cleanup | [Release notes](../CHANGELOG.md) and [verification](verification.md) record removal of obsolete interface paths with active acquisition/NLP/vision/GUI/recovery capabilities retained. The recorded full-stack gate is 1,171 passing tests at 83.34% branch-aware coverage. The later 0.5.0 gate is recorded separately below; neither is a whole-package strict typing result. |
 | 0.5.0 review-planning source | Generic hash-ranked round-robin workloads, explicit unit caps/shortfall and full-pool-bound blank batches are implemented upstream. Applications own scope and authored decisions. That source had 1,233 passing full-stack tests; the same normal wheel passes 340 SDK tests on each of Python 3.9/3.11. See [planning](methods/review-planning.md) and [current qualification](verification.md). No literary adjudication or new paper follows. |
 | 0.6.0 installed provenance | [Caller-held Git admission](methods/installed-provenance.md) checks actual metadata, physical RECORD/package bytes, imported origins and post-import stability. The repaired source suite passes 1,290 tests; the same normal wheel passes 400 SDK tests on each of Python 3.9/3.11. Four module guides now use actual API owners and capability profiles. [Qualification and retained failures](verification.md). No literary/native/deposit producer changes. |
-| Published working paper | [publication.json](../publication.json) binds the 92-page [Blake.pdf](../Blake.pdf), source and build identities, native template and exact deposited assets. [Zenodo 23770249](https://doi.org/10.5281/zenodo.23770249) is the retained deposit; later guide-only changes do not relabel its producer. |
+| Published working paper | [publication.json](../publication.json) binds the 94-page [Blake.pdf](../Blake.pdf), source and build identities, native template and exact deposited assets. [Zenodo 23921364](https://doi.org/10.5281/zenodo.23921364) is paper edition 0.5.0, accompanying software 0.7.0; original native and analytical producers remain unchanged. |
 | 30 October guidance reconciliation | Agent guidance routes methods, optional-stack and manuscript work to their actual contracts. Its recorded source epoch remains separate from later documentation. |
 | 31 October complete documentation review | All 56 original docs files were accounted for, including 55 complete text readings and the binary asset's recorded identity. [Documentation qualification](documentation-review-20261031.json) binds corrected profiles, actual APIs/async examples, safe troubleshooting, navigation and task chronology. Links/commands/refusing controls qualify this documentation slice; software regressions and the deposited paper retain their earlier receipts. |
 
@@ -48,9 +48,9 @@ separate. Responsive HTML repairs preserve image proportions and keep the
 long evidence-table caption within its keyboard-scrollable region; the original
 failed layouts and regression results remain retained.
 
-The deposited 0.4.0 identities above remain current publication facts. A new
-Zenodo edition requires an available authenticated credential and exact public
-asset readback; the two expired credential requests created no deposition.
+The 0.5.0 publication uses the already approved PDF without rerendering.
+The preceding 0.4.0 deposit and two expired credential requests remain historical
+evidence. [Publication facts](../publication.json) identify the new edition.
 Final source/render/delivery receipts for this wave are retained under
 `Local/blake-manuscript-advance-20261101T212248Z/` on GitVault.
 
@@ -104,3 +104,16 @@ common-store leases. Retained recovery/native evidence is not a renewable grant.
 Record software, runtime, interpretation, rendered output, hosted-CI and
 publication outcomes separately. The [scoped backlog](../TODO.md) retains the
 unresolved rights/reference policy and next-edition review requirements.
+
+## Public editions — 3 November 2026
+
+| Project | GitHub | Zenodo |
+|---|---|---|
+| Corpus and shared methods | [blake](https://github.com/docxology/blake) | [Paper 0.5.0](https://doi.org/10.5281/zenodo.23921364) |
+| Invertebrate readings and concordance | [Blakean Entomology](https://github.com/docxology/Blakean_Entomology) | [1.0.0](https://doi.org/10.5281/zenodo.23900583) |
+| Political argument and institutional models | [Blakean Federalism](https://github.com/docxology/Blakean_Federalism) | [1.0.0](https://doi.org/10.5281/zenodo.23900617) |
+
+Core software **0.7.0** accompanies manuscript **0.5.0**. The application
+releases keep their qualified SDK pin `263d7c83abe6f1309a64af3285a683c1b7672269`;
+a later documentation or publication commit does not reassign their producer.
+[Publication facts](../publication.json) bind the selected PDF and assets. Provider corpora remain in private ignored custody.

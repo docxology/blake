@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "paper_version": "0.5.0",
+  "status": "BOUNDED_WORKING_DRAFT_ACCEPTED",
+  "software": {
+    "version": "0.7.0",
+    "git_commit": "263d7c83abe6f1309a64af3285a683c1b7672269",
+    "source_tests": 1382,
+    "source_statement_branch_percent": 83.06,
+    "source_gate": "Local/blake-manuscript-advance-20261101T212248Z/evidence/core-paper05-full06",
+    "installed_sdk_tests_per_interpreter": 474,
+    "qualification_interpreters": [
+      "3.9.25",
+      "3.11.17"
+    ],
+    "scope": "Authoring regression and previously qualified exact SDK remain separate; no new package-index release."
+  },
+  "analytical_producer": {
+    "version": "0.2.0rc1",
+    "scope": "Retained corpus analysis, not rerun for this working draft. Exact-support examples illustrate mathematics rather than corpus measurements."
+  },
+  "pdf": {
+    "path": "Blake-0.5.0.pdf",
+    "pages": 94,
+    "bytes": 11762801,
+    "sha256": "812e53237b40f808b4502e3dd358cbee5cda7d587e493ba95e41f02c11ad03eb"
+  },
+  "html": {
+    "sha256": "ec90070f2d696ddef7a5d232367263e2676e70f007696d87711bdaf5413f5160",
+    "scope": "Native current responsive article; concept DOI omitted from this representation."
+  },
+  "native": {
+    "template_commit": "efce6d6f5b3c4e8e2bbf92d8250855a0a9389ae8",
+    "receipt": {
+      "path": "Local/blake-manuscript-advance-20261101T212248Z/artifacts/core-paper05-native04/native-render-receipt.json",
+      "bytes": 202730,
+      "sha256": "9008476d4610e8acff6f6babb53dc39fc6135b30d9a79d27f6a19f85ec6f5366"
+    },
+    "prepared": {
+      "path": "Local/blake-manuscript-advance-20261101T212248Z/artifacts/core-paper05-native04/prepared-publication.json",
+      "bytes": 31237,
+      "sha256": "1f49ba664649666b703a911bf903228e4685461b106de7545fb3323242a00800"
+    },
+    "writer_calls": [
+      "PDFRenderer.render_combined",
+      "WebRenderer.render_combined through admitted CSS subclass"
+    ],
+    "source_snapshot_sha256": "71f80209ed103a8ee7a2a379682233e13106d1d9a70bf9fc05edd28e10eb3fed",
+    "source_snapshot_scope": "Exact captured producer. Current non-body operating guides and final qualification records are later deltas; ordered body/native inputs remain unchanged."
+  },
+  "independent_working_draft_review": {
+    "status": "BOUNDED_WORKING_DRAFT_PASS_WITH_LIMITATIONS",
+    "pages": 94,
+    "verdict": {
+      "path": "Local/blake-manuscript-advance-20261101T212248Z/review/final-corrections-review03/VERDICT.json",
+      "bytes": 3550,
+      "sha256": "3a70b52a305fcdad95ae574c2f09b8a83d354f82e946eb414b1512f67220f15e"
+    },
+    "report_sha256": "4ceba930e998684fe22da1172e92d78aacc3ee2218f2432f5e39b25b30e40d83",
+    "closure_sha256": "213ce0a71b7842176a5adbfc3eca20b90870c1861481e43138b6529682f192ad",
+    "scope": "Complete current PDF and affected desktop/mobile HTML, source/data continuity and real refusing controls. Not scientific, rights, specialist accessibility, hosted-CI or release acceptance."
+  },
+  "public_reproduction": {
+    "path": "Blake-0.5.0-reproduction.zip",
+    "bytes": 18100088,
+    "sha256": "95114e666f15130d2bf2b97044e0c2f4dd6a0fdfcb39142e31b9fad36c94a94e",
+    "members": 258,
+    "declared_members": 257,
+    "clean_native_replay_pdf_html_byte_identical": true,
+    "archive_wrong_pin_refused_before_extraction": true,
+    "occupied_native_output_refused_before_writer": true,
+    "verifier_real_file_controls": {
+      "positive": 2,
+      "refusing": 22,
+      "statement_branch_percent": 100
+    }
+  },
+  "publication": {
+    "current_deposit_version": "0.4.0",
+    "manifest": "publication.json",
+    "current_deposit_doi": "10.5281/zenodo.23770249",
+    "concept_doi": "10.5281/zenodo.21047573",
+    "new_deposition": "BLOCKED_NO_AVAILABLE_CREDENTIAL",
+    "expired_credential_requests": 2,
+    "deposition_mutation_performed": false,
+    "scope": "This record and later Git documentation commits do not change the deposited paper or its preferred citation."
+  },
+  "delivery": {
+    "target_branch": "main",
+    "source_freeze_scope": "Accepted working draft and qualified software/replay; actual commit, remote verification and Downloads copy are separately recorded in the final GitVault DELIVERY.json."
+  },
+  "remaining_limits": [
+    "HTML concept DOI omission; no full PDF/HTML bibliographic metadata parity",
+    "Specialist accessibility, every-device and scientific/rights acceptance remain outside the working-draft scope",
+    "No new whole-oeuvre completeness or corpus-image census",
+    "Retained failed native/review/software attempts preserve their original outcomes"
+  ]
+}
