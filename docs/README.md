@@ -68,7 +68,8 @@ operating instructions belong in the workflow guides above.
 | [Visualization brief](visualization-publication-brief.md) | Figure registry, intended encodings and QA requirements |
 | [Source leads](source-leads.json) | Manual-review candidates, with no acquired-evidence credit |
 | [Scholarship gap review](online-scholarship-gap-review.md) | Dated discovery and evidence-gaps note |
-| [Publication consistency review](publication-consistency-review.md) | Dated publication observations |
+| [Publication consistency review](publication-consistency-review.md) | Historical discrepancy and current-run distinction |
+| [Saved-run membership](run-membership.md) | Audit contract and dated aggregate receipt, with private source custody retained |
 | [Manuscript sources and status](manuscript/README.md) | Retained paper inputs, generated assets and reproduction scope |
 | [Current documentation reconciliation](documentation-review-20261102.json) | Frozen review, owner corrections and exact evidence scope |
 | [Agent guidance](AGENTS.md) | Where to read before changing these documents |

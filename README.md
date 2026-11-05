@@ -55,6 +55,10 @@ commit and actual Zenodo record. Archived papers remain
 accessible at [0.4.0](https://doi.org/10.5281/zenodo.23770249), [0.2.0](https://doi.org/10.5281/zenodo.23601681) and
 [0.1.0](https://doi.org/10.5281/zenodo.21047574).
 
+The [saved-run membership guide](docs/run-membership.md) and its dated aggregate
+receipt distinguish current retained evidence from the older unresolved
+coverage/embedding discrepancy, without publishing provider text or rerunning models.
+
 Current main requires Python 3.11 or newer and pins **3.11.17** for the qualified
 methods and optional-stack workflows. The peer Python 3.15 default is retained
 in history: a real binary-only probe rejects the locked `pydantic-core==2.33.2`

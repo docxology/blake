@@ -16,6 +16,7 @@ delegate to a single package entrypoint.
 | `repopulate_db.py` | Rebuild the SQLite metadata DB from downloaded JSON | `blake.metadata.manager` | `uv run python scripts/repopulate_db.py` |
 | `generate_visualizations.py` | Standalone corpus visualizations (text/temporal/network/comparative/image) | `blake.viz.generate_visualizations` | `uv run python scripts/generate_visualizations.py` |
 | `generate_manuscript_figures.py` | Paper figures into `output/figures/` | `manuscript_tools.figures`, `manuscript_tools.cover` | `uv run python scripts/generate_manuscript_figures.py` |
+| `audit_manuscript_membership.py` | Read-only saved-run audit; aggregate JSON to stdout or an unused output | `manuscript_tools.run_membership` | `uv run python scripts/audit_manuscript_membership.py --evidence-root /authorized/evidence-root --output /unused/audit.json` |
 | `generate_cover_image.py` | Cover image generation | `manuscript_tools.cover` | `uv run python scripts/generate_cover_image.py` |
 | `z_generate_manuscript_variables.py` | Produces `output/data/manuscript_variables.json` and injects manuscript variables (runs last by convention) | `manuscript_tools.variables`, `infrastructure.rendering.manuscript_injection` | `uv run python scripts/z_generate_manuscript_variables.py` |
 

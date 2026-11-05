@@ -18,6 +18,8 @@ remain local. [publication.json](../../publication.json) identifies the deposite
 - [Style guide](../style-guide.md): syntax, units, source custody and claim limits.
 - [Reproducibility](08_reproducibility.md): new local epochs, explicit evidence
   roots, sealing, figures, hydration and the recorded template workflow.
+- [Saved-run membership](../run-membership.md): verify and export retained
+  membership without acquisition, inference or changing a historical seal.
 - [Manuscript status](MANUSCRIPT_STATUS.md): retained output and scoped next work.
 - [Visualization brief](../visualization-publication-brief.md): registered figures
   and their source/inspection requirements.

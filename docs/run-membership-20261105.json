@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "status": "matched_current_saved_epoch",
+  "generated_at": "2026-11-05T16:24:00.600264+00:00",
+  "run": {
+    "run_id": "d1f5af70e02a45868db1c372ee28814a",
+    "analysis_software_version": "0.2.0rc1",
+    "seed": 20261023
+  },
+  "diagnostic_producer": {
+    "software_version": "0.2.0",
+    "source_sha256": "70baa1ae233ece2fd69b3c7452ba9f197cc0058a2356909a869082d86322e591",
+    "numpy_version": "1.26.4",
+    "projection_method": "tfidf_covariance_pca_v2"
+  },
+  "exporter": {
+    "software_version": "0.7.0",
+    "source": "manuscript_tools/run_membership.py",
+    "source_sha256": "98050b91e8e85e74b19198c56b17311b971164783981f2b3afa2c6eadfa35802",
+    "source_files": {
+      "manuscript_tools/run_membership.py": "98050b91e8e85e74b19198c56b17311b971164783981f2b3afa2c6eadfa35802",
+      "manuscript_tools/nlp_diagnostics.py": "7f818548bad51df1f8f3f2b69d1d4b8447f060715cee4a7c7c494ff272d21e76",
+      "blake/corpus/saved_epoch.py": "16f47865ac8bcb6e38de6de3add44dbc5d66c06f5e1a5fa56e370b82bbc65ebe",
+      "blake/recovery_io.py": "75d2c157660b8d7aeb8578c383922f54ea59b15e36e2b8e19e8eb177c63edd24",
+      "blake/version.py": "d44c382eb4e4cf30f7a382e0045161fa4e405a73e558d5ae238273518d997d2c"
+    },
+    "runtime": {
+      "implementation": "CPython",
+      "version": "3.11.17"
+    }
+  },
+  "sources": {
+    "inputs": {
+      "path": "blake_data/publication/v0.2.0-01/epoch-inputs.json",
+      "bytes": 154034,
+      "sha256": "a9d601d33222906bc06e3d69e00b7d67ff1a0fda4e07c7fb206fb0d30a817798"
+    },
+    "manifest": {
+      "path": "analysis_output/corpus_manifest.json",
+      "bytes": 984563,
+      "sha256": "330fc65f880b7deef6388cbdf3e11382f10f2756ffac7428f952bff2427cfa3d"
+    },
+    "metrics": {
+      "path": "analysis_output/visualizations/text_metrics.json",
+      "bytes": 677014,
+      "sha256": "a15fd169524308526a6cc3f3af604bb573d5b402e9602f6faaee6bb9573eddb1"
+    },
+    "results": {
+      "path": "analysis_output/analysis/analysis_results.json",
+      "bytes": 61115778,
+      "sha256": "5723af30257e0cc668219446a3405f02b49a8ddb6e68b87ed707e91a2da535db"
+    },
+    "publication_epoch": {
+      "path": "analysis_output/data/publication_epoch.json",
+      "bytes": 1254,
+      "sha256": "220dad001ed613f49833d291634dedb3d62960667019e5f2f44e79b210d2fb2c"
+    },
+    "diagnostics": {
+      "path": "analysis_output/data/nlp_diagnostics.json",
+      "bytes": 200345,
+      "sha256": "a262c4f79ad0353ac685a28e21d8bf86a2eb2ca1d64bbbe7d365460fe59c820d"
+    },
+    "derived_receipt": {
+      "path": "analysis_output/data/derived_epoch_receipt.json",
+      "bytes": 20070,
+      "sha256": "27f9c4010bea570999be740e52d677eb05a4a39fc36330a55e9cfec6ba9f9d82"
+    }
+  },
+  "metric_binding": "derived_receipt",
+  "membership": {
+    "total_records": 727,
+    "eligible_text": 540,
+    "embedded": 530,
+    "missing": 0,
+    "filtered": 10,
+    "excluded_cache": 0,
+    "record_ids_sha256": "70d4a1bcecdf1b94f85c6407bd49926c79ac76e5802a741a2f5d16c7313595f9",
+    "eligible_text_ids_sha256": "d79e8e20396134d291bacc8f35a91671de83bbac7c1ef3f021437e0b1fc64909",
+    "embedded_ids_sha256": "cf7b0c8e24a1a69f0dee1b77e4e33bfbe903b17c430b76b2617c3786a138c29c"
+  },
+  "historical_discrepancy": {
+    "status": "not_recovered",
+    "source": "docs/publication-consistency-review.md",
+    "scope": "Current saved-run agreement does not identify or correct the older publication's differing membership."
+  },
+  "review_scope": "Stored run identities, artifact bytes, text-modality membership and retained diagnostic partition only; no acquisition, model inference, literary adjudication, scientific confirmation or whole-oeuvre claim."
+}

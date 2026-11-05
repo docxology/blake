@@ -1,5 +1,9 @@
 # Publication consistency review
 
+The historical sections below retain their original review scope.
+The [current saved-run audit](run-membership.md) and dated addendum distinguish
+later retained evidence from recovery of the older discrepancy.
+
 ## Text coverage and embedding denominators
 
 The archived manuscript reports 156 text-bearing works for coverage and 162 for
@@ -72,3 +76,19 @@ oracle and the degenerate-input controls.
 The new epoch's row-level diagnostics, component-error census and publication
 evidence live under `analysis_output/data/` locally. They do not establish the
 cause of the older publication's six-record discrepancy.
+
+## Retained current-run membership — 5 November 2026
+
+The [dated aggregate audit](run-membership-20261105.json) checks the retained
+publication epoch, not the earlier 156-versus-162 manuscript population. Its
+manifest, epoch inputs, metrics and result ledger agree on 727 source/copy IDs;
+540 are text-bearing. The retained NLP diagnostic partitions those eligible IDs
+into 530 embedded and 10 token-filtered members, with none missing or imported
+from an unmatched cache. Artifact and ID-set digests record that comparison.
+
+The analytical producer remains `0.2.0rc1`; the saved diagnostic retains its
+`0.2.0` producer and source digest. The current exporter has a separate source
+identity and review time. The existing derived receipt binds the metric bytes;
+no historical seal, model result, deposited PDF or native output was rewritten.
+These observations do not name the six records in the older discrepancy or
+establish its cause. Provider expression and full local evidence remain private.

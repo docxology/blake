@@ -1,5 +1,15 @@
 # Changelog
 
+## Saved-run membership evidence — 2026-11-05
+
+- Compare publication input, manifest, metric and result-ledger identities and
+  explicit text modalities; reject equal-count substitutions and malformed inputs.
+  New publication seals bind the compared metric bytes.
+- Export rights-safe aggregate membership evidence while retaining historical
+  analytical and diagnostic producers separately from the current exporter.
+- Distinguish the retained current publication epoch from the unresolved older
+  coverage/embedding discrepancy; preserve the private corpus and deposited assets.
+
 ## Runtime/lock maintenance — 2026-11-02
 
 - Align current Python floor, classifiers and static-tool targets with Python 3.11; pin the qualified 3.11.17 default.

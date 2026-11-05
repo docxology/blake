@@ -9,6 +9,7 @@ manuscript-variable producer that feeds template token substitution.
 | `cover.py` | `generate_cover()` — builds the cover from `docs/manuscript/assets/cover_blakean_source.png` (or draws one if absent) |
 | `figures.py` | Manuscript figures from `analysis_output/` artifacts |
 | `nlp_diagnostics.py` | Builds/saves NLP diagnostics for the paper |
+| `run_membership.py` | Validates publication membership and exports aggregate evidence without rerunning models |
 | `variables.py` | Manuscript-variable producer (auto-injected at render; no hard-coded counts) |
 | `paths.py` | Explicit authoring/output and evidence read-root routing, without fallback |
 | `core_architecture.py` | Source-bound profile/ownership diagnostic, figure and tokens; independent of saved NLP |
@@ -21,3 +22,6 @@ Both orchestrators accept `--evidence-root` and the
 remain in this project; analysis and publication custody come from the selected
 read root; generated artifacts go under this project's `output/`. Existing
 verification requirements remain in force. See [shared conventions](../docs/style-guide.md).
+
+[Saved-run membership](../docs/run-membership.md) documents the separate audit
+entrypoint, new seal bindings, retained producer identities and historical limits.

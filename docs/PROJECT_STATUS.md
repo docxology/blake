@@ -1,6 +1,6 @@
 # Current status and scoped next work
 
-Status date: 3 November 2026. This index separates the retained release from
+Status date: 5 November 2026. This index separates the retained release from
 current repository maintenance and future research. GitVault is the working
 collection; reference mirrors do not contain local unpublished research.
 
@@ -88,6 +88,16 @@ guidance, historical ISA orientation, covariance-PCA wording and stylesheet
 navigation are corrected. [Documentation record](documentation-review-20261102.json)
 separates this owner correction from the frozen review and retained software,
 paper and publication qualifications. No analytical or native producer changes.
+
+## Saved-run membership evidence — 5 November 2026
+
+The [audit guide](run-membership.md) and its dated aggregate receipt make the
+retained publication membership inspectable without redistributing provider text.
+Current source rejects mismatched IDs/modalities and binds metric bytes in new
+publication seals. The existing run and diagnostic retain their own producers;
+the new exporter is separately identified. This maintenance does not recover the
+older manuscript's six-record discrepancy or create a new analysis/native/deposit
+edition. Historical test and runtime qualifications above retain their source epochs.
 
 ## Next bounded units
 
