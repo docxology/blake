@@ -19,6 +19,7 @@ from blake.corpus.saved_epoch import (
     validate_derived_epoch,
 )
 from blake.recovery_io import _atomic_write, _safe_path
+from manuscript_tools.run_membership import validate_run_membership
 
 
 def verify_publication_recovery(project_root: Path) -> dict[str, Any]:
@@ -157,6 +158,7 @@ def write_publication_evidence(
         epoch["derived_receipt"] = file_sha256(
             output / "data/derived_epoch_receipt.json"
         )
+    epoch["membership_bindings"] = validate_run_membership(root, epoch)["bindings"]
 
     recovery_path = _safe_path(data, "recovery/manifest.json")
     recovery = json.loads(recovery_path.read_bytes())
@@ -338,6 +340,7 @@ def publication_tokens(root: Path, *, required: bool) -> dict[str, str]:
     epoch = load_saved_analysis_epoch(root / "blake_data", root / "analysis_output")
     if epoch is None or evidence["run_id"] != epoch["run_id"]:
         raise ValueError("Publication evidence has a different saved analysis identity")
+    validate_run_membership(root, epoch)
     integrity = evidence["integrity_verification"]
     expected_bindings = {
         "analysis_output/data/publication_epoch.json",

@@ -88,6 +88,16 @@ def sealed_fixture(tmp_path):
     works = MetadataDatabase(store / "metadata/metadata.db").load_all_works()
     output = tmp_path / "analysis_output"
     (output / "analysis").mkdir(parents=True)
+    (output / "visualizations").mkdir()
+    inputs = json.loads((store / "epoch-inputs.json").read_bytes())
+    (output / "visualizations/text_metrics.json").write_text(
+        json.dumps(
+            [
+                {"work_id": row["work_id"], "has_text": row["has_text"]}
+                for row in inputs["works"]
+            ]
+        )
+    )
     pipeline = {
         "run_id": "synthetic-publication",
         "status": "completed",
