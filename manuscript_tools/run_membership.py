@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import platform
 import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from blake import version as version_owner
 from blake.corpus.saved_epoch import file_sha256, load_saved_analysis_epoch
 from blake.recovery_io import _safe_path
 from blake.version import __version__
@@ -95,6 +97,37 @@ def validate_run_membership(root: Path, epoch: dict) -> dict:
         "eligible": {key for key, row in input_rows.items() if row["has_text"]},
         "sources": sources,
         "bindings": bindings,
+    }
+
+
+def _exporter_identity() -> dict:
+    root = Path(__file__).resolve().parents[1]
+    owners = {
+        "manuscript_tools/run_membership.py": Path(__file__),
+        "manuscript_tools/nlp_diagnostics.py": Path(
+            validate_membership.__code__.co_filename
+        ),
+        "blake/corpus/saved_epoch.py": Path(
+            load_saved_analysis_epoch.__code__.co_filename
+        ),
+        "blake/recovery_io.py": Path(_safe_path.__code__.co_filename),
+        "blake/version.py": Path(version_owner.__file__),
+    }
+    source_files = {}
+    for relative, imported in owners.items():
+        source = _safe_path(root, relative)
+        if imported.resolve() != source:
+            raise ValueError("Auditor helper origin differs from its source owner")
+        source_files[relative] = file_sha256(source)
+    return {
+        "software_version": __version__,
+        "source": "manuscript_tools/run_membership.py",
+        "source_sha256": source_files["manuscript_tools/run_membership.py"],
+        "source_files": source_files,
+        "runtime": {
+            "implementation": platform.python_implementation(),
+            "version": platform.python_version(),
+        },
     }
 
 
@@ -200,11 +233,7 @@ def build_membership_audit(evidence_root: Path | str) -> dict:
             "seed": epoch["seed"],
         },
         "diagnostic_producer": diagnostic_producer,
-        "exporter": {
-            "software_version": __version__,
-            "source": "manuscript_tools/run_membership.py",
-            "source_sha256": file_sha256(Path(__file__)),
-        },
+        "exporter": _exporter_identity(),
         "sources": sources,
         "metric_binding": metric_binding,
         "membership": {

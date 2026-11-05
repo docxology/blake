@@ -313,3 +313,66 @@ def test_audit_refuses_a_changed_previously_valid_derived_receipt(sealed_fixture
     write(derived_path, derived)
     with pytest.raises(ValueError, match="Derived epoch receipt changed"):
         build_membership_audit(root)
+
+
+def test_audit_binds_changed_helper_bytes_without_repeating_analysis(
+    sealed_fixture,
+):
+    import shutil
+    import subprocess
+    import sys
+
+    root, _, _, _ = sealed_fixture
+    seed_diagnostics(root)
+    source = Path(__file__).resolve().parents[1]
+    for name in ("blake", "manuscript_tools"):
+        shutil.copytree(
+            source / name,
+            root / name,
+            ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+        )
+    (root / "scripts").mkdir()
+    for name in ("bootstrap.py", "audit_manuscript_membership.py"):
+        shutil.copyfile(source / "scripts" / name, root / "scripts" / name)
+
+    def export(name):
+        path = root / name
+        subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                str(root / "scripts/audit_manuscript_membership.py"),
+                "--evidence-root",
+                str(root),
+                "--output",
+                str(path),
+            ],
+            check=True,
+            stdin=subprocess.DEVNULL,
+        )
+        return read(path)
+
+    first = export("first-audit.json")
+    helper = root / "blake/corpus/saved_epoch.py"
+    helper.write_text(helper.read_text() + "\n# Audited helper-byte control.\n")
+    second = export("second-audit.json")
+    assert first["exporter"] != second["exporter"]
+    for name in ("run", "diagnostic_producer", "sources", "membership"):
+        assert first[name] == second[name]
+    assert (
+        first["exporter"]["source_files"]["blake/corpus/saved_epoch.py"]
+        != second["exporter"]["source_files"]["blake/corpus/saved_epoch.py"]
+    )
+    assert (
+        first["exporter"]["source_files"]["manuscript_tools/run_membership.py"]
+        == second["exporter"]["source_files"]["manuscript_tools/run_membership.py"]
+    )
+    assert second["exporter"]["source_files"]["blake/corpus/saved_epoch.py"] == (
+        hashlib.sha256(helper.read_bytes()).hexdigest()
+    )
+    import platform
+
+    assert second["exporter"]["runtime"] == {
+        "implementation": platform.python_implementation(),
+        "version": platform.python_version(),
+    }
