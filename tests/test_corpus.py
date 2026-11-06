@@ -1391,8 +1391,8 @@ def test_private_release_preflight_excludes_raw_cache_and_mosaics(tmp_path):
     (output_dir / "visualizations").mkdir(parents=True)
     (output_dir / "reports").mkdir(parents=True)
     (tmp_path / "output" / "figures").mkdir(parents=True)
-    (tmp_path / "manuscript").mkdir()
-    (tmp_path / "manuscript" / "13_supplement_rights_matrix.md").write_text(
+    (tmp_path / "docs" / "manuscript").mkdir(parents=True)
+    (tmp_path / "docs" / "manuscript" / "13_supplement_rights_matrix.md").write_text(
         "\n".join(
             [
                 "Project code, tests, scripts, and project-authored documentation",

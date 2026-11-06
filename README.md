@@ -347,6 +347,26 @@ The manuscript's legal distribution section and rights-matrix supplement are the
 
 `uv run blake corpus public-release-preflight` and `uv run blake corpus public-release-package` prepare the GitHub + Zenodo release bundle under `analysis_output/releases/public_release/`. The package includes code, safe generated outputs, `CITATION.cff`, Zenodo metadata, and SHA-256 checksums while excluding the local manuscript pipeline, raw source caches, and rights-gated assets by default.
 
+Package staging requires a new, unused destination. An existing directory, file
+or symlink is refused before preflight writes; it is never deleted or reused.
+Choose a new `--release-dir` for each attempt and retain prior successful and
+blocked epochs. Destinations under project sources or captured data, and symlink
+parents, are refused. This is local preparation, not an upload or new deposit.
+
+The explicitly selected `--output-dir` supplies analytical evidence and copied
+artifacts; public bundle names remain under `analysis_output/` even when that
+source epoch lives outside the checkout. Corroboration records bind the selected
+manifest's exact bytes using a logical path, size and SHA-256. A matching source
+identifier supports contextual target identity only. Pending `manual_review`
+leads remain candidates and cannot make a fallback record ready; the counts do
+not claim a second transcription comparison. Unresolved records produce a
+blocked report. Rights reports bind the current
+`docs/manuscript/13_supplement_rights_matrix.md`; a missing matrix is explicit
+and no old-path fallback or new redistribution permission is inferred.
+Operator preflight and staging manifests retain local custody paths and remain
+private; only the declared bundle, citation and deposit metadata are publication
+assets.
+
 ## Citation and Archive
 
 This project is archived on Zenodo with a DOI, cross-linked to this repository:

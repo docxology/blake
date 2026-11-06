@@ -132,7 +132,7 @@ delegated to [recovery_commands.py](../blake/recovery_commands.py).
 | `blake corpus recover` / `verify-recovery` / `import-recovery` | Captured recovery and registration |
 | `blake corpus backup` / `verify-backup` / `restore` | Source snapshot custody |
 | `blake corpus private-release-preflight` | Private release preflight |
-| `blake corpus public-release-preflight` / `public-release-package` | Declared public package selection and blockers |
+| `blake corpus public-release-preflight` / `public-release-package` | Selected analytical epoch, logical bundle paths and blockers; package staging requires a fresh destination and preserves occupied outputs |
 | `blake info`, `search`, `interactive`, `explore`, `scrape-archive` | Inventory, discovery and optional interfaces |
 
 Use `uv run --locked blake --help` and the selected command's `--help` with the

@@ -1,15 +1,21 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ..recovery_io import _safe_path
 
 RIGHTS_GATE_CLASSES: tuple[dict[str, Any], ...] = (
     {
-        "artifact_class": "Project code, tests, scripts, and project-authored documentation",
-        "rights_matrix_key": "Project code, tests, scripts, and project-authored documentation",
+        "artifact_class": (
+            "Project code, tests, scripts, and project-authored " "documentation"
+        ),
+        "rights_matrix_key": (
+            "Project code, tests, scripts, and project-authored " "documentation"
+        ),
         "default_public_release_rule": "include under repository license",
         "release_disposition": "include",
         "public_bundle_allowed": True,
@@ -18,11 +24,17 @@ RIGHTS_GATE_CLASSES: tuple[dict[str, Any], ...] = (
     },
     {
         "artifact_class": "Aggregate counts, provenance tables, and non-image charts",
-        "rights_matrix_key": "Aggregate counts, coverage tables, checksums, source URLs, authority tiers, and non-image charts",
+        "rights_matrix_key": (
+            "Aggregate counts, coverage tables, checksums, source "
+            "URLs, authority tiers, and non-image charts"
+        ),
         "default_public_release_rule": "include with citations and provenance",
         "release_disposition": "include",
         "public_bundle_allowed": True,
-        "evidence_required": "source URL, checksum where applicable, authority tier, generation command",
+        "evidence_required": (
+            "source URL, checksum where applicable, authority tier, "
+            "generation command"
+        ),
         "checked_paths": [
             "analysis_output/corpus_manifest.json",
             "analysis_output/visualizations/dataset_statistics.json",
@@ -35,7 +47,9 @@ RIGHTS_GATE_CLASSES: tuple[dict[str, Any], ...] = (
         "default_public_release_rule": "conditional source-specific inclusion",
         "release_disposition": "conditional",
         "public_bundle_allowed": False,
-        "evidence_required": "source URL, checksum, validation note, license/trademark handling",
+        "evidence_required": (
+            "source URL, checksum, validation note, license/trademark" " handling"
+        ),
         "checked_paths": ["blake_data/metadata/fallback_text_validations"],
     },
     {
@@ -44,25 +58,47 @@ RIGHTS_GATE_CLASSES: tuple[dict[str, Any], ...] = (
         "default_public_release_rule": "conditional attribution and license continuity",
         "release_disposition": "conditional",
         "public_bundle_allowed": False,
-        "evidence_required": "page URL, retrieval note, attribution, license metadata, checksum",
+        "evidence_required": (
+            "page URL, retrieval note, attribution, license metadata," " checksum"
+        ),
         "checked_paths": ["blake_data/metadata/fallback_text_validations"],
     },
     {
-        "artifact_class": "William Blake Archive TEI, transcriptions, object images, and bulk mirrors",
-        "rights_matrix_key": "William Blake Archive TEI, transcriptions, object images, and bulk mirrors",
-        "default_public_release_rule": "exclude raw files and mirrors from the public repository",
+        "artifact_class": (
+            "William Blake Archive TEI, transcriptions, object "
+            "images, and bulk mirrors"
+        ),
+        "rights_matrix_key": (
+            "William Blake Archive TEI, transcriptions, object "
+            "images, and bulk mirrors"
+        ),
+        "default_public_release_rule": (
+            "exclude raw files and mirrors from the public repository"
+        ),
         "release_disposition": "exclude",
         "public_bundle_allowed": False,
-        "evidence_required": "source URL, object/work id, checksum, local-cache path excluded from release",
+        "evidence_required": (
+            "source URL, object/work id, checksum, local-cache path "
+            "excluded from release"
+        ),
         "checked_paths": ["blake_data", "analysis_output/data"],
     },
     {
-        "artifact_class": "Image mosaics and visual supplements made from local source files",
-        "rights_matrix_key": "Image mosaics and visual supplements made from local source files",
-        "default_public_release_rule": "local review only unless cleared for the exact venue",
+        "artifact_class": (
+            "Image mosaics and visual supplements made from local " "source files"
+        ),
+        "rights_matrix_key": (
+            "Image mosaics and visual supplements made from local " "source files"
+        ),
+        "default_public_release_rule": (
+            "local review only unless cleared for the exact venue"
+        ),
         "release_disposition": "local-only",
         "public_bundle_allowed": False,
-        "evidence_required": "input file list, source URLs, resolution, caption caveat, permission or fair-use memo",
+        "evidence_required": (
+            "input file list, source URLs, resolution, caption "
+            "caveat, permission or fair-use memo"
+        ),
         "checked_paths": ["output/figures", "analysis_output/visualizations"],
     },
     {
@@ -71,7 +107,9 @@ RIGHTS_GATE_CLASSES: tuple[dict[str, Any], ...] = (
         "default_public_release_rule": "include with provenance and non-evidence label",
         "release_disposition": "include",
         "public_bundle_allowed": True,
-        "evidence_required": "prompt/provenance record, generation command, manuscript role",
+        "evidence_required": (
+            "prompt/provenance record, generation command, manuscript" " role"
+        ),
         "checked_paths": ["output/cover", "output/figures"],
     },
 )
@@ -110,9 +148,7 @@ def write_private_release_preflight(
     rights_gate_path = reports_dir / "rights_gate_report.json"
     rights_gate_md_path = reports_dir / "rights_gate_report.md"
     rights_gate_path.write_text(json.dumps(rights_gate, indent=2), encoding="utf-8")
-    rights_gate_md_path.write_text(
-        _rights_gate_markdown(rights_gate), encoding="utf-8"
-    )
+    rights_gate_md_path.write_text(_rights_gate_markdown(rights_gate), encoding="utf-8")
 
     preflight = build_private_release_preflight(
         root,
@@ -142,20 +178,36 @@ def build_rights_gate_report(
     output_dir: Path,
     data_dir: Path,
 ) -> dict[str, Any]:
-    rights_matrix_path = project_root / "manuscript" / "13_supplement_rights_matrix.md"
-    rights_matrix_text = (
-        rights_matrix_path.read_text(encoding="utf-8")
-        if rights_matrix_path.exists()
-        else ""
-    )
+    relative_matrix = "docs/manuscript/13_supplement_rights_matrix.md"
+    rights_matrix_path = _safe_path(project_root, relative_matrix)
+    if rights_matrix_path.exists() and not rights_matrix_path.is_file():
+        raise ValueError("Rights matrix source must be a regular file")
+    raw = rights_matrix_path.read_bytes() if rights_matrix_path.is_file() else None
+    rights_matrix_text = raw.decode("utf-8") if raw is not None else ""
+    rights_matrix_source = {
+        "path": relative_matrix,
+        "status": "available" if raw is not None else "missing",
+        "bytes": len(raw) if raw is not None else None,
+        "sha256": hashlib.sha256(raw).hexdigest() if raw is not None else None,
+    }
     rows = []
     for artifact in RIGHTS_GATE_CLASSES:
         checked_paths = [
             {
                 "path": path,
-                "exists": (project_root / path).exists()
-                if not path.startswith("analysis_output")
-                else (output_dir / path.removeprefix("analysis_output/")).exists(),
+                "exists": (
+                    (output_dir / path.removeprefix("analysis_output/")).exists()
+                    if path.startswith("analysis_output/")
+                    else (
+                        (data_dir / path.removeprefix("blake_data/")).exists()
+                        if path.startswith("blake_data/")
+                        else (
+                            data_dir.exists()
+                            if path == "blake_data"
+                            else (project_root / path).exists()
+                        )
+                    )
+                ),
             }
             for path in artifact["checked_paths"]
         ]
@@ -179,6 +231,7 @@ def build_rights_gate_report(
         "artifact": "rights_gate_report",
         "generated_at": datetime.now().isoformat(),
         "rights_matrix_path": str(rights_matrix_path),
+        "rights_matrix_source": rights_matrix_source,
         "output_dir": str(output_dir),
         "data_dir": str(data_dir),
         "artifact_classes": rows,
@@ -187,9 +240,9 @@ def build_rights_gate_report(
         ),
         "public_bundle_blocked_count": len(blocked),
         "excluded_public_patterns": list(EXCLUDED_PUBLIC_PATTERNS),
-        "status": "blocked_for_public_redistribution"
-        if blocked
-        else "public_bundle_clear",
+        "status": (
+            "blocked_for_public_redistribution" if blocked else "public_bundle_clear"
+        ),
     }
 
 
@@ -203,7 +256,9 @@ def build_private_release_preflight(
     rights_gate: dict[str, Any],
 ) -> dict[str, Any]:
     manifest = _read_json(output_dir / "corpus_manifest.json", {})
-    figure_registry = _read_json(project_root / "output" / "figures" / "figure_registry.json", {})
+    figure_registry = _read_json(
+        project_root / "output" / "figures" / "figure_registry.json", {}
+    )
     dataset_statistics = _read_json(
         output_dir / "visualizations" / "dataset_statistics.json", {}
     )
@@ -321,7 +376,8 @@ def _private_preflight_markdown(report: dict[str, Any]) -> str:
         "Blocked public artifact classes:",
     ]
     lines.extend(
-        f"- {row['artifact_class']} ({row['release_disposition']}): {row['evidence_required']}"
+        f"- {row['artifact_class']} ({row['release_disposition']}): "
+        f"{row['evidence_required']}"
         for row in report["blocked_artifact_classes"]
     )
     lines.extend(

@@ -10,9 +10,11 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
+
 from packaging.version import Version
 
 from .. import __affiliation__, __author__, __email__, __orcid__, __version__
+from ..recovery_io import _safe_path
 from .evidence_acquisition import (
     FALLBACK_VALIDATION_DIR,
     load_validated_fallback_marker,
@@ -134,7 +136,8 @@ ABSOLUTE_PATH_RE = re.compile(
 # Text suffixes whose embedded-payload size is bounded (transcription/full-text guard).
 SIZE_SCAN_SUFFIXES: frozenset[str] = frozenset({".json", ".csv", ".txt"})
 # Images may only ship from project-authored chart directories. Any image elsewhere
-# (e.g. rasterized manuscript pages under output/qa_previews) is rights-gated by default.
+# (e.g. rasterized manuscript pages under output/qa_previews) is rights-gated by
+# default.
 IMAGE_SUFFIXES: frozenset[str] = frozenset(
     {".png", ".jpg", ".jpeg", ".gif", ".webp", ".tif", ".tiff", ".bmp", ".svg"}
 )
@@ -195,6 +198,7 @@ def write_public_release_preflight(
     root = Path(project_root) if project_root is not None else _project_root()
     output_path = Path(output_dir)
     data_path = Path(data_dir)
+    _admit_analysis_root(root, output_path, data_path)
     release_path = _release_dir(output_path, release_dir)
     reports_dir = output_path / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
@@ -228,10 +232,10 @@ def write_public_release_package(
     root = Path(project_root) if project_root is not None else _project_root()
     output_path = Path(output_dir)
     data_path = Path(data_dir)
+    _admit_analysis_root(root, output_path, data_path)
     release_path = _release_dir(output_path, release_dir)
-    if release_path.exists():
-        shutil.rmtree(release_path)
-    release_path.mkdir(parents=True, exist_ok=True)
+    _admit_release_destination(root, data_path, release_path)
+    release_path.mkdir(parents=True, exist_ok=False)
 
     report = build_public_release_report(
         root,
@@ -276,7 +280,9 @@ def write_public_release_package(
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     bundle_dir.mkdir(parents=True, exist_ok=True)
-    _materialize_bundle(root, bundle_dir, manifest["included_assets"])
+    _materialize_bundle(
+        root, bundle_dir, manifest["included_assets"], output_dir=output_path
+    )
 
     checksums = _build_checksum_ledger(bundle_dir, manifest["included_assets"])
     _write_checksum_ledger(checksums_path, checksums)
@@ -315,7 +321,9 @@ def write_public_release_package(
         "corroboration_path": str(corroboration_path),
         "included_asset_count": len(manifest["included_assets"]),
         "excluded_asset_count": len(manifest["excluded_assets"]),
-        "corroborated_fallback_target_count": len(corroboration["validated_targets"]),
+        "corroborated_fallback_target_count": corroboration[
+            "corroborated_target_count"
+        ],
     }
     package_summary_path.write_text(
         json.dumps(package_summary, indent=2), encoding="utf-8"
@@ -331,9 +339,11 @@ def build_public_release_report(
     release_dir: Path,
     destination: str,
 ) -> dict[str, Any]:
+    _admit_analysis_root(project_root, output_dir, data_dir)
     if destination not in PUBLIC_RELEASE_SCHEMES:
         raise ValueError(
-            f"unsupported destination {destination!r}; expected one of {sorted(PUBLIC_RELEASE_SCHEMES)}"
+            f"unsupported destination {destination!r}; expected one of "
+            f"{sorted(PUBLIC_RELEASE_SCHEMES)}"
         )
 
     rights_gate = build_rights_gate_report(
@@ -372,9 +382,9 @@ def build_public_release_report(
             asset.get("size_bytes", 0) for asset in manifest["excluded_assets"]
         ),
         "corroboration": manifest["corroboration"],
-        "corroborated_fallback_target_count": len(
-            manifest["corroboration"]["validated_targets"]
-        ),
+        "corroborated_fallback_target_count": manifest["corroboration"][
+            "corroborated_target_count"
+        ],
         "rights_gate": rights_gate,
         "manifest": manifest,
         "public_release_allowed": not blocked_reasons,
@@ -403,7 +413,7 @@ def _build_public_release_manifest(
 
     for rel_path in selected_paths:
         kind, category = _classify_path(rel_path)
-        source_path = project_root / rel_path
+        source_path = _asset_source_path(project_root, output_dir, rel_path)
         if _is_excluded(rel_path):
             excluded_assets.append(
                 PublicReleaseExclusion(
@@ -431,7 +441,10 @@ def _build_public_release_manifest(
                 PublicReleaseExclusion(
                     source_path=rel_path.as_posix(),
                     category=category,
-                    reason="symlinks are not bundled (could resolve outside the release scope)",
+                    reason=(
+                        "symlinks are not bundled (could resolve "
+                        "outside the release scope)"
+                    ),
                     matched_rule="symlink-skip",
                 )
             )
@@ -467,7 +480,9 @@ def _build_public_release_manifest(
     blocked_reference_candidates = _blocked_reference_candidates()
     blocked_references: list[dict[str, Any]] = []
     for asset in included_assets:
-        source_path = project_root / asset.source_path
+        source_path = _asset_source_path(
+            project_root, output_dir, Path(asset.source_path)
+        )
         text_blockers = _blocked_reference_hits(
             source_path,
             excluded_source_paths | blocked_reference_candidates,
@@ -481,9 +496,9 @@ def _build_public_release_manifest(
                     }
                 )
 
-    corroboration = _build_fallback_corroboration(project_root, data_dir)
+    corroboration = _build_fallback_corroboration(project_root, data_dir, output_dir)
     corroboration_blockers = [
-        record.note
+        record["note"]
         for record in corroboration["validated_targets"]
         if record["status"] != "ready"
     ]
@@ -565,14 +580,16 @@ def _selected_public_paths(
                 candidates.append(path.relative_to(project_root))
 
     for root_name in GENERATED_ROOTS:
-        root = project_root / root_name
+        root = (
+            output_dir if root_name == "analysis_output" else project_root / root_name
+        )
         if not root.exists():
             continue
         for path in root.rglob("*"):
             if path.is_symlink():
                 continue
             if path.is_file():
-                candidates.append(path.relative_to(project_root))
+                candidates.append(Path(root_name) / path.relative_to(root))
 
     _ = data_dir
     unique: dict[str, Path] = {}
@@ -761,9 +778,15 @@ def _content_leak_reason(rel_path: Path, source_path: Path) -> str | None:
                     _max_string_len(data) > MAX_BUNDLED_TEXT_FIELD_CHARS
                     or _aggregate_string_len(data) > MAX_BUNDLED_TEXT_TOTAL_CHARS
                 ):
-                    return "embeds a large text payload (possible transcription or full-text leak)"
+                    return (
+                        "embeds a large text payload (possible "
+                        "transcription or full-text leak)"
+                    )
             elif len(text) > MAX_BUNDLED_TEXT_TOTAL_CHARS:
-                return "embeds a large text payload (possible transcription or full-text leak)"
+                return (
+                    "embeds a large text payload (possible "
+                    "transcription or full-text leak)"
+                )
         elif len(text) > MAX_BUNDLED_TEXT_TOTAL_CHARS:
             return (
                 "embeds a large text payload (possible transcription or full-text leak)"
@@ -800,12 +823,14 @@ def _rights_gate_violations(included_assets: list[PublicReleaseAsset]) -> list[s
         for prefix, label in RIGHTS_GATED_PREFIXES.items():
             if rel.startswith(prefix):
                 violations.append(
-                    f"{rel} belongs to rights-gated class ({label}) and must not be in the public bundle"
+                    f"{rel} belongs to rights-gated class ({label}) "
+                    "and must not be in the public bundle"
                 )
                 break
         if ("mosaic" in rel and rel.endswith(".png")) or rel.endswith((".tei", ".xml")):
             violations.append(
-                f"{rel} is a rights-gated source/mosaic artifact and must not be in the public bundle"
+                f"{rel} is a rights-gated source/mosaic artifact "
+                "and must not be in the public bundle"
             )
     return violations
 
@@ -820,7 +845,8 @@ def _blocked_reference_hits(path: Path, excluded_assets: Iterable[str]) -> list[
     blocked: list[str] = []
     for candidate in excluded_assets:
         # Only flag references to concrete excluded FILES (with a suffix); directory
-        # mentions like "docs/manuscript/" are legitimate layout documentation, not leaks.
+        # mentions like "docs/manuscript/" are legitimate layout documentation, not
+        # leaks.
         if not candidate or candidate.endswith("/") or not Path(candidate).suffix:
             continue
         if candidate in text:
@@ -828,12 +854,45 @@ def _blocked_reference_hits(path: Path, excluded_assets: Iterable[str]) -> list[
     return blocked
 
 
-def _build_fallback_corroboration(project_root: Path, data_dir: Path) -> dict[str, Any]:
-    manifest = _read_json(project_root / "analysis_output" / "corpus_manifest.json", {})
-    target_records = {
-        str(row.get("target_id") or ""): row
-        for row in manifest.get("target_records") or []
-        if row.get("target_id")
+def _build_fallback_corroboration(
+    project_root: Path, data_dir: Path, output_dir: Path
+) -> dict[str, Any]:
+    logical_manifest = Path("analysis_output/corpus_manifest.json")
+    manifest_path = _asset_source_path(project_root, output_dir, logical_manifest)
+    raw = manifest_path.read_bytes() if manifest_path.is_file() else None
+    manifest = json.loads(raw) if raw is not None else {}
+    if not isinstance(manifest, dict) or not isinstance(
+        manifest.get("target_records", []), list
+    ):
+        raise ValueError("Selected corpus manifest requires target-record objects")
+    target_records = {}
+    for row in manifest.get("target_records", []):
+        identity = row.get("target_id") if isinstance(row, dict) else None
+        if (
+            not isinstance(identity, str)
+            or not identity.strip()
+            or identity in target_records
+        ):
+            raise ValueError(
+                "Selected manifest has invalid or duplicate target identities"
+            )
+        source_ids = row.get("matched_source_ids", [])
+        if (
+            not isinstance(source_ids, list)
+            or any(
+                not isinstance(value, str) or not value.strip() for value in source_ids
+            )
+            or len(set(source_ids)) != len(source_ids)
+        ):
+            raise ValueError(
+                "Selected manifest has invalid or duplicate source identities"
+            )
+        target_records[identity] = row
+    source_manifest = {
+        "path": logical_manifest.as_posix(),
+        "status": "available" if raw is not None else "missing",
+        "bytes": len(raw) if raw is not None else None,
+        "sha256": hashlib.sha256(raw).hexdigest() if raw is not None else None,
     }
     validated_dir = data_dir / "metadata" / FALLBACK_VALIDATION_DIR
     validated_targets: list[FallbackCorroborationRecord] = []
@@ -860,29 +919,39 @@ def _build_fallback_corroboration(project_root: Path, data_dir: Path) -> dict[st
                     "basis": "source-owned target-coverage corroboration",
                     "evidence_role": "contextual_target_match",
                     "text_bearing": False,
-                    "reviewer_note": "Corroborates target identity, not a second fallback transcription.",
+                    "reviewer_note": (
+                        "Corroborates target identity, not a second "
+                        "fallback transcription."
+                    ),
                 }
             )
-        if not corroborating_sources:
-            manual_sources = _manual_corroboration_sources(project_root, target_id)
-            corroborating_sources.extend(manual_sources)
+        corroborating_sources.extend(
+            _manual_corroboration_sources(project_root, target_id)
+        )
+        contextual_match = any(
+            source["evidence_role"] == "contextual_target_match"
+            for source in corroborating_sources
+        )
 
         status = (
             "ready"
-            if corroborating_sources and checksum_matches
+            if contextual_match and checksum_matches
             else (
                 "stale_checksum"
-                if corroborating_sources and not checksum_matches
+                if contextual_match and not checksum_matches
                 else "needs_secondary_citation"
             )
         )
         note = (
-            "Validated fallback text is corroborated by a source-owned archive id."
+            "The fallback checksum and contextual target identity match; "
+            "no independent transcription comparison was performed."
             if status == "ready"
             else (
                 "Validated fallback text checksum no longer matches the stored marker."
                 if status == "stale_checksum"
-                else "Validated fallback text still needs a second editorial or source-owned citation."
+                else "The fallback marker needs secondary evidence; "
+                "manual-review leads "
+                "remain unreviewed candidates."
             )
         )
         validated_targets.append(
@@ -922,6 +991,10 @@ def _build_fallback_corroboration(project_root: Path, data_dir: Path) -> dict[st
         "artifact": "fallback_corroboration",
         "generated_at": datetime.now().isoformat(),
         "validated_target_count": len(validated_targets),
+        "corroborated_target_count": sum(
+            record.status == "ready" for record in validated_targets
+        ),
+        "source_manifest": source_manifest,
         "validated_targets": [asdict(record) for record in validated_targets],
         "unresolved_target_count": len(unresolved),
         "unresolved_targets": unresolved,
@@ -947,10 +1020,14 @@ def _manual_corroboration_sources(
                 "basis": row.get("direct_source_basis"),
                 "note": row.get("scholarship_note"),
                 "rights_note": row.get("rights_note"),
-                "evidence_role": "candidate_text_bearing_lead"
-                if row.get("evidence_type") == "text"
-                else "contextual_source_lead",
-                "text_bearing": row.get("evidence_type") == "text",
+                "evidence_role": (
+                    "candidate_text_bearing_lead"
+                    if row.get("evidence_type") == "text"
+                    else "contextual_source_lead"
+                ),
+                "text_bearing": False,
+                "candidate_text_bearing": row.get("evidence_type") == "text",
+                "review_status": row["status"],
                 "reviewer_note": row.get("scholarship_note")
                 or row.get("direct_source_basis")
                 or "",
@@ -974,17 +1051,25 @@ def _build_github_release_payload(
         f"- Status: `{manifest['status']}`",
         f"- Included assets: `{included_count}`",
         f"- Excluded assets: `{excluded_count}`",
-        f"- Fallback targets with secondary corroboration: `{corroboration['validated_target_count']}`",
+        "- Fallback targets with contextual identity corroboration: "
+        f"`{corroboration['corroborated_target_count']}`",
         "",
         "Release boundary:",
-        "- The public bundle contains code, safe generated outputs, and release metadata.",
-        "- It excludes the local manuscript pipeline, raw source caches, and rights-gated assets by default.",
-        "- MIT covers project code and project-authored aggregate outputs only; provider TEI,",
-        "  transcriptions, images, and fallback source texts are excluded and keep their source terms.",
-        f"- Rights-gate violations: `{len(manifest.get('rights_gate_violations', []))}`; "
-        f"content-leak exclusions: `{manifest.get('content_leak_exclusion_count', 0)}`.",
+        "- The public bundle contains code, safe generated "
+        "outputs, and release metadata.",
+        "- It excludes the local manuscript pipeline, raw source "
+        "caches, and rights-gated assets by default.",
+        "- MIT covers project code and project-authored aggregate"
+        " outputs only; provider TEI,",
+        "  transcriptions, images, and fallback source texts are "
+        "excluded and keep their source terms.",
+        "- Rights-gate violations: "
+        f"`{len(manifest.get('rights_gate_violations', []))}`; "
+        "content-leak exclusions: "
+        f"`{manifest.get('content_leak_exclusion_count', 0)}`.",
         "",
-        "Attach `public_release_bundle.zip` together with `CITATION.cff` and `zenodo_metadata.json`.",
+        "Attach `public_release_bundle.zip` together with "
+        "`CITATION.cff` and `zenodo_metadata.json`.",
         "",
         "Checksums:",
     ]
@@ -1003,7 +1088,7 @@ def _build_github_release_payload(
             "included_asset_count": included_count,
             "excluded_asset_count": excluded_count,
             "corroborated_fallback_target_count": corroboration[
-                "validated_target_count"
+                "corroborated_target_count"
             ],
         }
     )
@@ -1034,8 +1119,10 @@ def _build_zenodo_metadata(
             "notes": (
                 "The MIT license covers the project source code and project-authored "
                 "aggregate analysis outputs only. Provider-supplied Blake Archive TEI, "
-                "transcriptions, images, fallback source texts, and local evidence caches "
-                "are excluded from this bundle and remain under their source-provider terms."
+                "transcriptions, images, fallback source texts, "
+                "and local evidence caches "
+                "are excluded from this bundle and remain under "
+                "their source-provider terms."
             ),
             "version": manifest["version"],
             "license": "MIT",
@@ -1056,7 +1143,10 @@ def _zenodo_metadata_template(public_release_name: str) -> dict[str, Any]:
         "metadata": {
             "title": public_release_name,
             "upload_type": "software",
-            "description": "Public release bundle metadata generated from the Blake corpus release manifest.",
+            "description": (
+                "Public release bundle metadata generated from the "
+                "Blake corpus release manifest."
+            ),
             "creators": [{"name": __author__}],
             "keywords": ["William Blake", "digital humanities", "software"],
             "version": __version__,
@@ -1099,10 +1189,16 @@ def _github_release_metadata(
 
 
 def _materialize_bundle(
-    project_root: Path, bundle_dir: Path, included_assets: list[dict[str, Any]]
+    project_root: Path,
+    bundle_dir: Path,
+    included_assets: list[dict[str, Any]],
+    *,
+    output_dir: Path,
 ) -> None:
     for asset in included_assets:
-        source_path = project_root / asset["source_path"]
+        source_path = _asset_source_path(
+            project_root, output_dir, Path(asset["source_path"])
+        )
         target_path = bundle_dir / asset["bundle_path"]
         target_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_path, target_path)
@@ -1142,7 +1238,8 @@ def _public_preflight_markdown(report: dict[str, Any]) -> str:
         f"- Destination: `{report['destination']}`",
         f"- Included assets: `{report['included_asset_count']}`",
         f"- Excluded assets: `{report['excluded_asset_count']}`",
-        f"- Fallback targets with corroboration: `{report['corroborated_fallback_target_count']}`",
+        "- Fallback targets with corroboration: "
+        f"`{report['corroborated_fallback_target_count']}`",
         "",
         "Blocked reasons:",
     ]
@@ -1151,6 +1248,58 @@ def _public_preflight_markdown(report: dict[str, Any]) -> str:
     else:
         lines.append("- none")
     return "\n".join(lines)
+
+
+def _asset_source_path(project_root: Path, output_dir: Path, logical: Path) -> Path:
+    """Map public logical names to the explicitly selected analytical epoch."""
+    if logical.parts[0] == "analysis_output":
+        return _safe_path(output_dir, Path(*logical.parts[1:]).as_posix())
+    return _safe_path(project_root, logical.as_posix())
+
+
+def _protected_release_roots(project_root: Path, data_dir: Path) -> list[Path]:
+    return [
+        (project_root / name).resolve()
+        for name in (*SOURCE_ROOTS, "docs", "manuscript", "output", ".git")
+    ] + [data_dir.resolve()]
+
+
+def _admit_analysis_root(project_root: Path, output_dir: Path, data_dir: Path) -> None:
+    """Do not relabel captured data or project sources as analytical output."""
+    selected = output_dir.absolute()
+    if any(part.is_symlink() for part in (selected, *selected.parents)):
+        raise ValueError("Symlink in selected analytical root")
+    selected = selected.resolve()
+    if selected.exists() and not selected.is_dir():
+        raise ValueError("Selected analytical root must be a directory")
+    source = project_root.resolve()
+    protected = _protected_release_roots(project_root, data_dir)
+    if (
+        selected == source
+        or source.is_relative_to(selected)
+        or any(
+            selected.is_relative_to(path) or path.is_relative_to(selected)
+            for path in protected
+        )
+    ):
+        raise ValueError("Selected analytical root overlaps source or captured data")
+
+
+def _admit_release_destination(
+    project_root: Path, data_dir: Path, destination: Path
+) -> None:
+    """Require a new epoch before any report or bundle can replace evidence."""
+    selected = destination.absolute()
+    if selected.exists() or selected.is_symlink():
+        raise FileExistsError(
+            "Release destination is occupied; choose a new, unused --release-dir"
+        )
+    if any(part.is_symlink() for part in (selected, *selected.parents)):
+        raise ValueError("Symlink in release destination")
+    selected = selected.resolve()
+    protected = _protected_release_roots(project_root, data_dir)
+    if any(selected.is_relative_to(path) for path in protected):
+        raise ValueError("Release destination overlaps source or captured data")
 
 
 def _release_dir(output_dir: Path, release_dir: Path | str | None) -> Path:

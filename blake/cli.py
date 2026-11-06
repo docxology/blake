@@ -521,7 +521,7 @@ def corpus_public_release_preflight(
     "public-release-package",
     help=(
         "Stage the GitHub/Zenodo public bundle metadata and checksums locally; "
-        "does not publish or deposit."
+        "requires a new destination and does not publish or deposit."
     ),
 )
 @click.option("--output-dir", type=click.Path(), help="Directory for report outputs")
@@ -531,7 +531,7 @@ def corpus_public_release_preflight(
 @click.option(
     "--release-dir",
     type=click.Path(),
-    help="Directory for the public release bundle and metadata",
+    help="New, unused directory for the bundle; existing entries are preserved and refused",
 )
 @click.option(
     "--destination",
