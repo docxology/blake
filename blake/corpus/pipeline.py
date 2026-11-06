@@ -9,6 +9,15 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from ..analysis import BlakeAnalyzer
+from ..analysis_producer import (
+    AnalysisProducerError,
+    capture_installed_producer,
+    has_retained_analysis,
+    producer_metadata,
+    record_new_producer_sidecar,
+    validate_analysis_destinations,
+)
+
 from ..downloader import BlakeDownloader
 from ..exceptions import BlakeError
 from ..export import BlakeExporter
@@ -150,6 +159,16 @@ class BlakeCorpus:
         self.config = cfg
         self.data_dir = Path(cfg.data_dir)
         self.output_dir = Path(cfg.output_dir)
+        context = capture_installed_producer(analyzer=self.analyzer)
+        selected_data = None if cfg.skip_analysis else self.data_dir
+        validate_analysis_destinations(self.data_dir, self.output_dir, context)
+        if not cfg.skip_analysis:
+            retained = await self.get_all_works()
+            validate_analysis_destinations(
+                self.data_dir, self.output_dir, context,
+                existing_selected_results=any(has_retained_analysis(w) for w in retained),
+            )
+        record_new_producer_sidecar(selected_data, self.output_dir, context)
         self._prepare_output_dirs(self.output_dir)
         target = load_corpus_target(cfg.target_profile)
         archive_provider = self.source_registry.get(SourceType.BLAKE_ARCHIVE)
@@ -359,11 +378,20 @@ class BlakeCorpus:
     async def analyze(
         self, analysis_types: Optional[List[str]] = None
     ) -> List[AnalysisResult]:
+        context = capture_installed_producer(analyzer=self.analyzer)
+        validate_analysis_destinations(self.data_dir, self.output_dir, context)
         works = await self.get_all_works()
+        validate_analysis_destinations(
+            self.data_dir, self.output_dir, context,
+            existing_selected_results=any(has_retained_analysis(w) for w in works),
+        )
+        record_new_producer_sidecar(self.data_dir, self.output_dir, context)
         records: List[AnalysisResult] = []
         for work in works:
             try:
                 result = await self.analyze_work(work.id, analysis_types)
+            except AnalysisProducerError:
+                raise
             except Exception as exc:
                 logger.exception("Analysis failed for work %s", work.id)
                 work.processing_errors.append(str(exc))
@@ -373,7 +401,7 @@ class BlakeCorpus:
                     work_id=work.id,
                     analysis_type="corpus",
                     results=result,
-                    metadata={"title": work.metadata.title},
+                    metadata={"title": work.metadata.title, **producer_metadata(context)},
                 )
             )
         return records
@@ -651,6 +679,12 @@ class BlakeCorpus:
         if not work:
             raise BlakeError(f"Work {work_id} not found")
 
+        context = capture_installed_producer(analyzer=self.analyzer)
+        validate_analysis_destinations(
+            self.data_dir, self.output_dir, context,
+            existing_selected_results=has_retained_analysis(work),
+        )
+        record_new_producer_sidecar(self.data_dir, self.output_dir, context)
         results = await self.analyzer.analyze_work(work, analysis_types)
         for alias, field in (
             ("text", "text_analysis"),
@@ -660,7 +694,9 @@ class BlakeCorpus:
         ):
             if field in results:
                 payload = results[field]
-                await self.metadata_manager.save_analysis_result(work.id, alias, payload)
+                await self.metadata_manager.save_analysis_result(
+                    work.id, alias, payload, metadata=producer_metadata(context)
+                )
                 getattr(work, field).update(payload)
         work.fully_processed = True
         work.metadata.processed = True
@@ -910,6 +946,8 @@ class BlakeCorpus:
             "generated_at": datetime.now().isoformat(),
             "status": status,
             "analysis_results_current": current,
+            **(producer_metadata(capture_installed_producer(analyzer=self.analyzer))
+               if current else {"analysis_producer": None, "analysis_producer_fingerprint": None}),
             "works_total": len(works),
             "works_analyzed": len(records) if current else 0,
             "requested_analysis_types": requested_types,
@@ -1250,6 +1288,14 @@ class BlakeCorpus:
         results_path = self.output_dir / "analysis" / "analysis_results.json"
         diagnostics_path = self.output_dir / "analysis" / "analysis_diagnostics.json"
         requested_types = self._analysis_types_for_summary(cfg.analysis_types)
+        context = capture_installed_producer(analyzer=self.analyzer)
+        validate_analysis_destinations(
+            None if cfg.skip_analysis else self.data_dir, self.output_dir, context,
+            existing_selected_results=(not cfg.skip_analysis and any(has_retained_analysis(w) for w in works)),
+        )
+        record_new_producer_sidecar(
+            None if cfg.skip_analysis else self.data_dir, self.output_dir, context
+        )
 
         if cfg.skip_analysis:
             summary = self._analysis_summary_payload(
@@ -1297,6 +1343,7 @@ class BlakeCorpus:
                 works, records, requested_types
             )
             diagnostics["status"] = "skipped"
+            diagnostics.update(producer_metadata(context))
             summary = self._analysis_summary_payload(
                 status="skipped",
                 works=works,
@@ -1328,6 +1375,7 @@ class BlakeCorpus:
             refreshed_works, records, requested_types
         )
         diagnostics["status"] = "completed"
+        diagnostics.update(producer_metadata(context))
         summary = self._analysis_summary_payload(
             status="completed",
             works=refreshed_works,

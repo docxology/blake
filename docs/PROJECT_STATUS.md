@@ -1,8 +1,18 @@
 # Current status and scoped next work
 
-Status date: 5 November 2026. This index separates the retained release from
+Status date: 6 November 2026. This index separates the retained release from
 current repository maintenance and future research. GitVault is the working
 collection; reference mirrors do not contain local unpublished research.
+
+## Current optional-stack maintenance
+
+The [current qualification and analysis-admission contract](verification.md#current-optional-stack-and-analysis-admission)
+records the modern Pillow/NumPy/PyArrow and spaCy/model profile, retained
+Streamlit interface, producer guard and separately measured gates. New
+inference uses fresh prepared data and output stores; legacy saved epochs
+remain readable/exportable without being restamped. This setup/source change
+leaves historical analytical, native, SDK and deposited identities unchanged;
+it is not a new empirical corpus run or release.
 
 ## Completed and retained
 
@@ -42,7 +52,7 @@ indexed record multiplicity, and retains the analytical producer `0.2.0rc1`.
 The [native replay guide](paper-reproduction.md) identifies the actual pinned
 template PDF/web APIs and admitted article stylesheet. The 94-page PDF has
 SHA-256 `812e53237b40f808b4502e3dd358cbee5cda7d587e493ba95e41f02c11ad03eb`.
-The current authoring regression has 1,382 passing tests at 83.06%
+The authoring qualification for that source had 1,382 passing tests at 83.06%
 statement/branch coverage. Installed SDK and native-output qualifications remain
 separate. Responsive HTML repairs preserve image proportions and keep the
 long evidence-table caption within its keyboard-scrollable region; the original
@@ -59,9 +69,9 @@ responsive HTML, accepting this bounded working draft with limitations. The
 PDF/configuration carry the concept DOI; the HTML currently omits it. This is
 not full bibliographic metadata parity or specialist accessibility acceptance.
 
-## Current runtime and lock repair — 2 November 2026
+## Retained runtime and lock repair — 2 November 2026
 
-Current main admits Python **3.11+** and pins **3.11.17** for reproducible
+At that checkpoint, main admitted Python **3.11+** and pinned **3.11.17** for reproducible
 methods and optional-stack work. The peer floor change left the older
 universal lock stale; its real locked check refused. The repaired
 210-package lock preserves every retained third-party version and removes

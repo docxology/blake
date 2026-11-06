@@ -37,9 +37,96 @@ after exclusion-cardinality and selected/excluded-disjointness guards were added
 Earlier interface, authoring and native qualifications remain attached to the
 0.4.0 publication; no old analysis or rendering is relabelled by this work.
 
-## Current runtime and lock repair — 2 November 2026
+## Current optional stack and analysis admission
 
-Current main admits Python **3.11+** and pins **3.11.17** for reproducible
+The 6 November 2026 maintenance profile retains Python 3.11+ and qualifies its
+current source separately from earlier corpus, native-paper and SDK producers.
+The `full`/`gui` floors require Pillow 13+, NumPy 2 (`<3`) and PyArrow 26+;
+NLP uses spaCy 3.8.18 (`<3.9`) with the locked `en_core_web_sm` 3.8.0 package.
+The implemented Streamlit interface is retained; unused Gradio is removed.
+The exact resolved wheels and interpreter belong to the qualification below,
+not to every possible version combination admitted by those bounds.
+
+| Current qualification surface | Actual retained qualification |
+|---|---|
+| Source, guard controls and GUI/codec/model smokes | 1,491 passed, zero skips, two warnings; 83.36% combined statement/branch coverage against the 80% floor. The separate core/producer gate passes 39 cases, including all 34 producer controls. The full suite includes seven real codec cases and 17 native Streamlit cases; synthetic current-model, Parquet/Pandas and NumPy/Torch/OpenCV smokes also pass. |
+| Normal wheel and installed producer/resource closure | Ordinary offline wheel build and dependency-resolving install pass outside the checkout. All 164 package/resource members agree with staged and installed bytes, including the nine producer owners and three bundled metadata resources. Fresh sidecars and dependency checks pass; all 175 third-party versions and RECORD inventories remain unchanged. This is a narrow installed producer/resource smoke; no new SDK suite was run. |
+| Source/lock/runtime identity and dependency checks | CPython 3.11.17; Pillow 13.0.0, NumPy 2.4.6, PyArrow 26.0.1, spaCy 3.8.18, Thinc 8.3.14, model 3.8.0 and Streamlit 1.66.1. Frozen base/API/gui/full/recovery exports verify the selected floors and retain lightweight base/API and NumPy-free recovery. Black/isort/88-column flake8 pass for the three new modules; modified Python files pass undefined-name checks and parsing. No whole-package strict typing claim. |
+
+
+The final source gate is `17934-375a64495ad34900adeb61db59f492e3`
+(382.70 seconds); its staged source-input map SHA-256 is
+`6aa490758f41f5b0f68e670f47568ac5493d82dcd66632ef12bcc60365b4c031`.
+The independent candidate is based on preserved commit
+`9b4d5d88b02f5cfdc8fddaaf4bed3bed4872702f`; adoption requires exact
+production, test, manifest and lock bytes to match that qualified map. The
+README used by both this gate and the wheel has SHA-256
+`b42abd75a59278b48354172dd1acef47d5e06dbdb62b3e8e2e4b7edb838160ec`.
+
+The final normal-wheel smoke is `17944-ad037ca434f4424f91cf0d6a3fad98d2`;
+the wheel SHA-256 is
+`d94edc22294e6c2456c06202867c09fe97fbf1b7d4b9cc8fc6d30f56b3f18efa`.
+The lock SHA-256 is
+`dce00e885a027ea4c497983cb2a26504db132bb515137b880c044821f226a955`.
+The installed smoke truthfully records loaded models as `not_observed`;
+actual model inference belongs to the separate synthetic source capability
+check. These are retained local qualification receipts, not public wheel
+publication or a new SDK/Python 3.9 qualification.
+
+Earlier failing attempts remain preserved: the first modern full gate found
+three test-harness assumptions; later producer gates found two incomplete
+fixtures and a shared default-output fixture. Those controls now use exact
+source metadata and isolated or legitimately admitted stores. A real
+skip-analysis acquisition path could also prune legacy database results;
+its new refusing control first demonstrated changed database bytes, then
+passed after run-entry admission was tightened. The final helper docstring
+wrap has its own fresh source gate and rebuilt wheel; earlier successful
+artifacts are not relabelled. The prior 97 release-family cases remain in the
+full suite, with one additional unbound-output refusal control.
+
+New inference compares a captured producer fingerprint before changing retained
+analysis stores. It records installed dependency versions, source/lock identity
+and the already-loaded spaCy model identity or explicit unavailable state.
+A root `.analysis-producer.json` binds the admitted context; it is outside the
+raw per-work result namespace. Unknown, malformed or mismatched analysis stores
+are refused rather than retroactively stamped. Retained database result rows
+include empty payloads and unrecognized analysis types; source/recovery metadata
+remains distinct from model results. Future summaries/diagnostics and result
+metadata expose the producer context, without wrapping existing result dicts.
+This is producer admission, not proof of result completeness or scientific validity.
+
+Legacy saved-epoch loading, browsing and export to a new destination remain
+available without adding a sidecar or rerunning inference. Earlier NumPy 1,
+spaCy/model 3.7 and Python 3.9 SDK qualifications remain attached to their exact
+sources, environments and outputs. Installing the modern profile does not
+reproduce or relabel those results, create a corpus analysis epoch, or publish
+a new software release, paper, version tag or DOI.
+
+### Prepare a future analysis epoch
+
+Use a fresh independent reproduction checkout and a new external environment
+prefix; preserve the earlier checkout, environment and result/data trees.
+Copy only a rights-authorized captured `blake_data` snapshot into that new
+workspace. The preparation step copies analysis inputs and clears prior model
+results; do not reuse a sidecar to bless an old store. Keep `analysis_output`
+absent or empty. Replace the environment placeholder and choose a new epoch
+name before running setup and analysis through the admitted research workflow:
+
+```bash
+export UV_PROJECT_ENVIRONMENT=/path/to/new/external/blake-runtime
+uv sync --locked --python 3.11.17 --extra full --extra dev --extra gui --extra api
+uv run --locked python scripts/prepare_manuscript_epoch.py --destination blake_data/publication/modern-20261106
+uv run --locked python scripts/reproduce_manuscript_analysis.py --data-dir blake_data/publication/modern-20261106 --seed 42
+```
+
+These are prospective entry points, not a report that a new corpus campaign
+was run. The analysis wrapper refuses an occupied output tree. Choose and
+record the seed for the new experiment; 42 is the explicit example above,
+not a claim to replay the retained historical analysis.
+
+## Retained runtime and lock repair — 2 November 2026
+
+At that checkpoint, main admitted Python **3.11+** and pinned **3.11.17** for reproducible
 methods and optional-stack work. The peer floor change left the older
 universal lock stale; its real locked check refused. The repaired
 210-package lock preserves every retained third-party version and removes
@@ -56,7 +143,7 @@ environment. The interval family passes the configured Python 3.11
 mypy, Black, isort and explicit 88-column flake8 checks. Four full-suite
 warnings are retained; no whole-package strict typing pass is claimed.
 
-[Current structured qualification](runtime-profile-20261102.json). The
+[Retained November 2 qualification](runtime-profile-20261102.json). The
 Python 3.9 results below describe their original retained wheels, not
 this new current-main packaging. Analysis/native/deposit producers and
 caller-held application pins remain unchanged.

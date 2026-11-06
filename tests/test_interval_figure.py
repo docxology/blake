@@ -119,7 +119,12 @@ def test_actual_mid_production_source_change_refuses_the_completion_marker(
         f"""
         import sys
         from pathlib import Path
+        selected_source = Path({str(source)!r})
+        sys.path.insert(0, str(selected_source))
         import blake
+        assert Path(blake.__file__).resolve().is_relative_to(
+            selected_source.resolve()
+        )
         sys.path.insert(0, {str(fixture)!r})
         from blake.methods.common import EvidenceError
         from manuscript_tools.interval_figure import fig_interval_support

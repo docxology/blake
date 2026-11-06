@@ -309,13 +309,62 @@ async def test_quick_corpus_run_writes_required_artifacts(tmp_path):
 
 
 @pytest.mark.asyncio
-async def test_skip_analysis_marks_existing_results_stale(tmp_path):
+async def test_skip_analysis_refuses_unbound_output_without_changing_bytes(tmp_path):
+    from blake.analysis_producer import AnalysisProducerError
+
     data_dir = tmp_path / "blake_data"
     output_dir = tmp_path / "analysis_output"
     stale_results = output_dir / "analysis" / "analysis_results.json"
     stale_results.parent.mkdir(parents=True)
     stale_results.write_text('[{"work_id": "old"}]', encoding="utf-8")
     corpus = BlakeCorpus(data_dir, output_dir=output_dir)
+    before = {
+        str(path.relative_to(tmp_path)): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+
+    with pytest.raises(AnalysisProducerError, match="fresh analysis epoch"):
+        await corpus.run(
+            CorpusConfig(
+                data_dir=data_dir,
+                output_dir=output_dir,
+                quick=True,
+                skip_analysis=True,
+                skip_visualizations=True,
+                skip_export=True,
+                skip_reports=True,
+            )
+        )
+
+    after = {
+        str(path.relative_to(tmp_path)): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+    assert after == before
+    assert not (output_dir / ".analysis-producer.json").exists()
+    assert not (data_dir / ".analysis-producer.json").exists()
+
+
+@pytest.mark.asyncio
+async def test_skip_analysis_marks_existing_results_stale(tmp_path):
+    data_dir = tmp_path / "blake_data"
+    output_dir = tmp_path / "analysis_output"
+    from blake.analysis_producer import (
+        capture_installed_producer,
+        record_new_producer_sidecar,
+    )
+
+    corpus = BlakeCorpus(data_dir, output_dir=output_dir)
+    context = capture_installed_producer(analyzer=corpus.analyzer)
+    record_new_producer_sidecar(None, output_dir, context)
+    profile = output_dir / ".analysis-producer.json"
+    profile_before = profile.read_bytes()
+    stale_results = output_dir / "analysis" / "analysis_results.json"
+    stale_results.parent.mkdir(parents=True)
+    stale_results.write_text('[{"work_id": "old"}]', encoding="utf-8")
+    stale_before = stale_results.read_bytes()
 
     await corpus.run(
         CorpusConfig(
@@ -339,8 +388,13 @@ async def test_skip_analysis_marks_existing_results_stale(tmp_path):
     assert summary["works_analyzed"] == 0
     assert summary["stale_analysis_results"].endswith("analysis_results.json")
     assert json.loads(stale_results.read_text()) == [{"work_id": "old"}]
+    assert stale_results.read_bytes() == stale_before
     assert diagnostics["status"] == "skipped"
     assert diagnostics["analysis_results_current"] is False
+    assert summary["analysis_producer"] is None
+    assert summary["analysis_producer_fingerprint"] is None
+    assert profile.read_bytes() == profile_before
+    assert not (data_dir / ".analysis-producer.json").exists()
 
 
 @pytest.mark.asyncio

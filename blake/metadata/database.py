@@ -3,6 +3,7 @@ Database management for Blake metadata.
 """
 
 import sqlite3
+import stat
 import json
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
@@ -31,6 +32,62 @@ class MetadataDatabase:
         # Initialize database
         self._init_database()
     
+    @staticmethod
+    def has_retained_analysis(db_path: Path) -> bool:
+        """Observe row presence without initializing or modifying an existing store."""
+        path = Path(db_path)
+        if path.parent.is_symlink():
+            raise ValueError("Analysis database metadata must be a real directory")
+        for suffix in ("-wal", "-shm", "-journal"):
+            journal = path.with_name(path.name + suffix)
+            if journal.exists() or journal.is_symlink():
+                raise ValueError(
+                    "Analysis database has live journal state; use a fresh snapshot"
+                )
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            return False
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise ValueError("Analysis database must be an independent regular file")
+        connection = None
+        try:
+            connection = sqlite3.connect(
+                path.resolve().as_uri() + "?mode=ro&immutable=1", uri=True, timeout=1
+            )
+            connection.execute("PRAGMA query_only=ON")
+            # works.analysis_results also holds source/rights provenance;
+            # analytical result rows have their own canonical table.
+            retained = (
+                connection.execute("SELECT 1 FROM analysis_results LIMIT 1").fetchone()
+                is not None
+            )
+            observed = path.stat()
+
+            def version(value: Any) -> Tuple[int, int, int, int, int]:
+                return (
+                    value.st_dev,
+                    value.st_ino,
+                    value.st_size,
+                    value.st_mtime_ns,
+                    value.st_ctime_ns,
+                )
+
+            if version(info) != version(observed) or any(
+                path.with_name(path.name + suffix).exists()
+                or path.with_name(path.name + suffix).is_symlink()
+                for suffix in ("-wal", "-shm", "-journal")
+            ):
+                raise ValueError("Analysis database changed during read-only admission")
+            return retained
+        except sqlite3.DatabaseError as exc:
+            raise ValueError(
+                "Analysis database is unavailable or has an unknown schema"
+            ) from exc
+        finally:
+            if connection is not None:
+                connection.close()
+
     def _init_database(self) -> None:
         """Initialize database tables."""
         with sqlite3.connect(self.db_path) as conn:

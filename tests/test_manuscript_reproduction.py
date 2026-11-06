@@ -29,7 +29,8 @@ def test_reproduction_cli_runs_an_unused_real_store_and_preserves_source_bytes(
             tmp_path / name,
             ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "AGENTS.md"),
         )
-    shutil.copyfile(source / "uv.lock", tmp_path / "uv.lock")
+    for name in ("pyproject.toml", "uv.lock"):
+        shutil.copyfile(source / name, tmp_path / name)
     (tmp_path / "scripts").mkdir()
     for name in ("bootstrap.py", "reproduce_manuscript_analysis.py"):
         shutil.copyfile(source / "scripts" / name, tmp_path / "scripts" / name)
@@ -63,6 +64,16 @@ def test_reproduction_cli_runs_an_unused_real_store_and_preserves_source_bytes(
         (tmp_path / "analysis_output/data/analysis_epoch_receipt.json").read_text()
     )
     assert receipt["status"] == "completed"
+    producer = receipt["analysis_producer"]
+    assert producer["manifest_sha256"] == hashlib.sha256(
+        (source / "pyproject.toml").read_bytes()
+    ).hexdigest()
+    assert producer["lock_sha256"] == hashlib.sha256(
+        (source / "uv.lock").read_bytes()
+    ).hexdigest()
+    for relative, digest in producer["source_files"].items():
+        assert hashlib.sha256((tmp_path / relative).read_bytes()).hexdigest() == digest
+    assert receipt["analysis_summary"]["analysis_producer"] == producer
     assert receipt["analysis_summary"]["works_analyzed"] == 2
     from blake.metadata.database import MetadataDatabase
 

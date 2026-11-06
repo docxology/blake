@@ -22,11 +22,13 @@ class TestBlakeCorpus:
     @pytest.fixture
     def blake_works(self, data_dir):
         """Create BlakeCorpus instance."""
-        return BlakeCorpus(data_dir)
+        return BlakeCorpus(data_dir, output_dir=data_dir.parent / "analysis_output")
     
     def test_initialization(self, blake_works, data_dir):
         """Test BlakeCorpus initialization."""
         assert blake_works.data_dir == data_dir
+        assert blake_works.output_dir == data_dir.parent / "analysis_output"
+        assert blake_works.output_dir.exists()
         assert data_dir.exists()
         assert blake_works.downloader is not None
         assert blake_works.metadata_manager is not None

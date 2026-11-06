@@ -25,7 +25,7 @@ uv add "blake[full]"
 pip install "blake[full]"
 ```
 
-The default installation supports portable methods. These corpus/NLP/vision examples require `full`; HTTP serving adds `api`, and Streamlit/Gradio adds `gui`. From this checkout use the locked profiles in [verification](verification.md). Package-index commands select the version available there, not an implicit current Git revision.
+The default installation supports portable methods. These corpus/NLP/vision examples require `full`; HTTP serving adds `api`, and the implemented Streamlit interface adds `gui`. Use the [current locked profile and new-analysis admission contract](verification.md#current-optional-stack-and-analysis-admission) from this checkout. Package-index commands select the version available there, not an implicit current Git revision.
 
 Python fragments after the complete introductory workflow assume the same explicit `corpus` instance and an async function or a notebook with top-level await. Synchronous launchers such as `explore()` are named separately. Keep data, outputs, model/cache resources and both Python prefixes in their admitted external workspace.
 

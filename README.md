@@ -60,11 +60,11 @@ receipt distinguish current retained evidence from the older unresolved
 coverage/embedding discrepancy, without publishing provider text or rerunning models.
 
 Current main requires Python 3.11 or newer and pins **3.11.17** for the qualified
-methods and optional-stack workflows. The peer Python 3.15 default is retained
-in history: a real binary-only probe rejects the locked `pydantic-core==2.33.2`
-on that interpreter/platform. [Current runtime qualification](docs/runtime-profile-20261102.json)
-separates this setup repair from the retained Python 3.9 wheel receipts and
-from every historical analysis, native paper and deposit.
+methods and optional-stack workflows. The [current optional profile](docs/verification.md#current-optional-stack-and-analysis-admission)
+records modern dependencies and new-analysis admission separately from legacy
+saved-epoch read/export access. The [retained November 2 qualification](docs/runtime-profile-20261102.json)
+and its earlier Python 3.15 binary-only refusal remain historical observations,
+separate from the current profile, Python 3.9 wheels, corpus results and deposits.
 
 ## Primary Workflow
 

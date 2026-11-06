@@ -173,6 +173,9 @@ def run_analysis_epoch(project_root: Path, data_dir: str, seed: int) -> Path:
             max_images_per_work=None,
         )
         corpus = BlakeCorpus(data, output_dir=output, config=config)
+        from blake.analysis_producer import capture_installed_producer, producer_metadata
+
+        receipt.update(producer_metadata(capture_installed_producer(analyzer=corpus.analyzer)))
         result = asyncio.run(corpus.run(config))
         receipt["pipeline"] = result.model_dump(mode="json")
         receipt["analysis_summary"] = json.loads(

@@ -35,7 +35,7 @@ dependencies = [
 # Source recovery and recovered-projection export need no NLP/vision stack.
 recovery = [
     "beautifulsoup4>=4.12.0",
-    "pillow>=10.0.0",
+    "pillow>=13.0.0",
     "truststore>=0.10; python_version >= '3.10'",
 ]
 # Acquisition, NLP, vision and corpus orchestration are explicit capabilities.
@@ -44,19 +44,19 @@ full = [
     "beautifulsoup4>=4.12.0",
     "lxml>=4.9.0",
     "pandas>=2.0.0",
-    "numpy<2.0.0",
+    "numpy>=2,<3",
     "scikit-learn>=1.3.0",
     "nltk>=3.8.0",
-    "spacy>=3.6.0",
+    "spacy>=3.8.18,<3.9",
     "transformers>=4.30.0",
     "torch>=2.0.0",
-    "pillow>=10.0.0",
+    "pillow>=13.0.0",
     "opencv-python>=4.8.0",
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",
     "plotly>=5.15.0",
     "sqlalchemy>=2.0.0",
-    "pyarrow>=12.0.0",
+    "pyarrow>=26.0.0",
     "rich>=13.0.0",
     "prompt-toolkit>=3.0.0",
     "tqdm>=4.65.0",
@@ -85,7 +85,9 @@ dev = [
 ]
 gui = [
     "streamlit>=1.25.0",
-    "gradio>=3.40.0",
+    "numpy>=2,<3",
+    "pyarrow>=26.0.0",
+    "pillow>=13.0.0",
 ]
 api = [
     "fastapi>=0.100.0",
@@ -182,4 +184,4 @@ markers = [
 ]
 
 [tool.uv.sources]
-en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl" }
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }

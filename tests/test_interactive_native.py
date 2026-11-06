@@ -27,7 +27,14 @@ async def test_work_summary_statistics_and_settings_accept_saved_string_enums(
     text = capture.getvalue()
     assert "poem" in text and "letter" in text
     assert "Total Works: 2" in text
-    assert "Data Directory:" in text and str(orchestrator.data_dir) in text
+    assert "Data Directory:" in text and "• System Status:" in text
+    # Rich may wrap a long path inside the panel. Reconstruct only this row,
+    # removing physical line borders/padding while preserving path characters.
+    directory_row = text.split("Data Directory:", 1)[1].split(
+        "• System Status:", 1
+    )[0]
+    rendered_path = "".join(line.strip(" │") for line in directory_row.splitlines())
+    assert rendered_path == str(orchestrator.data_dir)
 
 
 @pytest.mark.asyncio

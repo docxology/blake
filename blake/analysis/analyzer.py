@@ -11,6 +11,12 @@ from .text_analysis import TextAnalyzer
 from .visual_analysis import VisualAnalyzer
 from .cross_analysis import CrossAnalyzer
 from .ontology import OntologyManager
+from ..analysis_producer import (
+    capture_installed_producer,
+    has_retained_analysis,
+    record_new_producer_sidecar,
+    validate_analysis_destinations,
+)
 from ..models import BlakeWork, AnalysisResult
 from ..exceptions import AnalysisError
 from ..utils.file_utils import sanitize_filename
@@ -55,6 +61,12 @@ class BlakeAnalyzer:
         Returns:
             Dictionary of analysis results
         """
+        context = capture_installed_producer(analyzer=self)
+        validate_analysis_destinations(
+            self.data_dir, None, context,
+            existing_selected_results=has_retained_analysis(work),
+        )
+        record_new_producer_sidecar(self.data_dir, None, context)
         logger.info(f"Starting analysis for work: {work.id}")
         
         if analysis_types is None:

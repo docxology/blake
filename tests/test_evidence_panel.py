@@ -136,18 +136,35 @@ def test_work_pagination_and_search_results_survive_page_changes(tmp_path):
 def test_work_details_load_only_when_requested_and_keep_distinct_widget_keys(tmp_path):
     data = tmp_path / "data"
     rich, _ = seed_gui(data)
+    retained_images = {
+        path: path.read_bytes()
+        for image in rich.images
+        for path in (image.file_path, image.thumbnail_path)
+        if path is not None
+    }
+    expected_captions = [[image.title] for image in rich.images[:3]]
     app = AppTest.from_string(
         app_source(data, tmp_path / "out"), default_timeout=20
     ).run()
     assert list(app.exception) == []
     assert len(app.text_area) == 0
-    assert len(app.get("imgs")) == 0
+    assert len(app.image) == 0
     app.checkbox(key=f"browse:load:{rich.id}").check().run()
     assert len(app.text_area) == 1
-    assert len(app.get("imgs")) == 3
+    assert len(app.image) == 3
+    assert [item.captions for item in app.image] == expected_captions
+    assert all(len(item.value) == 1 and item.value[0] for item in app.image)
     control(app.button, "Search").click().run()
     assert len(app.text_area) == 1
     app.checkbox(key=f"search:load:{rich.id}").check().run()
     assert list(app.exception) == []
     assert len(app.text_area) == 2
     assert all(item.value == rich.text_content for item in app.text_area)
+    assert app.checkbox(key=f"browse:load:{rich.id}").value is True
+    assert app.checkbox(key=f"search:load:{rich.id}").value is True
+    assert len(app.image) == 6
+    assert [item.captions for item in app.image] == expected_captions * 2
+    assert all(len(item.value) == 1 and item.value[0] for item in app.image)
+    assert all(
+        path.read_bytes() == original for path, original in retained_images.items()
+    )

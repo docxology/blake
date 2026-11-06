@@ -1,5 +1,17 @@
 # Changelog
 
+## Optional-stack security maintenance and producer admission — 2026-11-06
+
+- Raise the current Pillow/NumPy/PyArrow floors, adopt the compatible spaCy 3.8
+  model profile, remove unused Gradio and retain the implemented Streamlit GUI.
+- Refuse new inference into unbound or incompatible retained analysis stores;
+  expose installed/loaded producer context while preserving legacy reads,
+  exports, source provenance and raw result dictionary shapes.
+- Extend refusing runtime/database controls and give the real pipeline fixture
+  an actual text file. [Qualification](docs/verification.md#current-optional-stack-and-analysis-admission)
+  keeps earlier failed attempts and historical producers separate; this source
+  maintenance does not create a new empirical analysis or release.
+
 ## Saved-run membership evidence — 2026-11-05
 
 - Compare publication input, manifest, metric and result-ledger identities and
