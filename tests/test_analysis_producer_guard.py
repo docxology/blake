@@ -632,3 +632,40 @@ async def test_skip_analysis_accepts_source_provenance_without_stamping_data(
     assert summary["analysis_results_current"] is False
     assert summary["analysis_producer"] is None
     assert summary["analysis_producer_fingerprint"] is None
+
+
+@pytest.mark.parametrize("same_producer", [False, True])
+@pytest.mark.parametrize("before_publish", [False, True])
+def test_competing_producer_is_verified(tmp_path, monkeypatch, same_producer, before_publish):
+    from blake import analysis_producer as producer
+    from blake.methods import storage
+
+    requested = {"schema_version": 1, "test_producer": "requested"}
+    winner = requested if same_producer else {
+        "schema_version": 1, "test_producer": "different"
+    }
+    record = json.dumps({
+        "schema_version": 1, "producer": winner,
+        "fingerprint": producer.producer_fingerprint(winner),
+    })
+    sidecar = tmp_path / producer.PRODUCER_SIDECAR
+    preflight = producer.validate_analysis_destinations
+    write_new = storage.write_new
+
+    if before_publish:
+        def validate_then_publish(*args):
+            preflight(*args)
+            write_new(sidecar, record)
+        monkeypatch.setattr(producer, "validate_analysis_destinations", validate_then_publish)
+    else:
+        def publish_competing_record(path, raw):
+            write_new(path, record)
+            write_new(path, raw)
+        monkeypatch.setattr(storage, "write_new", publish_competing_record)
+
+    if same_producer:
+        producer.record_new_producer_sidecar(None, tmp_path, requested)
+    else:
+        with pytest.raises(producer.AnalysisProducerError, match="producer differs"):
+            producer.record_new_producer_sidecar(None, tmp_path, requested)
+    assert sidecar.read_text() == record

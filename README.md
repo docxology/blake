@@ -329,6 +329,17 @@ uv run blake corpus public-release-preflight --output-dir analysis_output --data
 uv run blake corpus public-release-package --output-dir analysis_output --data-dir blake_data
 ```
 
+Text analysis uses locally available NLTK resources. To provision the optional
+English resources deliberately, run this in the full environment:
+
+```bash
+uv run python -m nltk.downloader punkt_tab stopwords vader_lexicon averaged_perceptron_tagger_eng maxent_ne_chunker_tab words
+```
+
+Without those resources, sentence statistics use punctuation, concordance uses
+unfiltered word frequencies, and sentiment reports the missing VADER data.
+Resource provisioning is separate from starting an analysis.
+
 Plain `uv sync` installs the methods-only dependency set: packaging, Click,
 Pydantic and typing extensions. Use `uv sync --extra full` for the corpus
 pipeline. The complete test suite includes GUI tests: install its dependencies

@@ -289,6 +289,7 @@ def record_new_producer_sidecar(
 
     Existing matching receipts stay byte-identical.
     """
+    from .methods.common import ResearchError
     from .methods.storage import write_new
 
     validate_analysis_destinations(data_dir, output_dir, context)
@@ -302,9 +303,14 @@ def record_new_producer_sidecar(
         raise AnalysisProducerError("Analysis producer profile is oversized")
     for root in _roots(data_dir, output_dir):
         sidecar = root / PRODUCER_SIDECAR
-        if not sidecar.exists():
+        if not sidecar.exists() and not sidecar.is_symlink():
             root.mkdir(parents=True, exist_ok=True)
-            write_new(sidecar, raw)
+            try:
+                write_new(sidecar, raw)
+            except ResearchError as exc:
+                if exc.code != "occupied_output":
+                    raise
+        _read_profile(sidecar, context)
 
 
 def has_retained_analysis(work: Any) -> bool:

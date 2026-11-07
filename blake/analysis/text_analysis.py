@@ -12,7 +12,6 @@ from datetime import datetime
 
 # NLP imports
 try:
-    import nltk
     from nltk.corpus import stopwords
     from nltk.tokenize import word_tokenize, sent_tokenize
     from nltk.stem import WordNetLemmatizer
@@ -71,26 +70,25 @@ class TextAnalyzer:
             self._init_spacy()
     
     def _init_nltk(self):
-        """Initialize NLTK components."""
+        """Load the locally installed NLTK components."""
         try:
-            # Download required NLTK data
-            nltk.download('punkt', quiet=True)
-            nltk.download('punkt_tab', quiet=True)  # Required for newer NLTK versions
-            nltk.download('stopwords', quiet=True)
-            nltk.download('wordnet', quiet=True)
-            nltk.download('vader_lexicon', quiet=True)
-            nltk.download('averaged_perceptron_tagger', quiet=True)
-            nltk.download('averaged_perceptron_tagger_eng', quiet=True)  # English tagger
-            nltk.download('maxent_ne_chunker', quiet=True)
-            nltk.download('maxent_ne_chunker_tab', quiet=True)  # Tabular version
-            nltk.download('words', quiet=True)
-            
             self.lemmatizer = WordNetLemmatizer()
             self.sentiment_analyzer = SentimentIntensityAnalyzer()
             
+        except LookupError:
+            logger.info("Local NLTK VADER data is unavailable")
         except Exception as e:
             logger.warning(f"Error initializing NLTK: {e}")
-    
+
+    @staticmethod
+    def _split_sentences(text: str) -> List[str]:
+        if NLTK_AVAILABLE:
+            try:
+                return sent_tokenize(text)
+            except LookupError:
+                logger.debug("Local NLTK tokenizer data is unavailable")
+        return [sentence for sentence in re.split(r'[.!?]+', text) if sentence.strip()]
+
     def _init_spacy(self):
         """Initialize spaCy model."""
         try:
@@ -241,16 +239,9 @@ class TextAnalyzer:
         char_count = len(text)
         
         # Sentence count
-        if NLTK_AVAILABLE:
-            sentences = sent_tokenize(text)
-            sentence_count = len(sentences)
-            avg_sentence_length = word_count / sentence_count if sentence_count > 0 else 0
-        else:
-            # Simple sentence counting
-            sentences = re.split(r'[.!?]+', text)
-            sentence_count = len([s for s in sentences if s.strip()])
-            avg_sentence_length = word_count / sentence_count if sentence_count > 0 else 0
-        
+        sentence_count = len(self._split_sentences(text))
+        avg_sentence_length = word_count / sentence_count if sentence_count else 0
+
         # Paragraph count
         paragraphs = [p for p in text.split('\n\n') if p.strip()]
         paragraph_count = len(paragraphs)
@@ -277,6 +268,8 @@ class TextAnalyzer:
         """Analyze sentiment of text."""
         if not NLTK_AVAILABLE:
             return {'error': 'NLTK not available'}
+        if self.sentiment_analyzer is None:
+            return {'error': 'Local NLTK VADER data is unavailable'}
         
         try:
             # VADER sentiment analysis
@@ -364,10 +357,7 @@ class TextAnalyzer:
         try:
             # Prepare text for topic modeling
             # Split into sentences for better topic modeling
-            if NLTK_AVAILABLE:
-                sentences = sent_tokenize(text)
-            else:
-                sentences = re.split(r'[.!?]+', text)
+            sentences = self._split_sentences(text)
             
             sentences = [s.strip() for s in sentences if s.strip()]
             
@@ -424,10 +414,7 @@ class TextAnalyzer:
         word_lengths = [len(word) for word in words]
         
         # Sentence length distribution
-        if NLTK_AVAILABLE:
-            sentences = sent_tokenize(text)
-        else:
-            sentences = re.split(r'[.!?]+', text)
+        sentences = self._split_sentences(text)
         
         sentence_lengths = [len(s.split()) for s in sentences if s.strip()]
         
@@ -466,15 +453,19 @@ class TextAnalyzer:
         # Most frequent words
         most_common = word_counts.most_common(20)
         
-        # Remove stop words if NLTK is available
+        filtered_common = most_common
         if NLTK_AVAILABLE:
-            stop_words = set(stopwords.words('english'))
-            filtered_words = {word: count for word, count in word_counts.items() 
-                            if word not in stop_words and len(word) > 2}
-            filtered_common = Counter(filtered_words).most_common(20)
-        else:
-            filtered_common = most_common
-        
+            try:
+                stop_words = set(stopwords.words('english'))
+            except LookupError:
+                logger.debug("Local NLTK stopword data is unavailable")
+            else:
+                filtered_words = {
+                    word: count for word, count in word_counts.items()
+                    if word not in stop_words and len(word) > 2
+                }
+                filtered_common = Counter(filtered_words).most_common(20)
+
         # Keyword analysis (TF-IDF-like)
         # This is a simplified version - in practice, you'd use a larger corpus
         keywords = []
