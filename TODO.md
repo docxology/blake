@@ -80,3 +80,7 @@ permission.
   updates coverage interpretation accordingly.
 
 - [ ] Review the next corpus-bearing revision. Scope any changed capture, inference or literary claim after the current source-method/working-draft wave with its own independent source, generated-output, manuscript and rights review. The retained inspections do not supply peer review or whole-corpus scientific acceptance. Acceptance: each changed claim traces to its own artifact/source, changed native outputs pass complete page/browser checks, and exclusions retain explicit reasons.
+
+## Workflowz review — 2026-11-10
+
+- [ ] WZ-20261110-01 [P2][Minor] Make recovery-review transcription reads explicitly UTF-8 instead of host-default locale dependent. **Outcome:** a valid non-ASCII transcription and sidecar produce identical review records under UTF-8 and non-UTF-8 process locales, while read errors retain their existing classification. **Evidence:** `blake/recovery_review.py:472` and `:476` call `read_text()` without an encoding; `:483` uses `read_bytes()` for image bytes, isolating the locale-sensitive text boundary. **Acceptance probe:** add a locale-forced non-ASCII regression to the existing recovery-review tests and run that module's real pytest entry point; expected: identical records under both locales, and `OSError`/`UnicodeError` handling still names the failing path. **Dependencies/constraints:** preserve sidecar-review provenance, source hashes, and the existing error classification at `blake/recovery_review.py:479-480`; do not change source bytes or introduce an encoding fallback.
