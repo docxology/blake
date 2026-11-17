@@ -12,6 +12,8 @@ view exposes recorded recovery status and scoped, read-only corpus search.
 
 Blake builds a reproducible local corpus workflow for William Blake texts, images, metadata, analysis results, visual summaries, exports, and reports. The API is `BlakeCorpus`.
 
+![Blake Corpus Analysis Platform architecture: capture and provenance, BlakeCorpus pipeline, portable shared methods, local interfaces, and pinned application boundaries](docs/assets/architecture-overview.svg)
+
 ## Corpus, methods and application papers
 
 This is the shared **corpus and methods repository**. It owns acquisition,
