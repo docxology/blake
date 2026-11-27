@@ -35,7 +35,7 @@ The pass found leads, not missing completed evidence. The strongest practical im
 
 ## Recorded next actions and current staging status
 
-The direct-source rows discussed in steps 1–3 are already staged in [source-leads.json](source-leads.json) as manual-review candidates. That closes row staging only: exact-page extraction, source checks, corroboration, permissions and accepted coverage remain separate. The following list retains the original discovery plan; [project status](PROJECT_STATUS.md) and [TODO](../TODO.md) define the current scoped queue.
+The direct-source rows discussed in steps 1–3 are already staged in [source-leads.json](source-leads.json) as manual-review candidates. That closes row staging only: exact-page extraction, source checks, corroboration, permissions and accepted coverage remain separate. The following list retains the original discovery plan; [project status](PROJECT_STATUS.md) and [TODO](TODO.md) define the current scoped queue.
 
 
 1. Add exact direct-source candidate rows for the Wikisource text leads, preserving Wikimedia attribution and license metadata.

@@ -630,7 +630,7 @@ def test_registered_figures_are_cited_in_manuscript_sources():
 
 def test_forward_todo_has_no_resolved_missing_target_task():
     root = Path(__file__).resolve().parents[1]
-    todo = (root / "TODO.md").read_text(encoding="utf-8").lower()
+    todo = (root / "docs/TODO.md").read_text(encoding="utf-8").lower()
 
     assert "missing target resolution" not in todo
     assert "fallback-text corroboration" in todo

@@ -86,6 +86,7 @@ EXCLUDED_EXACT_PATHS: set[str] = {
     "blake/viz/AGENTS.md",
     "ISA.md",
     "TODO.md",
+    "docs/TODO.md",
     "docs/online-scholarship-gap-review.md",
     "docs/source-leads.json",
     "docs/visualization-publication-brief.md",

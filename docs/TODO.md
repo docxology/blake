@@ -3,7 +3,7 @@
 Forward-only improvement backlog. Remove an item once its scope is delivered and
 verified; do not keep finished work here as project history.
 
-The first public destination/bundle decision is delivered in [publication.json](publication.json), including retained deposited assets and checksums. It was retired from this queue on 31 October 2026; those bounded publication receipts do not close the scientific/rights tasks below. [Project status](docs/PROJECT_STATUS.md) records completed units and [documentation](docs/README.md) routes current workflows.
+The first public destination/bundle decision is delivered in [publication.json](../publication.json), including retained deposited assets and checksums. It was retired from this queue on 31 October 2026; those bounded publication receipts do not close the scientific/rights tasks below. [Project status](PROJECT_STATUS.md) records completed units and [documentation](README.md) routes current workflows.
 
 ## Scope Key
 

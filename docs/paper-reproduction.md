@@ -13,6 +13,34 @@ The software dependency remains Blake **0.7.0** at Git
 `0.2.0rc1`. The profile/ownership and interval illustrations have current-source
 producer records; an illustration's arbitrary coordinates are not corpus data.
 
+## Build a reader copy with the current Template pin
+
+Use a clean [Template checkout at `87704feae0a4490ef7dad9c931d268e8c30273c2`](https://github.com/docxology/template/tree/87704feae0a4490ef7dad9c931d268e8c30273c2)
+with its locked Python 3.14 environment, Pandoc, pandoc-crossref and XeLaTeX.
+Set `TEMPLATE_ROOT` to that checkout and `ZIP` to the absolute path of the
+public reproduction archive. From the Blake repository root, run the following.
+
+~~~sh
+project="$TEMPLATE_ROOT/projects/working/blake"
+git worktree add --detach "$project" HEAD
+cd "$TEMPLATE_ROOT"
+uv run --no-sync python "$project/manuscript_tools/stage_published_reader.py" \
+  --template-root "$TEMPLATE_ROOT" --archive "$ZIP" \
+  --archive-sha256 95114e666f15130d2bf2b97044e0c2f4dd6a0fdfcb39142e31b9fad36c94a94e
+uv run --no-sync python scripts/pipeline/stage_03_render.py --project working/blake
+uv run --no-sync python scripts/pipeline/stage_04_validate.py --project working/blake
+~~~
+
+The staging command verifies the ZIP against the release record, verifies every
+archive member and compares the numbered sources and support files with
+`docs/manuscript/`. It hydrates the canonical sections with the deposited
+variables, stages the approved aggregate graphics and generated cover, and
+records the retained text values for render validation. The build writes
+`output/pdf/blake_combined.pdf`, `output/web/index.html` and validation reports
+under the Blake worktree. This reader uses the shared Template styling. The
+deposited edition and its native renderer below define the released typography,
+responsive article stylesheet, pagination and artifact hashes.
+
 ## Prepare an external replay epoch
 
 Extract the archive into a new directory on mounted GitVault. Preserve the

@@ -122,7 +122,7 @@ Choose the actual unit, input pins, owner, affected paths and unused output epoc
 before implementation. Coordinate heavyweight jobs through repository and
 common-store leases. Retained recovery/native evidence is not a renewable grant.
 Record software, runtime, interpretation, rendered output, hosted-CI and
-publication outcomes separately. The [scoped backlog](../TODO.md) retains the
+publication outcomes separately. The [scoped backlog](TODO.md) retains the
 unresolved rights/reference policy and next-edition review requirements.
 
 ## Public editions — 3 November 2026
