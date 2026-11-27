@@ -1,6 +1,9 @@
 # Blake Corpus Analysis Platform
 
-Start with [current status and scoped next work](docs/PROJECT_STATUS.md).
+- [Quick start](docs/quickstart.md) for local use
+- [Documentation index](docs/README.md) and [current status](docs/PROJECT_STATUS.md)
+- [Verification](docs/verification.md) for the supported checks and their scope
+- [Corpus and methods manuscript](docs/manuscript/README.md) for the paper and its release record
 
 Software source: **0.7.0**. See [release changes](CHANGELOG.md) and the
 [versioned methods contract](docs/methods.md). The Streamlit **Local evidence**
