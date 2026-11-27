@@ -14,6 +14,7 @@ documentation map; [index.md](index.md) is a short entry point.
 | Source acquisition, local corpus analysis, GUI or API | [User guide](user-guide.md), [configuration](configuration.md) and [API reference](api-reference.md) |
 | Recovery, source-bound search and an offline workspace | [Local evidence methods](methods.md) and [text search](text-search.md) |
 | Extend the implementation | [Developer guide](developer-guide.md), [architecture](ARCHITECTURE.md) and [technical specification](spec.md) |
+| Dashboard component design | [Design contract](DESIGN.md) |
 | Diagnose a failed operation | [Troubleshooting](troubleshooting.md) |
 | Author or reproduce a paper edition | [Manuscript guide](manuscript/README.md), [current native replay](paper-reproduction.md), [analytical reproducibility](manuscript/08_reproducibility.md) and [style guide](style-guide.md) |
 
@@ -76,7 +77,7 @@ operating instructions belong in the workflow guides above.
 
 Dated research and publication observations retain their original identities.
 Current work is tracked in [PROJECT_STATUS.md](PROJECT_STATUS.md) and the
-[scoped backlog](../TODO.md), rather than inferred from an old proposal.
+[scoped backlog](TODO.md), rather than inferred from an old proposal.
 
 These Markdown files are readable in the repository. No MkDocs configuration
 or declared MkDocs build is shipped. The paper uses its recorded native template

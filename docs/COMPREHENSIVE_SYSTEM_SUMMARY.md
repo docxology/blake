@@ -34,4 +34,4 @@ publish a new manuscript. Applications retain their own domain claims.
 The repository supplies local functionality and scoped evidence, without an
 unqualified production/security/performance or scientific-completeness claim.
 Future source expansion, rights policy, hosted automation and scholarly
-acceptance remain in the [scoped backlog](../TODO.md).
+acceptance remain in the [scoped backlog](TODO.md).

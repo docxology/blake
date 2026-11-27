@@ -1,7 +1,9 @@
 # Blake manuscript
 
 Current authoring edition: [0.5.0 working draft](../../Blake-0.5.0.pdf).
-The [native replay guide](../paper-reproduction.md) covers its frozen public
+The [reader build](../paper-reproduction.md#build-a-reader-copy-with-the-current-template-pin)
+uses those public inputs with the issue's Template pin. The
+[native replay guide](../paper-reproduction.md) covers the frozen public
 inputs and actual pinned template APIs. The stored corpus-analysis producer
 and deposited paper retain their separate identities.
 
